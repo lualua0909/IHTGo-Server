@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NOTY v3 Demo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700&amp;subset=latin-ext" rel="stylesheet">
+  <link rel="stylesheet" href="../lib/noty.css"/>
+  <link rel="stylesheet" href="../lib/themes/mint.css"/>
+  <link rel="stylesheet" href="demo/animate.css"/>
+  <link rel="stylesheet" href="demo/fonts/stylesheet.css"/>
+  <link rel="stylesheet" href="demo/font-awesome/css/font-awesome.min.css"/>
+  <link rel="stylesheet" href="demo/demo.css"/>
+</head>
+<body>
+
+<div class="logo">
+  <img src="demo/noty-logo.png" alt="">
+</div>
+
+<div>
+  <p class="mt30" style="text-align: center">
+    <select class="" name="layout" id="layout">
+      <option value="top">top</option>
+      <option value="topLeft">topLeft</option>
+      <option value="topCenter">topCenter</option>
+      <option value="topRight" selected>topRight</option>
+      <option value="center">center</option>
+      <option value="centerLeft">centerLeft</option>
+      <option value="centerRight">centerRight</option>
+      <option value="bottom">bottom</option>
+      <option value="bottomLeft">bottomLeft</option>
+      <option value="bottomCenter">bottomCenter</option>
+      <option value="bottomRight">bottomRight</option>
+      <optgroup label="Custom Container">
+        <option value="inline">inline</option>
+      </optgroup>
+    </select>
+    <select name="type" id="type">
+      <option value="random" selected>random</option>
+      <option value="alert">alert</option>
+      <option value="success">success</option>
+      <option value="warning">warning</option>
+      <option value="error">error</option>
+      <option value="information">information</option>
+    </select>
+    <br><br>
+    <a href="#run" class="btn button runner"
+       style="position: relative; top: -3px; margin-left: 10px; text-decoration: none">CREATE</a>
+  </p>
+</div>
+
+<div id="custom_container">
+  <h2 style="text-align: center">Custom Container</h2>
+</div>
+
+<script src="//cdn.jsdelivr.net/velocity/1.5/velocity.min.js"></script>
+<script src="//cdn.jsdelivr.net/mojs/latest/mo.min.js"></script>
+<script type="text/javascript" src="demo/bouncejs/bounce.js"></script>
+<script type="text/javascript" src="../lib/noty.js"></script>
+<script type="text/javascript" src="demo/demo.js"></script>
+
+</body>
+</html>
