@@ -1,5 +1,5 @@
 <audio id="notiAudio">
-    <source src="{{ asset('sounds/chat.mp3') }}">
+    <source src="{{ asset('publicsounds/chat.mp3') }}">
 </audio>
 <div class="pull-right hidden-xs">
     <b>Version</b> 0.0.1

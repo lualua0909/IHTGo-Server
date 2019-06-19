@@ -75,7 +75,7 @@
     <script src="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
     <script src="{{asset('admin')}}/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
-    <script src="{!! asset('/admin/dist/js/jquery.number.min.js') !!}"></script>
+    <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
 
     <script>
         $(function () {

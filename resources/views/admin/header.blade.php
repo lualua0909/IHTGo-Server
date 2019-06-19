@@ -21,18 +21,18 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"
                    style="padding-top: 10px;padding-bottom: 5px;">
                     @if(\Illuminate\Support\Facades\App::getLocale() == 'en')
-                        <img src="{{ asset('admin') }}/images/united-kingdom.png" class="user-image" alt="English"> English (EN)
+                        <img src="{{ asset('public/admin') }}/images/united-kingdom.png" class="user-image" alt="English"> English (EN)
                     @else
-                        <img src="{{ asset('admin') }}/images/vietnam.png" class="user-image" alt="Việt Nam">  Việt Nam (VN)
+                        <img src="{{ asset('public/admin') }}/images/vietnam.png" class="user-image" alt="Việt Nam">  Việt Nam (VN)
                     @endif
                 </a>
                 <ul class="dropdown-menu" style="width: 180px">
                     <li class="header lang" data-lang="vn" style="cursor: pointer;"><img
-                                src="{{ asset('admin') }}/images/vietnam.png" class="user-image" alt="Việt Nam"> Việt
+                                src="{{ asset('public/admin') }}/images/vietnam.png" class="user-image" alt="Việt Nam"> Việt
                         Nam (VN)
                     </li>
                     <li class="header lang" data-lang="en" style="cursor: pointer;"><img
-                                src="{{ asset('admin') }}/images/united-kingdom.png" class="user-image" alt="English">
+                                src="{{ asset('public/admin') }}/images/united-kingdom.png" class="user-image" alt="English">
                         English (EN)
                     </li>
                 </ul>

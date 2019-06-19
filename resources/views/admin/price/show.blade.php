@@ -67,7 +67,7 @@
 <!-- Bootstrap JavaScript -->
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-<script src="{!! asset('/admin/dist/js/jquery.number.min.js') !!}"></script>
+<script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
 <script>
     $(function () {
         $('.price').number( true, 0 );

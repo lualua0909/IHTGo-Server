@@ -110,7 +110,7 @@
     </style>
 @endsection
 @section('script')
-    <script src="{!! asset('/admin/dist/js/jquery.number.min.js') !!}"></script>
+    <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
     <script>
         $(function () {
             $('.price').number( true, 0 );

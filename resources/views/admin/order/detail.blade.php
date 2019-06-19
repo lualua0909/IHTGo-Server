@@ -450,7 +450,7 @@
     {!! $map['js'] !!}
     <script src="{{asset('admin')}}/plugins/select2/select2.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2"></script>
-    <script src="{!! asset('/admin/dist/js/jquery.number.min.js') !!}"></script>
+    <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
     <script>
         $( document ).ready(function() {

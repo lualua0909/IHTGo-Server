@@ -76,7 +76,7 @@
     <script src="{{asset('admin')}}/plugins/chartjs/Chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
     <script src="{{asset('admin')}}/plugins/daterangepicker/daterangepicker.js"></script>
-    <script src="{!! asset('/admin/dist/js/jquery.number.min.js') !!}"></script>
+    <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
     <script>
         $(function () {
             $('.price').number( true, 0 );

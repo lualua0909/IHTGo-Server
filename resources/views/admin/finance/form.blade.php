@@ -68,14 +68,14 @@
     <!-- /.content -->
 @endsection
 @section('style')
-    <link rel="stylesheet" href="{{ asset('admin') }}/plugins/select2/select2.min.css">
+    <link rel="stylesheet" href="{{ asset('public/admin') }}/plugins/select2/select2.min.css">
     <link rel="stylesheet" href="{{asset('admin')}}/plugins/datepicker/datepicker3.css">
 @endsection
 
 @section('script')
-    <script src="{{ asset('admin') }}/plugins/select2/select2.full.min.js"></script>
+    <script src="{{ asset('public/admin') }}/plugins/select2/select2.full.min.js"></script>
     <script src="{{asset('admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
-    <script src="{!! asset('/admin/dist/js/jquery.number.min.js') !!}"></script>
+    <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
     <script>
         $(function () {
             $('#payment, #total, #own').number( true, 0 );

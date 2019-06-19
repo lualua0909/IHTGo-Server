@@ -35,8 +35,8 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{ asset('admin') }}/plugins/select2/select2.min.css">
-    <link href="{{ asset('admin') }}/plugins/multi-select/css/multi-select.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('public/admin') }}/plugins/select2/select2.min.css">
+    <link href="{{ asset('public/admin') }}/plugins/multi-select/css/multi-select.css" rel="stylesheet">
     <style>
         .ms-container {
             width: 100%;
@@ -45,8 +45,8 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('admin') }}/plugins/select2/select2.full.min.js"></script>
-    <script src="{{ asset('admin') }}/plugins/multi-select/js/jquery.multi-select.js"></script>
+    <script src="{{ asset('public/admin') }}/plugins/select2/select2.full.min.js"></script>
+    <script src="{{ asset('public/admin') }}/plugins/multi-select/js/jquery.multi-select.js"></script>
     <script>
         $(function () {
             $('#optgroup').multiSelect({ selectableOptgroup: true });

@@ -10,10 +10,10 @@
     <title>Starter Template for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" href="{{ asset('admin') }}/map/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ asset('public/admin') }}/map/bootstrap.min.css">
 
     <!-- Custom styles for this template -->
-    <link href="{{ asset('admin') }}/map/starter-template.css" rel="stylesheet">
+    <link href="{{ asset('public/admin') }}/map/starter-template.css" rel="stylesheet">
     <style>
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
@@ -102,7 +102,7 @@
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
-    <script src="{{ asset('admin') }}/map/bootstrap.min.js"></script>
+    <script src="{{ asset('public/admin') }}/map/bootstrap.min.js"></script>
     <script>
         function initMap() {
             var locationRio = {lat: 16.051868, lng: 108.202757};

@@ -113,7 +113,7 @@
     {!! $map['js'] !!}
     <script src="{{asset('admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
-    <script src="{!! asset('/admin/dist/js/jquery.number.min.js') !!}"></script>
+    <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2"></script>
 
     <script>

@@ -4,7 +4,7 @@
     <title>Map Example - JSON Data</title>
     <meta charset="UTF-8">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="stylesheet" type="text/css" href="{{ asset('Store-Locator') }}/dist/assets/css/storelocator.css" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('publicStore-Locator') }}/dist/assets/css/storelocator.css" />
 </head>
 
 <body>
@@ -36,9 +36,9 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="{{ asset('Store-Locator') }}/dist/assets/js/libs/handlebars.min.js"></script>
+<script src="{{ asset('publicStore-Locator') }}/dist/assets/js/libs/handlebars.min.js"></script>
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyCoYHFhB9SbbUGXJ9jzhmSMihCJOOoQFyY"></script>
-<script src="{{ asset('Store-Locator') }}/dist/assets/js/plugins/storeLocator/jquery.storelocator.js"></script>
+<script src="{{ asset('publicStore-Locator') }}/dist/assets/js/plugins/storeLocator/jquery.storelocator.js"></script>
 <script>
     $(function() {
         $.ajaxSetup({

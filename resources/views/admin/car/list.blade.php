@@ -32,10 +32,10 @@
                     @foreach($listResult as $item)
                         <tr>
                             <td><a href="{{route('car.detail', $item->id)}}">{{ $item->manufacturer }}</a></td>
-                            <td> <span class="label {{$carTypeColor[$item->type]}}">{{ $carType[$item->type] }}</span></td>
+                            <td> <span class="label {{$carTypeColor[$item->type]}}">{{ isset($carType[$item->type]) ? $carType[$item->type] : '' }}</span></td>
                             <td>{{ $item->weight }}</td>
                             <td>{{ $item->license_plate }}</td>
-                            <td>{{ ($item->owner) ? $item->owner->user->name : __('label.company') }}</td>
+                            <td>{{ isset($item->owner) ? $item->owner->user->name : __('label.company') }}</td>
                             <td>{!! \App\Helpers\Util::showCreatedAt($item->created_at) !!}</td>
                             <td class="text-center">
                                 @can('edit-car')

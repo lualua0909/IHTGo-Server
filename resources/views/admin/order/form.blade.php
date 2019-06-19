@@ -195,7 +195,7 @@
 @section('script')
     <script src="{{asset('admin')}}/plugins/select2/select2.js"></script>
     <script src="{{asset('admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
-    <script src="{!! asset('/admin/dist/js/jquery.number.min.js') !!}"></script>
+    <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
     <script>
         $(function () {
             $('#sender_date, #receive_date').datepicker({

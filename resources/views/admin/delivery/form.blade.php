@@ -61,14 +61,14 @@
 @section('style')
     <link rel="stylesheet" href="{{asset('admin')}}/plugins/select2/select2.css">
     <link rel="stylesheet" href="{{asset('admin')}}/plugins/datepicker/datepicker3.css">
-    <link rel="stylesheet" href="{{ asset('admin') }}/plugins/iCheck/square/blue.css">
+    <link rel="stylesheet" href="{{ asset('public/admin') }}/plugins/iCheck/square/blue.css">
 
 @endsection
 
 @section('script')
     <script src="{{asset('admin')}}/plugins/select2/select2.js"></script>
     <script src="{{asset('admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
-    <script src="{{ asset('admin') }}/plugins/iCheck/icheck.min.js"></script>
+    <script src="{{ asset('public/admin') }}/plugins/iCheck/icheck.min.js"></script>
 
     <script>
         $( document ).ready(function() {

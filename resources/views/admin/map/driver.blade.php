@@ -32,7 +32,7 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" type="text/css" href="{{ asset('Store-Locator/dist/assets/css/storelocator.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('publicStore-Locator/dist/assets/css/storelocator.css') }}" />
     <style>
         .searchLocation {
             background-color: #808080;
@@ -46,9 +46,9 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('Store-Locator') }}/dist/assets/js/libs/handlebars.min.js"></script>
+    <script src="{{ asset('publicStore-Locator') }}/dist/assets/js/libs/handlebars.min.js"></script>
     <script src="//maps.google.com/maps/api/js?key=AIzaSyDiNhC5BRZeGaHoPvfAwZVW6G0EGkY-qvI"></script>
-    <script src="{{ asset('Store-Locator') }}/dist/assets/js/plugins/storeLocator/jquery.storelocator.js"></script>
+    <script src="{{ asset('publicStore-Locator') }}/dist/assets/js/plugins/storeLocator/jquery.storelocator.js"></script>
     <script>
         $(function() {
             $('#bh-sl-map-container').storeLocator({
