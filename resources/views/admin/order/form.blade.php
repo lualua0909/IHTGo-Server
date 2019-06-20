@@ -21,7 +21,7 @@
                                 <label>{{ __('label.customer') }} (*)</label>
                                 <select class="form-control select2" id="customer" required name="user_id"
                                         title="{{ __('label.customer') }}" style="width: 100%">
-                                    <option value="0"
+                                    <option
                                             selected>{{ __('label.please_choose_field') }}</option>
                                 </select>
                                 <span class="has-error">{{$errors->first('user_id')}}</span>
@@ -52,6 +52,11 @@
                                 <span class="has-error">{{$errors->first('note')}}</span>
                             </div>
                             <div class="form-group">
+                                <label>{{ __('label.take_money') }}</label>
+                                <input type="text" required id="take_money" value="{{(old('take_money')) ? old('take_money') : (($item) ? $item->take_money : '') }}" name="take_money" class="form-control" placeholder="{{ __('label.take_money') }}">
+                                <span class="has-error">{{$errors->first('take_money')}}</span>
+                            </div>
+                            <div class="form-group">
                                 <label>{{ __('label.payment_type') }} (*)</label>
                                 <select class="form-control select2" id="manager" name="payment_type"
                                         title="{{ __('label.payment_type') }}" style="width: 100%">
@@ -63,6 +68,19 @@
                                     @endforeach
                                 </select>
                                 <span class="has-error">{{$errors->first('payment_type')}}</span>
+                            </div>
+                            <div class="form-group">
+                                <label>{{ __('label.payer') }} (*)</label>
+                                <select class="form-control select2" id="payer" name="payer"
+                                        title="{{ __('label.payer') }}" style="width: 100%">
+                                    <option value="0"
+                                            selected>{{ __('label.please_choose_field') }}</option>
+                                    @foreach($listPayer as $pa => $payer)
+                                        <option {{ ((old('payer') && (old('payer') == $pa) || ($item && $item->payer == $pa)) ? 'selected' : '') }}
+                                                value="{{ $pa }}">{{ $payer }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="has-error">{{$errors->first('payer')}}</span>
                             </div>
                             <div class="form-group">
                                 <label>{{ __('label.type_car') }} (*)</label>
@@ -179,7 +197,14 @@
                                 <span class="has-error">{{$errors->first('receive_district_id')}}</span>
                             </div>
                         </div>
-
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label>
+                                    <input class="checkbox" type="checkbox" name="is_speed" value="1" />
+                                    @lang('label.speed')
+                                </label>
+                            </div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -188,13 +213,13 @@
     <!-- /.content -->
 @endsection
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/select2/select2.css">
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datepicker/datepicker3.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/select2/select2.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datepicker/datepicker3.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/select2/select2.js"></script>
-    <script src="{{asset('admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/select2/select2.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
     <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
     <script>
         $(function () {
@@ -203,15 +228,15 @@
                 format:'dd/mm/yyyy'
             });
 
-            $('#total_price').number( true, 0 );
+            $('#total_price, #take_money').number( true, 0 );
 
             $('.select2').select2();
 
             $('#sender_province_id').on('change', function () {
                 var cId = $('#sender_province_id').val();
                 $.get("{{route('order.district')}}" + '/' + cId , function(data, status){
-                    //alert("Data: " + data + "\nStatus: " + status);
                     if (status == 'success'){
+                        $("#sender_district_id").empty();
                         $("#sender_district_id").select2({
                             data: data.district
                         })
@@ -221,8 +246,8 @@
             $('#receive_province_id').on('change', function () {
                 var cId = $('#receive_province_id').val();
                 $.get("{{route('order.district')}}" + '/' + cId , function(data, status){
-                    //alert("Data: " + data + "\nStatus: " + status);
                     if (status == 'success'){
+                        $("#receive_district_id").empty();
                         $("#receive_district_id").select2({
                             data: data.district
                         })

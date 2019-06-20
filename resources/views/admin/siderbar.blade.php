@@ -27,6 +27,14 @@
                 </a>
             </li>
         @endcan
+        @can('data')
+            <li class="{{ ($str == 'province') ? 'active' : '' }}">
+                <a href="{{ route('province.index') }}">
+                    <i class="fa fa-fw fa-cubes"></i>
+                    <span>{{ __('label.province') }}</span>
+                </a>
+            </li>
+        @endcan
         <li class="header">{{ __('label.main_navigation') }}</li>
         @can('dashboard')
             <li class="{{ ($str == 'dashboard') ? 'active' : '' }}">
@@ -68,6 +76,22 @@
                 </a>
             </li>
         @endcan
+        @can('view-company')
+            <li class="{{ ($str == 'company') ? 'active' : '' }}">
+                <a href="{{ route('company.list') }}">
+                    <i class="fa fa-fw fa-building"></i>
+                    <span>{{ __('label.company') }}</span>
+                </a>
+            </li>
+        @endcan
+        {{--@can('view-collection')--}}
+            {{--<li class="{{ ($str == 'collection') ? 'active' : '' }}">--}}
+                {{--<a href="{{ route('collection.list') }}">--}}
+                    {{--<i class="fa fa-fw fa-street-view"></i>--}}
+                    {{--<span>{{ __('label.collection') }}</span>--}}
+                {{--</a>--}}
+            {{--</li>--}}
+        {{--@endcan--}}
         @can('view-customer')
             <li class="{{ ($str == 'customer') ? 'active' : '' }}">
                 <a href="{{ route('customer.list') }}">
@@ -76,14 +100,14 @@
                 </a>
             </li>
         @endcan
-        @can('view-dept')
-            <li class="{{ ($str == 'dept') ? 'active' : '' }}">
-                <a href="{{ route('dept.list') }}">
-                    <i class="fa fa-heartbeat"></i>
-                    <span>{{ __('label.dept') }}</span>
-                </a>
-            </li>
-        @endcan
+        {{--@can('view-dept')--}}
+            {{--<li class="{{ ($str == 'dept') ? 'active' : '' }}">--}}
+                {{--<a href="{{ route('dept.list') }}">--}}
+                    {{--<i class="fa fa-euro"></i>--}}
+                    {{--<span>{{ __('label.dept') }}</span>--}}
+                {{--</a>--}}
+            {{--</li>--}}
+        {{--@endcan--}}
         @can('view-evaluate')
             <li class="{{ ($str == 'evaluate') ? 'active' : '' }}">
                 <a href="{{ route('evaluate.list') }}">
@@ -103,7 +127,7 @@
         @can('view-delivery')
             <li class="{{ ($str == 'delivery') ? 'active' : '' }}">
                 <a href="{{ route('delivery.list') }}">
-                    <i class="fa fa-fw fa-shopping-cart"></i>
+                    <i class="fa fa-fw fa-truck"></i>
                     <span>{{ __('label.delivery') }}</span>
                 </a>
             </li>
@@ -119,28 +143,28 @@
         @can('statistic')
             <li class="{{ ($str == 'statistic') ? 'active' : '' }}">
                 <a href="{{ route('statistic.index') }}">
-                    <i class="fa fa-dashboard"></i> <span>{{ __('label.statistic') }}</span>
+                    <i class="fa fa-bar-chart"></i> <span>{{ __('label.statistic') }}</span>
                 </a>
             </li>
         @endcan
-        @can('statistic')
-            <li class="{{ ($str == 'statistic') ? 'active' : '' }}">
-                <a href="{{ route('statistic.index') }}">
-                    <i class="fa fa-dashboard"></i> <span>{{ __('label.statistic') }}</span>
-                </a>
-            </li>
-        @endcan
-        @can('view-finance')
+        @can('view-price')
             <li class="{{ ($str == 'price') ? 'active' : '' }}">
                 <a href="{{ route('price.list') }}">
-                    <i class="fa fa-dashboard"></i> <span>{{ __('label.management_price') }}</span>
+                    <i class="fa fa-money"></i> <span>{{ __('label.management_price') }}</span>
                 </a>
             </li>
         @endcan
         @can('view-chat')
             <li class="{{ ($str == 'chat') ? 'active' : '' }}">
                 <a href="{{ route('chat.list') }}">
-                    <i class="fa fa-dashboard"></i> <span>{{ __('label.chat') }}</span>
+                    <i class="fa fa-wechat "></i> <span>{{ __('label.chat') }}</span>
+                </a>
+            </li>
+        @endcan
+        @can('view-log')
+            <li class="{{ ($str == 'log') ? 'active' : '' }}">
+                <a href="{{ route('log.list') }}">
+                    <i class="fa fa-tripadvisor"></i> <span>{{ __('label.log') }}</span>
                 </a>
             </li>
         @endcan

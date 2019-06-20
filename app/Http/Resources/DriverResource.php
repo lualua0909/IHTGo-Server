@@ -17,6 +17,7 @@ class DriverResource extends BaseResource
     {
         return [
             'order_id' => $this->id,
+            'name' => $this->oName,
             'code' => $this->code,
             'car_id' => $this->cId,
             'car_name' => $this->cName,
@@ -25,11 +26,56 @@ class DriverResource extends BaseResource
             'total_price' => $this->total_price,
             'car_type' => $this->car_type,
             'car_option' => $this->car_option,
+            'chatkit_id' => $this->chatkit_id,
             'typeCarName' => $this->handelTypeCarName($this->car_type),
             'typeOptionName' => $this->handelTypeOptionName($this->car_option),
             'statusName' => $this->handelStatusName($this->status),
-            'created_at' => $this->convertDateToFormat('Y-m-d H:i:s', $this->created_at)
+            'created_at' => $this->convertDateToFormat('Y-m-d H:i:s', $this->created_at),
+            'take_money' => $this->take_money,
+            'payer' => $this->payer,
+            'payerName' => $this->handelPayerName($this->payer),
+            'speed' => $this->is_speed,
+            'speedName' => $this->handelSpeed($this->is_speed),
         ];
+    }
+
+
+    /**
+     * @param $payer
+     * @return array|null|string
+     */
+    private function handelPayerName($payer)
+    {
+        switch ($payer){
+            case Business::PAYER_RECEIVE:
+                return __('label.payer_receive');
+                break;
+            case Business::PAYER_SENDER:
+                return __('label.payer_sender');
+                break;
+            default:
+                return __('label.undefined');
+                break;
+        }
+    }
+
+    /**
+     * @param $speed
+     * @return array|null|string
+     */
+    private function handelSpeed($speed)
+    {
+        switch ($speed){
+            case Business::ORDER_UN_SPEED:
+                return __('label.un_speed');
+                break;
+            case Business::ORDER_SPEED:
+                return __('label.speed');
+                break;
+            default:
+                return __('label.undefined');
+                break;
+        }
     }
 
 

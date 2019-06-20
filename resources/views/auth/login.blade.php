@@ -56,12 +56,12 @@
             </span>
                 @endif
             </div>
-            <div class="form-group">
-                <select class="form-control lang" required="required">
-                    <option value="vn" {{ (\Illuminate\Support\Facades\App::getLocale() == 'vn') ? 'selected' : '' }}>Việt Nam (VN)</option>
-                    <option value="en" {{ (\Illuminate\Support\Facades\App::getLocale() == 'en') ? 'selected' : '' }}>English (EN)</option>
-                </select>
-            </div>
+            {{--<div class="form-group">--}}
+                {{--<select class="form-control lang" required="required">--}}
+                    {{--<option value="vn" {{ (\Illuminate\Support\Facades\App::getLocale() == 'vn') ? 'selected' : '' }}>Việt Nam (VN)</option>--}}
+                    {{--<option value="en" {{ (\Illuminate\Support\Facades\App::getLocale() == 'en') ? 'selected' : '' }}>English (EN)</option>--}}
+                {{--</select>--}}
+            {{--</div>--}}
             <div class="row">
                 <div class="col-xs-8">
                     <div class="checkbox icheck">
@@ -79,13 +79,11 @@
         </form>
         <!-- /.social-auth-links -->
 
-        <a href="{{ route('password.request') }}">{{ __('label.i_forgot_my_password') }}</a><br><br>
+       {{--  <a href="{{ route('password.request') }}">{{ __('label.i_forgot_my_password') }}</a><br><br> --}}
         <div>
-            <small>Copyright © 2018 - 2019 ThaiLe. All rights reserved. </small>
+            <small>Copyright © 2018 - 2019 IHT GO. All rights reserved. </small>
             <br>
-            <small>ThaiLe Resource Information System - 2018 </small>
-            <br>
-            <small>Build: 18.00.00</small>
+            <small>IHT GO Resource Information System - 2018 </small>
         </div>
 
     </div>

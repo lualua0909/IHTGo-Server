@@ -50,6 +50,11 @@ class DataController extends ApiController
         dd($messageToDevice->sendMsgToDevice($token));
     }
 
+    /**
+     * @param Request $request
+     * @param Device $device
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function device(Request $request, Device $device)
     {
         $userId = $request->user()->id;

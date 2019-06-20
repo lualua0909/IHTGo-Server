@@ -11,7 +11,7 @@
                         <table class="table table-detail">
                             <tr>
                                 <th>{{ __('label.customer_name') }}</th>
-                                <td><a href="{{route('customer.detail', optional($item->customer)->id)}}">{{ optional($item->customer)->name }}</a></td>
+                                <td><a href="{{route('customer.detail', optional(optional($item->customer)->customer)->id)}}">{{ optional($item->customer)->name }}</a></td>
                             </tr>
                             <tr>
                                 <th>{{ __('label.email') }}</th>
@@ -38,19 +38,19 @@
                         <table class="table table-detail">
                             <tr>
                                 <th style="width: 40%">{{ __('label.sender_name') }}</th>
-                                <td>{{ $item->detail->sender_name }}</td>
+                                <td>{{ optional($item->detail)->sender_name }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 40%">{{ __('label.sender_phone') }}</th>
-                                <td>{{ $item->detail->sender_phone }}</td>
+                                <td>{{ optional($item->detail)->sender_phone }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 40%">{{ __('label.sender_address') }}</th>
-                                <td>{{ $item->detail->sender_address . ', ' . optional($item->detail->districtSender)->name . ', ' . optional($item->detail->provinceSender)->name }}</td>
+                                <td>{{ optional($item->detail)->sender_address . ', ' . optional(optional($item->detail)->districtSender)->name . ', ' . optional(optional($item->detail)->provinceSender)->name }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 40%">{{ __('label.sender_date') }}</th>
-                                <td>{{ $item->detail->sender_date }}</td>
+                                <td>{{ optional($item->detail)->sender_date }}</td>
                             </tr>
                         </table>
                     </div>
@@ -65,19 +65,19 @@
                         <table class="table table-detail">
                             <tr>
                                 <th style="width: 40%">{{ __('label.receive_name') }}</th>
-                                <td>{{ $item->detail->receive_name }}</td>
+                                <td>{{ optional($item->detail)->receive_name }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 40%">{{ __('label.receive_phone') }}</th>
-                                <td>{{ $item->detail->receive_phone }}</td>
+                                <td>{{ optional($item->detail)->receive_phone }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 40%">{{ __('label.receive_address') }}</th>
-                                <td>{{ $item->detail->receive_address . ', ' . optional($item->detail->districtReceive)->name . ', ' . optional($item->detail->provinceReceive)->name }}</td>
+                                <td>{{ optional($item->detail)->receive_address . ', ' . optional(optional($item->detail)->districtReceive)->name . ', ' . optional(optional($item->detail)->provinceReceive)->name }}</td>
                             </tr>
                             <tr>
                                 <th style="width: 40%">{{ __('label.receive_date') }}</th>
-                                <td>{{ $item->detail->receive_date }}</td>
+                                <td>{{ optional($item->detail)->receive_date }}</td>
                             </tr>
                         </table>
                     </div>
@@ -124,10 +124,18 @@
                                 <td>{{ $orderType[$item->car_type] }}</td>
                             </tr>
                             <tr>
+                                <th>{{ __('label.payer') }}</th>
+                                <td>{{ $listPayer[$item->payer] }}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ __('label.speed') }}</th>
+                                <td>{{ $listSpeed[$item->is_speed] }}</td>
+                            </tr>
+                            <tr>
                                 <th>{{ __('label.warehouse') }}</th>
                                 <td>
                                     @if(optional($item->detail)->warehouse)
-                                        {{optional($item->detail)->warehouse->code}}
+                                        {{optional(optional($item->detail)->warehouse)->code}}
                                         @else
                                         <button class="btn pull-right btn-warning" id="create_warehouse">{{ __('label.warehouse') }}</button>
                                     @endif
@@ -153,16 +161,16 @@
                             </tr>
                             <tr>
                                 <th>{{ __('label.weight') }}</th>
-                                <td>{{$item->detail->weight}}</td>
+                                <td>{{optional($item->detail)->weight}}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ __('label.take_money') }}</th>
+                                <td>{{optional($item->detail)->take_money}}</td>
                             </tr>
                             <tr>
                                 <th>{{ __('label.payment_type') }}</th>
                                 <td><button class="{{$orderMethodColor[$item->payment_type]}}">{{ $orderMethod[$item->payment_type] }}</button></td>
                             </tr>
-                            {{--<tr>--}}
-                                {{--<th>{{ __('label.payment') }}</th>--}}
-                                {{--<td><button class="{{$orderPaymentColor[$item->is_payment]}}">{{ $orderPayment[$item->is_payment] }}</button></td>--}}
-                            {{--</tr>--}}
                             <tr>
                                 <th>{{ __('label.payment') }}</th>
                                 <td>
@@ -188,6 +196,32 @@
                                     </div>
                                     </form>
                                         @endif
+                                </td>
+
+                            </tr>
+                            <tr>
+                            <th>{{ __('label.note') }}</th>
+                            <td>{{optional($item->detail)->note}}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ __('label.driver_note') }}</th>
+                                <td>{{optional($item->detail)->driver_note}}</td>
+                            </tr>
+                            <tr>
+                                <th>{{ __('label.admin_note') }}</th>
+                                <td>
+                                    @if(optional($item->detail)->admin_note)
+                                        {{ optional($item->detail)->admin_note }}
+                                    @else
+                                        <form action="{{route('order.admin_note', $item->id)}}" method="post">
+                                            @csrf
+                                            <div class="form-group">
+                                                <input type="text" required id="admin_note" value="{{(old('admin_note')) ? old('admin_note') : (($item) ? $item->admin_note : '') }}" name="admin_note" class="form-control" placeholder="{{ __('label.admin_note') }}">
+                                                <span class="has-error">{{$errors->first('admin_note')}}</span>
+                                            </div>
+                                            <button class="btn pull-left btn-success">@lang('label.submit')</button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         </table>
@@ -219,8 +253,8 @@
                                 <td><a href="{{route('car.detail', $item->delivery->car->id)}}">{{ $item->delivery->car->name . ' (' . $item->delivery->car->number . ')' }}</a></td>
                             </tr>
                             <tr>
-                                <th>{{ __('label.note') }}</th>
-                                <td>{{ $item->detail->driver_note }}</td>
+                                <th>{{ __('label.driver_note') }}</th>
+                                <td>{{ optional($item->detail)->driver_note }}</td>
                             </tr>
                             <tr>
                                 <th>{{ __('label.delete') }}</th>
@@ -434,7 +468,7 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/select2/select2.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/select2/select2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.css">
     <style type="text/css">
         table.table-detail th {
@@ -448,8 +482,8 @@
 
 @section('script')
     {!! $map['js'] !!}
-    <script src="{{asset('admin')}}/plugins/select2/select2.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2"></script>
+    <script src="{{asset('public/admin')}}/plugins/select2/select2.js"></script>
+    <script src="{!! asset('public/js/sweetalert2.js') !!}"></script>
     <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
     <script>
@@ -543,7 +577,7 @@
                             return {
                                 results: $.map(data, function (item) {
                                     return {
-                                        text: item.name + ' (' + item.number + ')',
+                                        text: item.name + ' (' + item.number + ' - ' + item.weight + ')',
                                         id: item.id
                                     }
                                 })
@@ -595,7 +629,7 @@
                     confirmButtonText = '{{ __('label.change_status') }}';
                 }
 
-                swal({
+                Swal.fire({
                     title: '{{ __('label.are_you_sure') }}',
                     text: '{{ __('label.change_status') }}',
                     type: 'warning',
@@ -616,7 +650,7 @@
                                 if(response.code == 200){
                                     window.location.reload(true);
                                 }else{
-                                    swal(
+                                    Swal.fire(
                                         '{{ __('label.failed') }}',
                                         '',
                                         'error'
@@ -636,7 +670,7 @@
                                 if(response.code == 200){
                                     window.location.reload(true);
                                 }else{
-                                    swal(
+                                    Swal.fire(
                                         '{{ __('label.failed') }}',
                                         '',
                                         'error'

@@ -23,7 +23,7 @@ class HttpCode
 
     // Common
     const CODE_ERROR_SYSTEM = -1;
-    const ITEM_NOT_EXISTS = 1000;
+    const ITEM_NOT_EXISTS = 1010;
     const CREATE_ITEM_ERROR = 1001;
     const CODE_UPDATE_ERROR = 1002;
     const CODE_VALIDATE_IN_VALID = 1003;

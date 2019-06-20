@@ -40,8 +40,12 @@ class DriverController extends Controller
     public function getList()
     {
         $title = __('label.driver');
-        $listResult = $this->repository->getAll();
-        return view('admin.driver.list', compact('listResult', 'title'));
+        $listResult = $this->repository->getAllWithTrash();
+        $driverBaned = array(
+            Business::USER_BANED => __('label.baned'),
+            Business::USER_UN_BANED => __('label.un_baned'),
+        );
+        return view('admin.driver.list', compact('listResult', 'title', 'driverBaned'));
     }
 
     /**
@@ -66,7 +70,10 @@ class DriverController extends Controller
     public function store(DriverRequest $request, UserRepositoryContract $userRepositoryContract)
     {
         $dataStore = $request->only('experience', 'identification', 'warehouse_id');
-        $dataStore['date'] = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
+        if ($request->date) {
+            $dataStore['date'] = Carbon::createFromFormat('d/m/Y', $request->date)->format('Y-m-d');
+        }
+        
         $userID = $userRepositoryContract->storeUser($request);
         if ($userID){
             $dataStore['user_id'] = $userID;
@@ -138,11 +145,11 @@ class DriverController extends Controller
     /**
      * @param $id
      * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|void
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function detail($id, Request $request)
     {
-        $item = $this->repository->find($id);
+        $item = $this->repository->findWithTrash($id);
         if ($item){
             //dd(int($item->rateDriver($item->id)));
             $title = __('label.driver_detail');
@@ -197,7 +204,18 @@ class DriverController extends Controller
 
             $map = app('map')->create_map();
 
-            return view('admin.driver.detail', compact('userBaned', 'item', 'map', 'title', 'genderType', 'listHistory', 'userStatus', 'orderStatusColor', 'orderStatus', 'orderType', 'orderTypeColor'));
+            return view('admin.driver.detail', compact('userBaned',
+                'item',
+                'map',
+                'title',
+                'genderType',
+                'listHistory',
+                'userStatus',
+                'orderStatusColor',
+                'orderStatus',
+                'orderType',
+                'orderTypeColor'
+            ));
         }
         return abort(404);
     }

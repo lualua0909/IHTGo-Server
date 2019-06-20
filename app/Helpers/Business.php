@@ -16,11 +16,22 @@ class Business
     const USER_ACTIVE = 1;
     const USER_UN_ACTIVE = 0;
 
+    const USER_SUPPORT_DRIVER = 1;
+    const USER_SUPPORT_CUSTOMER = 2;
+
     const PUBLISH = 1;
     const UN_PUBLISH = 0;
 
+    const ORDER_SPEED = 1;
+    const ORDER_UN_SPEED = 0;
+    const ORDER_SPEED_PAYMENT = 2;
+
     const USER_BANED = 1;
     const USER_UN_BANED = 0;
+
+    const COLLECTION_DEPT_WAITING = 1;
+    const COLLECTION_DEPT_DONE = 2;
+    const COLLECTION_DEPT_FAILED = 3;
 
     const USER_LEVEL_ADMIN = 1;
     const USER_LEVEL_EMPLOYEE = 2;
@@ -57,9 +68,16 @@ class Business
     const GENDER_MALE = 1;
     const GENDER_FEMALE = 2;
 
+    const PAYER_RECEIVE = 1;
+    const PAYER_SENDER = 2;
+
     // Finance
     const FINANCE_TYPE_IN = 1;
     const FINANCE_TYPE_OUT = 2;
+
+    // Notification
+    const NOTIFICATION_TYPE_CHAT = 1;
+    const NOTIFICATION_TYPE_ORDER = 2;
 
     const ORDER_STATUS_WAITING = 1;
     const ORDER_STATUS_NO_DELIVERY = 2;
@@ -68,8 +86,10 @@ class Business
     const ORDER_STATUS_CUSTOMER_CANCEL = 5;
     const ORDER_STATUS_IHT_CANCEL = 6;
     const ORDER_STATUS_FAIL = 7;
+    const ORDER_STATUS_GET = 8;
     const ORDER_STATUS_PAYMENT = 1;
     const ORDER_STATUS_NO_PAYMENT = 0;
+    const ORDER_STATUS_PAYMENT_DEPT = 2;
 
     // Order Delivery
     const ORDER_DELIVERY_GIAO = 1;
@@ -98,15 +118,19 @@ class Business
 
     // msg socket
     const SOCKET_NEW_ORDER = 'Đơn hàng mới. <br /> Khách hàng %s vừa đặt đơn hàng <a target="_blank" href="%s">%s</a>';
+    const SOCKET_NEW_CUSTOMER = 'Khách hàng mới. <br /> %s vừa đăng kí tài khoản <a target="_blank" href="%s">%s</a>';
     const SOCKET_CANCEL_ORDER = 'Hủy đơn hàng. <br /> Khách hàng %s vừa hủy đơn hàng <a target="_blank" href="%s">%s</a>';
-    const SMS_ACTIVATED_ACCOUNT = 'Vui long nhap ma sau de kich hoat tai khoan <%1$s> . Tin nhan duoc gui luc %2$s. Tks!';
-    const SMS_RESET_PASSWORD = 'Mat khau cua ban vua thay doi thanh <%1$s> . Tin nhan duoc gui luc %2$s. Tks!';
+    const SMS_ACTIVATED_ACCOUNT = 'Vui long nhap ma sau de kich hoat tai khoan <%1$s> . Tin nhan duoc gui tu %2$s. Tks!';
+    const SMS_RESET_PASSWORD = 'Mat khau cua ban vua thay doi thanh <%1$s> . Tin nhan duoc gui tu %2$s';
 
     //FCM
     const FCM_CUSTOMER_STATUS = 'Đơn hàng <%1$s> của bạn đang được xử lý <%2$s>';
     const FCM_DRIVER_ORDER = 'Bạn vừa được phân công phụ trach đơn hàng <%1$s>';
     const FCM_ORDER_TITLE = 'Thông báo đơn hàng';
+    const FCM_DEPT_DRIVER = 'Bạn vừa được phân công phụ trach thu tien ho <%1$s>';
 
     // google link get info start and end
     const GOOGLE_URL_GET_INFO = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins=%1$s&destinations=%2$s';
+
+    const LOG_FORMAT = '[dd-mm-Yyyy H:i:s][LOG-TYPE][CURRENT-USER][SCREEN-NAME][ACTION][MESSAGE]';
 }

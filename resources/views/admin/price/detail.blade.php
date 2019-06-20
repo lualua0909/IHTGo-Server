@@ -11,22 +11,16 @@
                         <table class="table table-detail">
                             <tr>
                                 <th>{{ __('label.type_car') }}</th>
-                                <td><button class="btn btn-block {{$listTypeCarColor[$item->type_car]}}">{{ $listTypeCar[$item->type_car] }}</button></td>
+                                <td>{{ $listTypeCar[$item->type_car] }}</td>
                             </tr>
                             <tr>
                                 <th>{{ __('label.th') }}</th>
                                 <td>
                                     @if($item->type)
-                                        <button class="btn btn-block {{$listTypeColor[$item->type]}}">{{ $listType[$item->type] }}</button>
+                                        <button class="btn btn-block {{$listTypeColor[$item->type]}}">{{ $listType[$item->type] }} @if($item->type == \App\Helpers\Business::PRICE_BY_TH1) {{optional($item->fromProvince)->name}} @endif</button>
                                     @endif
                                 </td>
                             </tr>
-                            {{--@if($item->option)--}}
-                            {{--<tr>--}}
-                                {{--<th>{{ __('label.type') }}</th>--}}
-                                {{--<td><button class="btn btn-block {{$listOptionColor[$item->option]}}">{{ $listOption[$item->option] }}</button></td>--}}
-                            {{--</tr>--}}
-                            {{--@endif--}}
                             <tr>
                                 <th>@lang('label.min')</th>
                                 <td>{{$item->min}}</td>
@@ -39,7 +33,7 @@
                             <tr>
                                 <th>@lang('label.address')</th>
                                 <td>
-                                   Từ <strong>{{$item->province->name}}</strong> Đến <strong>{{$item->district->name}}</strong>
+                                   Từ <strong>{{$item->fromProvince->name}}</strong> Đến <strong>{{$item->toProvince->name}}</strong>
                                 </td>
                             </tr>
                             @endif

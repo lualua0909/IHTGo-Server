@@ -60,8 +60,8 @@ class CustomerRepository extends EloquentRepository implements CustomerRepositor
         $condition = $this->setDataFilter($request);
 
         $result = DB::table('customers as c')
-            ->select('u.email', 'u.name', 'u.phone', 'c.type', 'c.address', 'c.created_at', 'c.id', 'u.chatkit_id')
-            ->leftJoin('users as u', 'u.id', '=', 'c.user_id');
+            ->select('u.email', 'u.name', 'u.phone', 'c.type', 'c.address', 'c.created_at', 'c.id', 'u.activated', 'u.activated_phone')
+            ->join('users as u', 'u.id', '=', 'c.user_id');
         if ($condition['order']['column']){
             $result->orderBy($condition['order']['column'], $condition['order']['dir']);
         }
@@ -85,29 +85,16 @@ class CustomerRepository extends EloquentRepository implements CustomerRepositor
         return $data;
     }
 
-    public function getDebtCustomer($id, $start, $end)
-    {
-        $result = DB::table('customers as c')
-            ->join('orders as o', 'c.id', '=', 'o.user_id')
-            ->join('deliveries as d', 'o.id', '=', 'd.order_id')
-            ->join('drivers as dr', 'dr.id', '=', 'd.driver_id')
-            ->join('warehouses as w', 'w.id', '=', 'dr.warehouse_id')
-            ->join('users as du', 'du.id', '=', 'dr.user_id')
-            ->join('users as wu', 'wu.id', '=', 'w.manager_id')
-            ->join('users as cu', 'cu.id', '=', 'c.user_id')
-            ->select('w.code as npp_code', 'wu.name as npp_name', 'du.code as nvgh_code', 'du.name as nvgh_name',
-                'c.code as customer_code', 'cu.name as customer_name', 'c.address', 'o.created_at', 'o.status', 'o.code', 'o.total_price')
-            ->whereBetween('o.created_at', [$start, $end])
-            //->where('o.status', Business::ORDER_STATUS_DONE_DELIVERY)
-            ->get();
-        return $result;
-    }
-
+    /**
+     * @param Request $request
+     * @return \Illuminate\Support\Collection|mixed
+     */
     public function ajaxSelect2(Request $request)
     {
-        $keyword = $request->keyword;
+        $keyword = $request->searchtext;
         $result = DB::table('users as u')
             ->select('u.id', 'u.name', 'u.phone')
+            ->where(['deleted_at' => null])
             ->where(['u.level' => Business::USER_LEVEL_CUSTOMER]);
         if ($keyword){
             $result->whereRaw("(u.name like'%$keyword%' OR u.phone like'%$keyword%')");

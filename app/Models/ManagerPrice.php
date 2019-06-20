@@ -42,4 +42,14 @@ class ManagerPrice extends Model
     {
         return $this->belongsTo(Province::class, 'from', 'province_id');
     }
+
+    public function fromProvince()
+    {
+        return $this->belongsTo(Province::class, 'from', 'province_id');
+    }
+
+    public function toProvince()
+    {
+        return $this->belongsTo(Province::class, 'to', 'province_id');
+    }
 }

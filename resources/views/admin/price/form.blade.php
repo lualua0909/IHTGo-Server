@@ -32,14 +32,14 @@
                             <span class="has-error">{{$errors->first('type_car')}}</span>
                         </div>
                         @endif
-                        @if($listDistrict)
+                        @if($listProvince)
                         <div class="form-group">
                             <label>{{ __('label.district') }} (*)</label>
                             <div class="form-group">
                                 <select class="form-control" id="to" name="to"
-                                        title="{{ __('label.district') }}">
+                                        title="{{ __('label.province') }}">
                                     <option disabled selected value>{{ __('label.please_choose_field') }}</option>
-                                    @foreach($listDistrict as $k => $district)
+                                    @foreach($listProvince as $k => $district)
                                         <option {{ ((old('to') && (old('to') == $district->id) || ($item && $item->to == $district->id)) ? 'selected' : '') }}
                                                 value="{{ $district->id }}">{{ $district->name }}</option>
                                     @endforeach

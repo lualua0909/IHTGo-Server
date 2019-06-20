@@ -67,6 +67,10 @@ return [
     'gender' => 'Giới tính',
     'birthday' => 'Ngày sinh',
     'address' => 'Địa chỉ',
+    'support' => 'Hỗ Trợ',
+    'support_driver' => 'Chat Tài Xế',
+    'support_customer' => 'Chat Khách Hàng',
+    'log' => 'Logs',
 
     // Common
     'are_you_sure'               => 'Bạn Chắc Chắn ?',
@@ -75,6 +79,7 @@ return [
     'delete' => 'Xoá',
     'failed' => 'Thất bại',
     'cancel' => 'Hủy',
+    'confirm_delete' => 'Bạn Chắc Chắn Xoá?',
 
     // datatable
     'lengthMenu' => 'Hiển thị _MENU_ kết quả trong 1 trang',
@@ -143,6 +148,7 @@ return [
     'service' => 'Dịch Vụ',
     'please_choose_field' => 'Vui lòng chọn',
     'stt' => 'STT',
+    'province' => 'Tỉnh - Thành Phố',
 
     // Evaluate
     'evaluate' => 'Quản lý đánh giá',
@@ -164,6 +170,7 @@ return [
     'being_delivery' => 'Đang giao',
     'customer_cancel' => 'Khách hủy',
     'iht_cancel' => 'IHT hủy',
+    'iht_failed' => 'Lỗi',
     'total_price' => 'Tổng tiền',
     'order_name' => 'Tên đơn hàng',
     'customer_name' => 'Tên khách hàng',
@@ -205,21 +212,27 @@ return [
     'sender_district' => 'Quận - Huyện',
     'receive_province' => 'Tỉnh - Thành Phố',
     'receive_district' => 'Quận - Huyện',
+    'payer' => 'Người Thanh Toán',
+    'payer_receive' => 'Người Nhận',
+    'payer_sender' => 'Người Gửi',
+    'speed' => 'Giao Hoả Tốc',
+    'un_speed' => 'Giao Bình Thường',
 
     //delivery
     'delivery' => 'Giao Hàng',
     'dept' => 'Công Nợ',
+    'tax' => 'Mã số thuế',
 
     // Setting
     'setting' => 'Cài đặt',
     'km' => 'KM',
     'size' => 'Kích thước',
-    'management_price' => 'Quản lý bản giá',
+    'management_price' => 'Quản lý bảng giá',
     'value' => 'Giá',
     'th' => 'Trường hợp',
-    'th1' => 'GIAO HÀNG TRONG NGÀY NỘI TỈNH BÌNH DƯƠNG',
-    'th2' => 'GIAO CHỨNG TỪ TRONG NGÀY TỪ TP.HCM - BÌNH DƯƠNG VÀ NGƯỢC LẠI',
-    'th3' => 'GIAO HÀNG HỎA TỐC THEO GIỜ',
+    'th1' => 'GIAO HÀNG NỘI TỈNH',
+    'th2' => 'GIAO CHỨNG TỪ',
+    'th3' => 'GIAO HÀNG NGOẠI TỈNH',
     'min' => 'Giá trị nhỏ nhất',
     'min_value' => 'Giá tiền nhỏ nhất',
     'increase' => 'Giá trị tăng',
@@ -235,6 +248,7 @@ return [
     'advance' => 'Nâng cao',
     'truck' => 'Xe tải',
     'address_receive' => 'Địa Chỉ Nhận',
+    'address_sender' => 'Địa Chỉ Gửi',
     'address_payment' => 'Thanh Toán Cho Địa Chỉ',
     'time_sende' => 'Thời Gian Nhận',
     'time_receive' => 'Thời Gian Giao',
@@ -261,12 +275,16 @@ return [
     'date' => 'Ngày',
     'finance_edit' => 'Chỉnh sửa tài chính',
     'finance_create' => 'Thêm tài chính',
+    'money' => 'Số Tiền',
 
     // Statistic
     'statistic' => 'Thống kế',
 
     //chat
     'chat' => 'Chat',
+    'take_money' => 'Thu Hộ',
+    'driver_note' => 'Tài xế ghi chú',
+    'admin_note' => 'Admin ghi chú',
 
     //api
     'password_does_not_match' => 'Mật khẩu cũ không chinh xac',

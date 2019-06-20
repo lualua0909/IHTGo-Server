@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Permission\Permission;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -31,13 +32,12 @@ class AuthServiceProvider extends ServiceProvider
             }
         });
 
-
-//        if (!$this->app->runningInConsole()){
-//            foreach (Permission\Permission::select('key')->get() as $permission){
-//                Gate::define($permission->key, function ($user) use ($permission){
-//                    return  $user->hasFilePermission($permission->key, $user->id);
-//                });
-//            }
-//        }
+        if (!$this->app->runningInConsole()){
+            foreach (Permission::select('key')->get() as $permission){
+                Gate::define($permission->key, function ($user) use ($permission){
+                    return  $user->hasFilePermission($permission->key, $user->id);
+                });
+            }
+        }
     }
 }

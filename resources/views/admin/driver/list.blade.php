@@ -8,7 +8,7 @@
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">{{ $title }}</h3>
-                @can('create-car')
+                @can('create-driver')
                     <div class="box-tools pull-right">
                         <a href="{{route('driver.add')}}" class="btn btn-success btn-sm">
                             <i class="fa fa-plus"></i> {{ __('label.add_new') }}</a>
@@ -16,7 +16,7 @@
                 @endcan
             </div>
             <div class="box-body">
-                <table id="example1" class="table table-bordered table-striped">
+                <table id="itemTable" class="table table-bordered table-striped">
                     <thead>
                     <tr>
                         <th>{{ __('label.name') }}</th>
@@ -24,19 +24,21 @@
                         <th>{{ __('label.experience') }}</th>
                         <th>{{ __('label.driver_date') }}</th>
                         <th>{{ __('label.current_address') }}</th>
-                        <th>{{__('label.created')}}</th>
+                        <th>{{__('label.status')}}</th>
                         <th class="text-center">{{ __('label.action') }}</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($listResult as $item)
                         <tr>
-                            <td><a href="{{route('driver.detail', $item->id)}}">{{ $item->user->name }}</a></td>
+                            <td><a href="{{route('driver.detail', $item->id)}}">{{ optional($item->user)->name }}</a></td>
                             <td>{{ $item->identification }}</td>
                             <td>{{ $item->experience }}</td>
                             <td>{{ ($item->date) ? \Carbon\Carbon::createFromFormat('Y-m-d', $item->date)->format('d/m/Y') : null }}</td>
-                            <td>{{ $item->current_address }}</td>
-                            <td>{!! \App\Helpers\Util::showCreatedAt($item->created_at) !!}</td>
+                            <td>{{ $item->address }}</td>
+                            <td>
+                               {{$item->deleted_at ? $driverBaned[\App\Helpers\Business::USER_BANED] : $driverBaned[\App\Helpers\Business::USER_UN_BANED]}}
+                            </td>
                             <td class="text-center">
                                 @can('edit-driver')
                                     <a href="{{route('driver.edit', $item->id)}}" class="btn btn-primary btn-sm">
@@ -62,17 +64,17 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
     <script>
         $(function () {
-            if($("#example1").length > 0) {
-                $("#example1").DataTable(
+            if($("#itemTable").length > 0) {
+                $("#itemTable").DataTable(
                     {"columnDefs": [
                             {
                                 "targets": [ 0, 3, 6 ],

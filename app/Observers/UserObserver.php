@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Models\Customer;
 use App\User;
 use Chatkit\Laravel\Facades\Chatkit;
 class UserObserver
@@ -43,6 +44,7 @@ class UserObserver
      */
     public function deleted(User $user)
     {
-        //
+        Customer::where(['user_id' => $user->id])->forceDelete();
     }
+
 }

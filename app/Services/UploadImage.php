@@ -44,7 +44,6 @@ class UploadImage
 
         if ($request->hasFile('file')) {
             $files = $request->file('file');
-            logger($files);
             $listID = [];
             if (is_array($files)){
                 foreach ($files as $file){

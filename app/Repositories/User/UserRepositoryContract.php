@@ -31,5 +31,5 @@ interface UserRepositoryContract
      * @param array $select
      * @return mixed
      */
-    public function findByCondition(array $condition, $first=true, $select=['*']);
+    public function findByCondition(array $condition, $first = true, $select = ['*']);
 }

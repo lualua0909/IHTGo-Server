@@ -48,7 +48,16 @@ class CustomerController extends Controller
             Business::CUSTOMER_TYPE_COMPANY => 'label-danger'
         );
 
-        return view('admin.customer.list', compact('customerType', 'title', 'customerTypeColor'));
+        $userStatus = array(
+            Business::USER_ACTIVE => __('label.active'),
+            Business::USER_UN_ACTIVE => __('label.un_active'),
+        );
+        $userStatusColor = array(
+            Business::USER_ACTIVE => 'label-success',
+            Business::USER_UN_ACTIVE => 'label-danger',
+        );
+
+        return view('admin.customer.list', compact('customerType', 'title', 'customerTypeColor', 'userStatus', 'userStatusColor'));
     }
 
     /**
@@ -77,6 +86,7 @@ class CustomerController extends Controller
                 Business::ORDER_STATUS_DONE_DELIVERY => __('label.done_delivery'),
                 Business::ORDER_STATUS_CUSTOMER_CANCEL => __('label.customer_cancel'),
                 Business::ORDER_STATUS_IHT_CANCEL => __('label.iht_cancel'),
+                Business::ORDER_STATUS_FAIL => __('label.iht_failed'),
             );
             $orderStatusColor = array(
                 Business::ORDER_STATUS_WAITING => 'label-warning',
@@ -85,6 +95,7 @@ class CustomerController extends Controller
                 Business::ORDER_STATUS_DONE_DELIVERY => 'label-success',
                 Business::ORDER_STATUS_CUSTOMER_CANCEL => 'label-danger',
                 Business::ORDER_STATUS_IHT_CANCEL => 'label-danger',
+                Business::ORDER_STATUS_FAIL => 'label-danger',
             );
 
             $orderType = array(

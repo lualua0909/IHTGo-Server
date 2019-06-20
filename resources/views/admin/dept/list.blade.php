@@ -14,14 +14,20 @@
                             <span class="glyphicon glyphicon-search form-control-feedback"></span>
                         </div>
                     </div>
+                    <div class="col-md-3 col-md-offset-9">
+                        <div class="box-tools pull-right">
+                            <button id="debt" class="btn btn-success pull-right">{{ __('label.export') }}</button>
+                        </div>
+                    </div>
                     <br><br>
                     <div class="col-md-12">
                         <table id="tableItem" class="table table-bordered table-striped">
                             <thead>
                                 <tr class="info">
                                     <th>{{ __('label.name') }}</th>
-                                    <th>{{ __('label.phone') }}</th>
-                                    <th>{{ __('label.email') }}</th>
+                                    <th>{{ __('label.from') }}</th>
+                                    <th>{{ __('label.to') }}</th>
+                                    <th>{{ __('label.money') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -39,20 +45,81 @@
         </form>
     </section>
     <!-- /.content -->
+
+    <div class="modal fade modal-success" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">{{ __('label.export') }}</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <form role="form" target="_blank" action="{{route('dept.export')}}" method="post" id="fr_export">
+                            {{csrf_field()}}
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{__('label.start_date')}}  (*):</label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="start_date" class="form-control pull-right" id="start_date" required />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label>{{__('label.end_date')}}  (*):</label>
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input type="text" name="end_date" class="form-control pull-right" id="end_date" required />
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">{{ __('label.cancel') }}</button>
+                    <button type="button" class="btn btn-outline" id="submit">{{ __('label.export') }}</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.css">
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datepicker/datepicker3.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datepicker/datepicker3.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
-
+    <script src="{{asset('public/admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
     <script>
         $(function () {
+            $('#start_date, #end_date').datepicker({
+                autoclose: true,
+                format:'dd/mm/yyyy'
+            });
+            if($('#debt').length > 0){
+                $('#debt').on('click', function(){
+                    $('#myModal').modal('show');
+                });
+            }
+
+            $('#submit').on('click', function () {
+                $('#fr_export').submit();
+                $('#myModal').modal('hide');
+            });
 
             $('#datepicker').datepicker({
                 autoclose: true,
@@ -75,15 +142,16 @@
                         },
                         "columns": [
                             {"data": "name"},
-                            {"data": 'phone'},
-                            {"data": 'email'},
+                            {"data": 'from'},
+                            {"data": 'to'},
+                            {"data": 'money'}
                             ],
                         "columnDefs": [
                             {
-                                "targets": 0,
+                                "targets": 3,
                                 "data": "id",
                                 "render": function ( data, type, full, meta ) {
-                                    return '<a href="{{route('customer.detail')}}/' + full.id + '">#'+data+'</a>';
+                                    return '<span>'+$.number(data)+'</span>';
                                 }
                             }
                         ],

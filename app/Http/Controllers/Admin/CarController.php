@@ -11,9 +11,11 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\Business;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CarRequest;
+use App\Models\Data\Other;
 use App\Repositories\Car\CarRepositoryContract;
 use App\Repositories\Driver\DriverRepositoryContract;
 use App\Repositories\User\UserRepositoryContract;
+use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
@@ -37,17 +39,13 @@ class CarController extends Controller
     public function getList()
     {
         $title = __('label.car');
+        $carTypeOther = Other::select('id', 'name')->where(['type' => Business::OTHER_TYPE_CAR])->get()->pluck('name', 'id')->toArray();
         $carType = array(
             Business::CAR_TYPE_USER => __('label.car_user'),
             Business::CAR_TYPE_COMPANY => __('label.car_company'),
         );
-
-        $carTypeColor = array(
-            Business::CAR_TYPE_USER => 'label-primary',
-            Business::CAR_TYPE_COMPANY => 'label-warning',
-        );
         $listResult = $this->repository->getAll();
-        return view('admin.car.list', compact('listResult', 'title', 'carTypeColor', 'carType'));
+        return view('admin.car.list', compact('listResult', 'title', 'carType', 'carTypeOther'));
     }
 
 
@@ -57,6 +55,7 @@ class CarController extends Controller
      */
     public function create(DriverRepositoryContract $driverRepositoryContract)
     {
+        $carTypeOther = Other::select('id', 'name')->where(['type' => Business::OTHER_TYPE_CAR])->get()->pluck('name', 'id')->toArray();
         $carType = array(
             Business::CAR_TYPE_USER => __('label.car_user'),
             Business::CAR_TYPE_COMPANY => __('label.car_company'),
@@ -64,7 +63,7 @@ class CarController extends Controller
         $listDriver = $driverRepositoryContract->findByCondition([], false, ['*']);
         $title = __('label.car_create');
         $item = false;
-        return view('admin.car.form', compact('item', 'title', 'carType', 'listDriver'));
+        return view('admin.car.form', compact('item', 'title', 'carType', 'listDriver', 'carTypeOther'));
     }
 
     /**
@@ -73,7 +72,7 @@ class CarController extends Controller
      */
     public function store(CarRequest $request)
     {
-        $dataStore = $request->only( 'name', 'manufacturer', 'brand', 'weight', 'license_plate', 'owner_id', 'name', 'number', 'type');
+        $dataStore = $request->only( 'name', 'manufacturer', 'brand', 'weight', 'license_plate', 'owner_id', 'name', 'number', 'type', 'type_car');
         $dataStore['user_id'] = $request->user()->id;
         if ($this->repository->store($dataStore)) {
             return redirect(route('car.list'))->with($this->messageResponse());
@@ -90,13 +89,14 @@ class CarController extends Controller
     {
         $item = $this->repository->find($id);
         if ($item) {
+            $carTypeOther = Other::select('id', 'name')->where(['type' => Business::OTHER_TYPE_CAR])->get()->pluck('name', 'id')->toArray();
             $carType = array(
                 Business::CAR_TYPE_USER => __('label.car_user'),
                 Business::CAR_TYPE_COMPANY => __('label.car_company'),
             );
             $title = __('label.car_edit');
             $listDriver = $driverRepositoryContract->findByCondition([], false, ['*']);
-            return view('admin.car.form', compact('title', 'item', 'carType', 'listDriver'));
+            return view('admin.car.form', compact('title', 'item', 'carType', 'listDriver', 'carTypeOther'));
         }
         return redirect(route('car.list'))->with($this->messageResponse('danger', __('label.failed')));
     }
@@ -108,7 +108,7 @@ class CarController extends Controller
      */
     public function update($id, CarRequest $request)
     {
-        $dataUpdate = $request->only( 'name', 'manufacturer', 'brand', 'weight', 'license_plate', 'owner_id', 'type');
+        $dataUpdate = $request->only( 'name', 'manufacturer', 'brand', 'weight', 'license_plate', 'owner_id', 'type', 'type_car');
         $dataUpdate['user_id'] = $request->user()->id;
         if ($this->repository->update($id, $dataUpdate)) {
             return redirect(route('car.list'))->with($this->messageResponse());
@@ -131,9 +131,9 @@ class CarController extends Controller
     /**
      * @return \Illuminate\Http\JsonResponse
      */
-    public function ajax()
+    public function ajax(Request $request)
     {
-        return response()->json($this->repository->getAll(), 200);
+        return response()->json($this->repository->ajaxGetCar($request), 200);
     }
 
     /**
@@ -162,15 +162,8 @@ class CarController extends Controller
                 Business::ORDER_STATUS_CUSTOMER_CANCEL => 'label-danger',
                 Business::ORDER_STATUS_IHT_CANCEL => 'label-danger',
             );
-            $orderType = array(
-                Business::SERVICE_TYPE_INTERNAL => __('label.service_internal'),
-                Business::SERVICE_TYPE_PUBLIC => __('label.service_public')
-            );
-            $orderTypeColor = array(
-                Business::SERVICE_TYPE_INTERNAL => 'label-primary',
-                Business::SERVICE_TYPE_PUBLIC => 'label-success'
-            );
-            return view('admin.car.detail', compact('item', 'title', 'listHistory', 'orderStatusColor', 'orderStatus', 'orderType', 'orderTypeColor'));
+            $carTypeOther = Other::select('id', 'name')->where(['type' => Business::OTHER_TYPE_CAR])->get()->pluck('name', 'id')->toArray();
+            return view('admin.car.detail', compact('item', 'title', 'listHistory', 'orderStatusColor', 'orderStatus', 'carTypeOther'));
         }
         return abort(404);
     }

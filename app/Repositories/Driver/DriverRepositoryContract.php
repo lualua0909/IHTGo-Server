@@ -13,6 +13,14 @@ use Illuminate\Http\Request;
 
 interface DriverRepositoryContract
 {
+
+    public function getAllWithTrash();
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function findWithTrash($id);
     /**
      * @param Request $request
      * @param bool $driverId

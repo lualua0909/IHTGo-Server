@@ -36,7 +36,7 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/select2/select2.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/select2/select2.css">
 @endsection
 @section('script')
     <script>
@@ -44,7 +44,7 @@
       </script>
     {!! $map['js'] !!}
 
-    <script src="{{asset('admin')}}/plugins/select2/select2.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/select2/select2.js"></script>
     <script>
         $('#id_driver').select2({
             language: {

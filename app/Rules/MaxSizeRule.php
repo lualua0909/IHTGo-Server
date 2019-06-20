@@ -27,7 +27,6 @@ class MaxSizeRule implements Rule
     public function passes($attribute, $value)
     {
         $size = 0;
-        dd($size);
         foreach (request()->$attribute as $item){
             $size .= $item->getClientSize();
         }

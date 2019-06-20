@@ -36,6 +36,14 @@
                                         <input type="text" required id="phone" value="{{(old('phone')) ? old('phone') : (($item) ? $item->phone : '') }}" name="phone" class="form-control" placeholder="{{ __('label.phone') }}">
                                         <span class="has-error">{{$errors->first('phone')}}</span>
                                     </div>
+                                    <div class="form-group">
+                                        <label>Select</label>
+                                        <select class="form-control" name="support">
+                                            @foreach($supports as $k => $support)
+                                                <option value="{{$k}}" @if(old('support') == $k || ($item && $item->support == $k)) selected @endif>{{$support}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -65,7 +73,7 @@
                                         <div class="form-group">
                                             <div class="checkbox icheck">
                                                 <label>
-                                                    <input type="checkbox" name="active" {{ (old('active') || $item->active == \App\Helpers\Business::USER_ACTIVE) ? 'checked' : '' }}>  {{ __('label.active') }}
+                                                    <input type="checkbox" name="active" {{ (old('active') || $item->activated == \App\Helpers\Business::USER_ACTIVE) ? 'checked' : '' }}>  {{ __('label.active') }}
                                                 </label>
                                             </div>
                                         </div>

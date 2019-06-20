@@ -23,6 +23,7 @@
                             <th><input type="checkbox" data-id="{{ $k }}" class="checkboxAll" /> <br>
                                 {{ $item->group_key }}
                             </th>
+                            @if(is_array(json_decode('[' . $item->list . ']', true)))
                             @foreach(json_decode('[' . $item->list . ']', true) as  $i)
                                 <td>
                                     <div>
@@ -32,7 +33,8 @@
                                         </label>
                                     </div>
                                 </td>
-                        @endforeach
+                            @endforeach
+                            @endif
                         </tr>
                         @endforeach
                         </tbody>

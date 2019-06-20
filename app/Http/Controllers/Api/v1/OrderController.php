@@ -23,6 +23,7 @@ use App\Repositories\OrderDetail\OrderDetailRepositoryContract;
 use App\Services\SocketClient;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class OrderController extends ApiController
 {
@@ -64,18 +65,21 @@ class OrderController extends ApiController
         if (!is_array($data)) {
             return $data;
         }
-        $dataOrder = $request->only('name', 'type', 'total_price' , 'payment_type','car_type', 'car_option');
+        $dataOrder = $request->only('name', 'type', 'total_price' , 'payment_type','car_type', 'car_option', 'payer', 'is_speed');
         $dataOrder['user_id'] = $request->user()->id;
         $orderId = $this->repository->store($dataOrder);
         if ($orderId){
-            $dataOrderDetail =  $request->only('sender_name', 'sender_phone','sender_address', 'receive_name', 'receive_phone', 'price_id',
-                'receive_address', 'km', 'weight', 'sender_province_id', 'sender_district_id', 'receive_province_id', 'receive_district_id', 'note');
+            $dataOrderDetail =  $request->only('sender_name', 'sender_phone','sender_address', 'receive_name',
+                'receive_phone', 'price_id', 'receive_address', 'km', 'weight', 'sender_province_id', 'sender_district_id',
+                'receive_province_id', 'receive_district_id', 'note', 'take_money');
             $dataOrderDetail['order_id'] = $orderId;
-            $dataOrderDetail['sender_date'] = ($request->sender_date) ? Carbon::createFromFormat('d/m/Y', $request->sender_date)->format('Y-m-d') : date('Y-m-d');
-            $dataOrderDetail['receive_date'] = ($request->receive_date) ? Carbon::createFromFormat('d/m/Y', $request->receive_date)->format('Y-m-d') : null;
+            $dataOrderDetail['sender_date'] = ($request->sender_date) ? Carbon::createFromFormat('d/m/Y', $request->sender_date)
+                ->format('Y-m-d') : date('Y-m-d');
+            $dataOrderDetail['receive_date'] = ($request->receive_date) ? Carbon::createFromFormat('d/m/Y', $request->receive_date)
+                ->format('Y-m-d') : null;
 
             if ($request->receive){
-                $receiveOrder = $this->addOrderIdToReceive($request->receive, $orderId);
+                $receiveOrder = $this->addOrderIdToReceive($request->receive, $orderId, $dataOrder['user_id']);
                 OrderReceive::insert($receiveOrder);
             }
             if ($detailRepositoryContract->store($dataOrderDetail)){
@@ -87,11 +91,11 @@ class OrderController extends ApiController
         return response()->json(MessageApi::error([__('label.failed')]), HttpCode::CREATE_ITEM_ERROR);
     }
 
-    private function addOrderIdToReceive($receiveOld, $orderID)
+    private function addOrderIdToReceive($receiveOld, $orderID, $userID)
     {
         //$newReceive = str_replace("'", '\"', $receiveOld);
         //$receive = json_decode($receiveOld, true);
-        $arr = ['order_id' => $orderID];
+        $arr = ['order_id' => $orderID, 'user_id' => $userID];
         $arrResponse= [];
         if (is_array($receiveOld)){
             foreach ($receiveOld as $item){
@@ -125,7 +129,8 @@ class OrderController extends ApiController
             'sender_district_id' => 'required',
             'receive_province_id' => 'required',
             'receive_district_id' => 'required',
-            'price_id' => 'required'
+            'price_id' => 'required',
+            'payer' => 'required|in:1,2'
         ];
         return $rule;
     }
@@ -141,7 +146,8 @@ class OrderController extends ApiController
             return $data;
         }
         $result = $this->repository->getList($request);
-        return OrderResource::collection($result)->additional(['status' => HttpCode::SUCCESS, 'error_code' => HttpCode::CODE_SUCCESS]);
+        return OrderResource::collection($result)->additional(['status' => HttpCode::SUCCESS,
+            'error_code' => HttpCode::CODE_SUCCESS]);
         //return response()->json($result, HttpCode::SUCCESS);
     }
 
@@ -169,15 +175,19 @@ class OrderController extends ApiController
         $order = $this->repository->find($id);
         if ($order){
             if ($order->status == Business::ORDER_STATUS_WAITING){
-                $dataOrder = $request->only('name', 'car_type', 'car_option', 'temporary_price', 'status' , 'total_price' , 'payment_type', 'type');
+                $dataOrder = $request->only('name', 'car_type', 'car_option', 'temporary_price', 'status' ,
+                    'total_price' , 'payment_type', 'type', 'payer');
                 $this->repository->update($id, $dataOrder);
-                $dataOrderDetail =  $request->only('sender_name', 'sender_phone','sender_address', 'receive_name', 'receive_phone', 'note',
-                    'receive_address', 'km', 'size', 'weight', 'sender_province_id', 'sender_district_id', 'receive_province_id', 'receive_district_id');
+                $dataOrderDetail =  $request->only('sender_name', 'sender_phone','sender_address', 'receive_name',
+                    'receive_phone', 'note', 'receive_address', 'km', 'size', 'weight', 'sender_province_id',
+                    'sender_district_id', 'receive_province_id', 'receive_district_id', 'take_money');
                 if ($request->sender_date){
-                    $dataOrderDetail['sender_date'] = Carbon::createFromFormat('d/m/Y', $request->sender_date)->format('Y-m-d');
+                    $dataOrderDetail['sender_date'] = Carbon::createFromFormat('d/m/Y', $request->sender_date)
+                        ->format('Y-m-d');
                 }
                 if ($request->receive_date){
-                    $dataOrderDetail['receive_date'] = Carbon::createFromFormat('d/m/Y', $request->receive_date)->format('Y-m-d');
+                    $dataOrderDetail['receive_date'] = Carbon::createFromFormat('d/m/Y', $request->receive_date)
+                        ->format('Y-m-d');
                 }
                 if ($dataOrderDetail){
                     $detailRepositoryContract->updateOderDetailByCondition(['order_id' => $id], $dataOrderDetail);
@@ -185,7 +195,7 @@ class OrderController extends ApiController
 
                 if ($request->receive){
                     OrderReceive::where(['order_id' => $id])->delete();
-                    $receiveOrder = $this->addOrderIdToReceive($request->receive, $id);
+                    $receiveOrder = $this->addOrderIdToReceive($request->receive, $id, $order->user_id);
                     OrderReceive::insert($receiveOrder);
                 }
 
@@ -200,7 +210,8 @@ class OrderController extends ApiController
     {
         $order = $this->repository->find($id);
         if ($order){
-            //if ($order->status == Business::ORDER_STATUS_BEING_DELIVERY || $order->status == Business::ORDER_STATUS_NO_DELIVERY  || $order->status == Business::ORDER_STATUS_WAITING){
+            //if ($order->status == Business::ORDER_STATUS_BEING_DELIVERY || $order->status == Business::ORDER_STATUS_NO_DELIVERY
+            //  || $order->status == Business::ORDER_STATUS_WAITING){
                 $dataOrder = $request->only( 'status');
                 if ($request->driver_note){
                     OrderDetail::where(['order_id' => $id])->update(['driver_note' => $request->driver_note]);
@@ -247,16 +258,24 @@ class OrderController extends ApiController
             return $data;
         }
 
-        $conditionModel = ['type_car' => $request->type_car, 'type' => $request->type, 'publish' => Business::PUBLISH, 'to' => null];
-
-        if ($request->type != Business::PRICE_BY_TH1){
-            $listDistrict = $district->where(['publish' => Business::PUBLISH, 'province_id' => 74])->pluck('id')->toArray();
-            $districtID = (in_array($request->sender_district_id, $listDistrict)) ? $request->sender_district_id : $request->receive_district_id;
-            $conditionModel = array_merge($conditionModel, ['to' => $districtID]);
+        $conditionModel = [
+            'type_car' => $request->type_car,
+            'type' => $request->type,
+            'publish' => Business::PUBLISH,
+            'to' => $request->receive_province_id,
+            'from' => $request->sender_province_id
+        ];
+        if ($request->type == Business::PRICE_BY_TH1){
+            unset($conditionModel['to']);
         }
-        $payment = $this->calculateMoneyV2($conditionModel, $request);
+
+        $payment = $this->calculateMoneyV3($conditionModel, $request);
+
         if ($payment){
             if ($payment['payment']){
+                if ($request->is_speed){
+                    $payment['payment'] = $payment['payment'] * Business::ORDER_SPEED_PAYMENT;
+                }
                 return response()->json(['data' => $payment, 'status' => HttpCode::SUCCESS, 'error_code' => HttpCode::CODE_SUCCESS]);
             }else{
                 return response()->json(MessageApi::error([], HttpCode::CODE_STATUS_ORDER_ERROR_PAYMENT));
@@ -271,11 +290,12 @@ class OrderController extends ApiController
     private function ruleGetMoney()
     {
         return [
-            'type_car' => 'required|in:1,2',
+            'type_car' => 'required|exists:others,id',
             'type' => 'required|in:1,2,3',
-            'sender_district_id' => 'required_if:type,2,3',
-            'receive_district_id' => 'required_if:type,2,3',
+            'sender_province_id' => 'required_if:type,2,3',
+            'receive_province_id' => 'required_if:type,2,3',
             'kg' => 'required_if:type,3,2',
+            'is_seed' => 'sometimes|nullable|in:0,1'
         ];
     }
 
@@ -355,7 +375,8 @@ class OrderController extends ApiController
                     $quotientAddress = $this->getQuotient($request->receive, $config->address_receive);
                     $payment += $quotientAddress*$config->address_payment;
                 }
-                $result = ($check) ? ['km' => $type, 'payment' => $payment, 'price_id' => $config->id] : ['payment' => $payment, 'price_id' => $config->id];
+                $result = ($check) ? ['km' => $type, 'payment' => $payment, 'price_id' => $config->id]
+                    : ['payment' => $payment, 'price_id' => $config->id];
                 return $result;
             }
             return false;
@@ -416,6 +437,65 @@ class OrderController extends ApiController
             }
         }catch (\Exception $exception){
             logger(['service' => 'Get Km by google maps', 'content' => $exception->getMessage()]);
+            return false;
+        }
+    }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function suggest(Request $request)
+    {
+        $results = DB::table('order_receives')
+            ->where(['user_id' => $request->user()->id])
+            ->select(['district_id', 'province_id', 'phone', 'address', 'name'])
+            ->distinct('district_id')
+            ->get();
+        return response()->json(MessageApi::success($results), HttpCode::SUCCESS);
+    }
+
+    /**
+     * Tinh tien
+     *
+     * @param $conditionModel
+     * @param Request $request
+     * @return array|bool
+     */
+    private function calculateMoneyV3($conditionModel, Request $request)
+    {
+        try{
+            $config = ManagerPrice::where($conditionModel)->first();
+            if ($config) {
+                $check = ($config->option == Business::SETTING_MONEY_BY_KM) ? true : false;
+
+                // neu check la dung thi lay km, sai thi lay kg
+                $type = $check ? $this->getKilometerByMaps($request->start, $request->end) : $request->kg;
+                if ($type){
+
+                    if ($request->type == Business::PRICE_BY_TH1 && $request->type_car == Business::CAR_TYPE_MOTORBIKE && $type > $config->min){
+                        return ['payment' => false, 'price_id' => $config->id];
+                    }
+
+                    $payment = $config->min_value;
+                    if ($type && $type > $config->min && $config->increase){
+                        //$difference = $type - $config->min;
+                        //$quotient = $this->getQuotient($type, $config->increase);
+                        $payment += $type * $config->increase_value;
+                    }
+
+                    if ($request->receive && $config->address_payment && $config->address_receive){
+                        $quotientAddress = $this->getQuotient($request->receive, $config->address_receive);
+                        $payment += $quotientAddress*$config->address_payment;
+                    }
+                    $result = ($check) ? ['km' => $type, 'payment' => $payment, 'price_id' => $config->id] : ['payment' => $payment, 'price_id' => $config->id];
+                    return $result;
+                }
+            }
+            return false;
+
+        }catch (\Exception $exception){
+            logger(['service' => 'Get Payment Api', 'content' => $exception->getMessage()]);
             return false;
         }
     }

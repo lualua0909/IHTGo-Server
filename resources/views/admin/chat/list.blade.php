@@ -8,7 +8,7 @@
                 <h2>Khach Hang</h2>
                 <ul class="list-group">
                     @foreach($listCustomer as $customer)
-                    <li class="list-group-item"><a href="{{route('chat.list', $customer->id)}}" data-id="{{$customer->id}}" class="userChat" data-chatkit="{{$customer->chatkit_id}}">{{$customer->name}} </a><span class="badge">12</span></li>
+                    <li class="list-group-item"><a href="{{route('chat.list', $customer->id)}}" data-id="{{$customer->id}}" class="userChat" data-chatkit="{{$customer->chatkit_id}}">{{$customer->name}} </a><span class="badge">{{ (in_array($customer->id, $notifications)) ? 'new' : ''}}</span></li>
                     @endforeach
                 </ul>
             </div>
@@ -26,7 +26,7 @@
                                             <div class="direct-chat-info clearfix">
                                                 <span class="direct-chat-name pull-right">{{request()->user()->name}}</span>
                                             </div>
-                                            <img class="direct-chat-img" src="{{asset('admin')}}/dist/img/user3-128x128.jpg" alt="Message User Image"><!-- /.direct-chat-img -->
+                                            <img class="direct-chat-img" src="{{asset('public/admin')}}/dist/img/user3-128x128.jpg" alt="Message User Image"><!-- /.direct-chat-img -->
                                             <div class="direct-chat-text">
                                                 {{$msg['text']}}
                                             </div>
@@ -36,7 +36,7 @@
                                             <div class="direct-chat-info clearfix">
                                                 <span class="direct-chat-name pull-left">{{$friend ? $friend->name : 'Khach'}}</span>
                                             </div>
-                                            <img class="direct-chat-img" src="{{asset('admin')}}/dist/img/user1-128x128.jpg"><!-- /.direct-chat-img -->
+                                            <img class="direct-chat-img" src="{{asset('public/admin')}}/dist/img/user1-128x128.jpg"><!-- /.direct-chat-img -->
                                             <div class="direct-chat-text">
                                                 {{$msg['text']}}
                                             </div>
@@ -63,7 +63,7 @@
                 <h2>Tai Xe</h2>
                 <ul class="list-group">
                     @foreach($listDriver as $driver)
-                        <li class="list-group-item"><a href="{{route('chat.list', $driver->id)}}" data-id="{{$driver->id}}" class="userChat" data-chatkit="{{$driver->chatkit_id}}">{{$driver->name}} </a><span class="badge">12</span></li>
+                        <li class="list-group-item"><a href="{{route('chat.list', $driver->id)}}" data-id="{{$driver->id}}" class="userChat" data-chatkit="{{$driver->chatkit_id}}">{{$driver->name}} </a><span class="badge">{{ (in_array($driver->id, $notifications)) ? 'new' : ''}}</span></li>
                     @endforeach
                 </ul>
             </div>
@@ -75,6 +75,7 @@
 @section('script')
     <script>
         $(function () {
+
             var client = false;
             var html = '';
             var adminHtml1A = '<div class="direct-chat-msg right">';
@@ -93,47 +94,29 @@
             var adminHtml9A = '<div class="direct-chat-text right">';
             var adminHtml10 = '</div>';
             var adminHtml11 = '</div>';
+            var user_id = {{auth()->user()->id}};
 
-            var socket = new WebSocket('ws://{{config('app.websocket', '127.0.0.1:9898')}}/chat');
+            Echo.private('message')
+                .listen('NewMessageNotification', (e) => {
+                    if (e.data.to_id == user_id) {
+                        if (client){
+                            html = adminHtml9 + e.data.message + adminHtml10;
+                        } else {
+                            html = adminHtml1C + adminHtml2 + adminHtml3C + e.data.name + adminHtml4 + adminHtml7 + adminHtml8C + adminHtml9 + e.data.message + adminHtml10 + adminHtml11;
+                        }
+                        $('#direct-chat-messages').append(html)
+                        $('#direct-chat-messages').scrollTop($('#direct-chat-messages')[0].scrollHeight);
+                        client = true;
+                    }
 
-            socket.onopen = function() {
-                var message = "welcome to chat";
-                console.log(message);
-                //socket.send(message);
-            };
-
-            socket.onclose = function(event) {
-                if (event.wasClean) {
-                    console.log('Connection closed cleanly');
-                } else {
-                    console.log('Broken connections');
-                }
-                console.log('Key: ' + event.code + ' cause: ' + event.reason);
-            };
-
-            socket.onmessage = function(event) {
-                var result = JSON.parse(event.data);
-                console.log(result);
-                if (client){
-                    html = adminHtml9 + result.message + adminHtml10;
-                } else {
-                    html = adminHtml1C + adminHtml2 + adminHtml3C + result.name + adminHtml4 + adminHtml7 + adminHtml8C + adminHtml9 + result.message + adminHtml10 + adminHtml11;
-                }
-                $('#direct-chat-messages').append(html)
-                $('#direct-chat-messages').scrollTop($('#direct-chat-messages')[0].scrollHeight);
-                client = true;
-            };
-
-            socket.onerror = function(error) {
-                console.log("Error " + error.message);
-            };
+                });
 
             $('#sendMessage').on('click', function () {
                 var message = $('#message').val();
                 if (message !== ''){
                     $.post("{{route('api.chat.message', request()->user()->id)}}",
                         {
-                            text: message,
+                            msg: message,
                             room_id: "{{($roomID) ? $roomID : null}}"
                         },
                         function(data, status){
@@ -161,7 +144,7 @@
                     if (message !== ''){
                         $.post("{{route('api.chat.message', request()->user()->id)}}",
                             {
-                                text: message,
+                                msg: message,
                                 room_id: "{{($roomID) ? $roomID : null}}"
                             },
                             function(data, status){
@@ -177,7 +160,6 @@
                                     $('#direct-chat-messages').scrollTop($('#direct-chat-messages')[0].scrollHeight);
                                     client = false;
                                 }
-                                //alert("Data: " + data + "\nStatus: " + status);
                             });
                     }
                 }

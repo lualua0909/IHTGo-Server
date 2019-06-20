@@ -18,4 +18,6 @@ interface DeptRepositoryContract
      * @return mixed
      */
     public function getDeptDataTable(Request $request);
+
+    public function findDataExport($from, $to);
 }

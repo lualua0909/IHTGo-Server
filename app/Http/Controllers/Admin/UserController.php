@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\UserRequest;
 use App\Repositories\User\UserRepositoryContract;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,7 +42,7 @@ class UserController extends Controller
     public function getList()
     {
         $title = __('label.user');
-        $listResult = $this->repository->findByCondition(['level' => Business::USER_LEVEL_ADMIN], false);
+        $listResult = $this->repository->findByCondition(['level' => Business::USER_LEVEL_EMPLOYEE], false);
         return view('admin.user.list', compact('listResult', 'title'));
     }
 
@@ -51,8 +52,13 @@ class UserController extends Controller
     public function create()
     {
         $title = __('label.user_create');
+        $supports = [
+            0 => __('label.support'),
+            Business::USER_SUPPORT_DRIVER => __('label.support_driver'),
+            Business::USER_SUPPORT_CUSTOMER => __('label.support_customer')
+        ];
         $item = false;
-        return view('admin.user.form', compact('item', 'title'));
+        return view('admin.user.form', compact('item', 'title', 'supports'));
     }
 
     /**
@@ -76,7 +82,12 @@ class UserController extends Controller
         $item = $this->repository->find($id);
         if ($item) {
             $title = __('label.user_edit');
-            return view('admin.user.form', compact('title', 'item'));
+            $supports = [
+                0 => __('label.support'),
+                Business::USER_SUPPORT_DRIVER => __('label.support_driver'),
+                Business::USER_SUPPORT_CUSTOMER => __('label.support_customer')
+            ];
+            return view('admin.user.form', compact('title', 'item', 'supports'));
         }
         return redirect(route('user.list'))->with($this->messageResponse('danger', __('label.failed')));
     }
@@ -166,5 +177,38 @@ class UserController extends Controller
             }
         }
         return response()->json(['code' => 0]);
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View|void
+     */
+    public function detail($id)
+    {
+        $user = $this->repository->find($id);
+        if ($user){
+            $genderType = array(
+                Business::GENDER_MALE => __('label.male'),
+                Business::GENDER_FEMALE => __('label.female'),
+            );
+            $title = 'Chi tiết ' . $user->name;
+            return view('admin.user.detail', compact('user', 'title', 'genderType'));
+        }
+        return abort(404);
+    }
+
+    /**
+     * @param $id
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function deleteForce($id)
+    {
+        try {
+            User::find($id)->forceDelete();
+            return redirect(route('customer.list'))->with($this->messageResponse());
+        } catch (\Exception $exception) {
+            logger(['service' => 'Delete customer', 'content' => $exception->getMessage()]);
+        }
+        return back()->with($this->messageResponse('danger', __('label.failed')));
     }
 }

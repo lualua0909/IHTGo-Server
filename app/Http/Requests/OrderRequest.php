@@ -41,7 +41,9 @@ class OrderRequest extends FormRequest
             'sender_district_id' => 'required',
             'receive_province_id' => 'required',
             'receive_district_id' => 'required',
-            'coupon_code' => 'sometimes|nullable|unique:orders,coupon_code'
+            'coupon_code' => 'sometimes|nullable|unique:orders,coupon_code',
+            'payer' => 'required|in:1,2',
+            'user_id' => 'required|exists:users,id'
         ];
     }
 }

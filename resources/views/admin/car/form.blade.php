@@ -47,6 +47,20 @@
                             <span class="has-error">{{$errors->first('license_plate')}}</span>
                         </div>
                         <div class="form-group">
+                            <label>{{ __('label.type_car') }} (*)</label>
+                            <div class="form-group">
+                                <select class="form-control" id="type_car" required name="type_car"
+                                        title="{{ __('label.type_car') }}">
+                                    <option disabled selected value>{{ __('label.please_choose_field') }}</option>
+                                    @foreach($carTypeOther as $k => $type)
+                                        <option {{ ((old('type_car') && (old('type_car') == $k) || ($item && $item->type_car == $k)) ? 'selected' : '') }}
+                                                value="{{ $k }}">{{ $type }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <span class="has-error">{{$errors->first('type_car')}}</span>
+                        </div>
+                        <div class="form-group">
                             <label>{{ __('label.type') }} (*)</label>
                             <div class="form-group">
                                 <select class="form-control" id="type" required name="type"
@@ -60,7 +74,7 @@
                             </div>
                             <span class="has-error">{{$errors->first('type')}}</span>
                         </div>
-                        <div class="form-group" id="owner_id" style="display: none">
+                        <div class="form-group" id="owner_id" style="display: block">
                             <label>{{ __('label.owner') }} (*)</label>
                             <select class="form-control select2" name="owner_id"
                                     title="{{ __('label.owner') }}" style="width: 100%">
@@ -68,7 +82,7 @@
                                         selected>{{ __('label.please_choose_field') }}</option>
                                 @foreach($listDriver as $user)
                                     <option {{ ((old('owner_id') && (old('owner_id') == $user->id) || ($item && $item->owner_id == $user->id)) ? 'selected' : '') }}
-                                            value="{{ $user->id }}">{{ $user->user->name }}</option>
+                                            value="{{ $user->id }}">{{ optional($user->user)->name }}</option>
                                 @endforeach
                             </select>
                             <span class="has-error">{{$errors->first('owner_id')}}</span>
@@ -81,11 +95,11 @@
     <!-- /.content -->
 @endsection
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/select2/select2.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/select2/select2.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/select2/select2.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/select2/select2.js"></script>
     <script>
         $(function () {
             $('.select2').select2();

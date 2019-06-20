@@ -20,14 +20,6 @@ interface CustomerRepositoryContract
     public function getCustomerDataTable(Request $request);
 
     /**
-     * @param $id
-     * @param $start
-     * @param $end
-     * @return mixed
-     */
-    public function getDebtCustomer($id, $start, $end);
-
-    /**
      * @param Request $request
      * @return mixed
      */

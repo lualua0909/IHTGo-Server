@@ -13,9 +13,12 @@ use App\Helpers\Business;
 use App\Notifications\ActiveRegister;
 use App\Notifications\NexmoSendSMS;
 use App\Repositories\EloquentRepository;
+use App\Services\SmsService;
 use App\User;
 use Carbon\Carbon;
+use Chatkit\Laravel\Facades\Chatkit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserRepository extends EloquentRepository implements UserRepositoryContract
 {
@@ -34,16 +37,29 @@ class UserRepository extends EloquentRepository implements UserRepositoryContrac
     {
         $route = $request->route()->getName();
         if ($route == 'api.customer.register'){
-            $id = $this->store($this->setDataApi($request));
-            $user = $this->find($id);
+            $dataStore = $this->setDataApi($request);
+            $user = DB::table('users')->insert($dataStore);
+            //$user = User::create($dataStore);
+            $user = $this->findByCondition(['chatkit_id' => $dataStore['chatkit_id']]);
             try{
-                //email
-                //$user->notify(new ActiveRegister($id));
 
-                //sms
-                $user->notify(new NexmoSendSMS(Business::SMS_ACTIVATED_ACCOUNT));
+                Chatkit::createUser([
+                    'id' => $dataStore['chatkit_id'],
+                    'name' => $dataStore['name']
+                ]);
+
+                if ($request->type == Business::CUSTOMER_TYPE_COMPANY){
+                    $sms = new SmsService();
+                    $message = sprintf(
+                        Business::SMS_ACTIVATED_ACCOUNT,
+                        $user->activated_phone,
+                        'IHT GO'
+                    );
+                    $sms->sendSMS($user->phone, $message);
+                }
                 return $user;
             }catch (\Exception $exception){
+                //dd($exception->getMessage());
                 logger(['service' => 'Register User API', 'content' => $exception->getMessage()]);
                 $user->delete();
                 return false;
@@ -77,7 +93,7 @@ class UserRepository extends EloquentRepository implements UserRepositoryContrac
     private function setData(Request $request)
     {
         if ($request->id){
-            $data = $request->only('phone', 'name');
+            $data = $request->only('phone', 'name', 'support', 'email');
             if($request->password){
                 $data['password'] = bcrypt($request->password);
             }
@@ -85,10 +101,10 @@ class UserRepository extends EloquentRepository implements UserRepositoryContrac
             $data['baned'] = ($request->baned) ? Business::USER_BANED : Business::USER_UN_BANED;
             return $data;
         }
-        $data = $request->only('name', 'username', 'code', 'email', 'phone');
+        $data = $request->only('name', 'username', 'code', 'email', 'phone', 'support');
         $data['activated'] = Business::USER_ACTIVE;
 
-        $data['level'] = Business::USER_LEVEL_ADMIN ;
+        $data['level'] = Business::USER_LEVEL_EMPLOYEE ;
         if ($request->route()->getName() == 'driver.store') {
             $data['level'] = Business::USER_LEVEL_DRIVER;
         }
@@ -106,10 +122,12 @@ class UserRepository extends EloquentRepository implements UserRepositoryContrac
         try{
 
             $data = $request->only('name', 'email', 'gender', 'phone');
-            //$data['phone'] = preg_replace('/0/', '+84', $request->phone, 1);
-            $data['activated_phone'] = random_int(100000, 999999);
+            $data['activated_phone'] = $request->type == Business::CUSTOMER_TYPE_COMPANY ? random_int(100000, 999999) : null;
+            $data['activated'] = $request->type == Business::CUSTOMER_TYPE_COMPANY ? Business::USER_UN_ACTIVE : Business::USER_ACTIVE;
             $data['birthday'] = Carbon::createFromFormat('d/m/Y', $request->birthday)->format('Y-m-d');
             $data['level'] = Business::USER_LEVEL_CUSTOMER;
+            $data['chatkit_id'] = $this->generateChatkitId();
+            //$data['code'] = $this->generateCustomerCode();
             $data['password'] = bcrypt($request->password);
             return $data;
         }catch (\Exception $exception){
@@ -121,13 +139,38 @@ class UserRepository extends EloquentRepository implements UserRepositoryContrac
     /**
      * @param array $condition
      * @param bool $first
+     * @param array $select
      * @return mixed
      */
-    public function findByCondition(array $condition, $first = true, $select=['*'])
+    public function findByCondition(array $condition, $first = true, $select = ['*'])
     {
         if ($first){
             return $this->_model->select($select)->where($condition)->first();
         }
         return $this->_model->select($select)->where($condition)->get();
+    }
+
+    /**
+     * @return string
+     */
+    private function generateChatkitId()
+    {
+        do{
+            $chatkitId = str_random(16);
+        }while (User::where('chatkit_id', $chatkitId)->first());
+        return $chatkitId;
+    }
+
+    /**
+     * @return string
+     */
+    private function generateCustomerCode()
+    {
+        $count = User::where(['level' => Business::USER_LEVEL_CUSTOMER])->count();
+        do{
+            $orderCode = sprintf("KH%'.05d", $count);
+            $orderCode++;
+        }while (User::where('code', $orderCode)->first());
+        return $orderCode;
     }
 }

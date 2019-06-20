@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\OrderNotification;
 use App\Helpers\Business;
 use App\Models\Order;
 use App\Models\OrderDelivery;
@@ -22,7 +23,7 @@ class OrderObserver
      */
     public function __construct()
     {
-        $this->socketClient = new SocketClient();
+        //$this->socketClient = new SocketClient();
         $this->streamMessageToDevice = new DownstreamMessageToDevice();
     }
 
@@ -32,7 +33,7 @@ class OrderObserver
      */
     public function created(Order $order)
     {
-        return $this->socketClient->msgNewOrder($order);
+        event(new OrderNotification(Business::SOCKET_NEW_ORDER, $order, 'success'));
     }
 
     /**
@@ -53,18 +54,23 @@ class OrderObserver
             }else if ($order->status == Business::ORDER_STATUS_FAIL){
                 OrderDelivery::create(['order_id' => $order->id, 'status' => Business::ORDER_DELIVERY_FAIL]);
             }
-            if ($order->status != Business::ORDER_STATUS_WAITING || $order->status != Business::ORDER_STATUS_CUSTOMER_CANCEL){
+            if ($order->status != Business::ORDER_STATUS_WAITING
+                || $order->status != Business::ORDER_STATUS_CUSTOMER_CANCEL){
                 $msg = $this->handleMsgToDevice($order->status);
                 $bodyMsg = sprintf(Business::FCM_CUSTOMER_STATUS, $order->code, $msg);
-                $this->streamMessageToDevice->sendMsgToDevice(optional($order->customer)->device, Business::FCM_ORDER_TITLE, $bodyMsg);
+                $this->streamMessageToDevice->sendMsgToDevice(optional(optional($order->customer)->device)->fcm, Business::FCM_ORDER_TITLE, $bodyMsg);
                 if ($order->status == Business::ORDER_STATUS_NO_DELIVERY){
                     $this->streamMessageToDevice->sendMsgToDevice($order->driverDevice($order->id), Business::FCM_ORDER_TITLE, $bodyMsg);
                 }
             }else{
-                $this->socketClient->msgNewOrder($order);
+                //$this->socketClient->msgNewOrder($order);
             }
         }catch (\Exception $exception){
-            logger(['service' => 'fcm noti', 'content' => $exception->getMessage()]);
+            logger([
+                'service' => 'fcm noti',
+                'content' => $exception->getMessage(),
+                'user' => request()->user()
+            ]);
         }
     }
 
@@ -74,7 +80,8 @@ class OrderObserver
      */
     public function deleted(Order $order)
     {
-        return $this->socketClient->msgCancelOrder($order);
+        //return $this->socketClient->msgCancelOrder($order);
+        event(new OrderNotification(Business::SOCKET_CANCEL_ORDER, $order, 'warning'));
     }
 
     /**

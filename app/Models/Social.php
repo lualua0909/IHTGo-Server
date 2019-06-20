@@ -18,6 +18,6 @@ class Social extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class)->select(['id', 'name', 'phone', 'email', 'birthday', 'activated_phone', 'activated', 'baned']);
+        return $this->belongsTo(User::class);
     }
 }

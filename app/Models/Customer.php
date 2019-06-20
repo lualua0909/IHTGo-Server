@@ -12,7 +12,7 @@ class Customer extends BaseModel
     use SoftDeletes;
 
     protected $fillable = [
-      'user_id', 'type', 'address', 'phone_company', 'tax_code', 'code', 'pic', 'tax'
+      'user_id', 'type', 'address', 'code', 'pic', 'company_id'
     ];
 
     /**
@@ -53,5 +53,10 @@ class Customer extends BaseModel
             $count++;
         }while (Customer::where('code', $code)->first());
         return $code;
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class);
     }
 }

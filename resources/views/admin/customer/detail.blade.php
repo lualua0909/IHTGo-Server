@@ -7,9 +7,9 @@
             <div class="box box-success">
                 <div class="box-body box-profile">
                     <button class="btn btn-sm pull-right btn-update-avatar" data-toggle="tooltip" data-placement="bottom" title="Update Avatar"><i class="fa fa-pencil-square-o"></i></button>
-                    <img class="profile-user-img img-responsive img-circle" src="">
+                    <img class="profile-user-img img-responsive img-circle" src="{{ optional($item->user)->image ? route('api.image.show', ['id' => optional($item->user->image)->id, 'type' => optional($item->user->image)->type]) : '' }}">
 
-                    <h3 class="profile-username text-center">{{$item->user->name}} </h3>
+                    <h3 class="profile-username text-center">{{optional($item->user)->name}} </h3>
                     <h5 class="text-center">{{($item->code) ? $item->code : ''}}</h5>
 
                     <p class="text-muted text-center" data-toggle="tooltip" data-placement="top">
@@ -30,28 +30,23 @@
                         <li class="list-group-item">
                             <b>{{__('label.type')}}</b> <a class="pull-right">{{$customerType[$item->type]}}</a>
                         </li>
+                        @if($item->type == \App\Helpers\Business::CUSTOMER_TYPE_COMPANY)
+                            <li class="list-group-item">
+                                <b>{{__('label.company')}}</b> <a class="pull-right">{{optional($item->company)->name}}</a>
+                            </li>
+                        @endif
                         <li class="list-group-item">
                             <b>{{__('label.birthday')}}</b> <a class="pull-right">{{ optional($item->user)->birthday}}</a>
                         </li>
                         <li class="list-group-item">
                             <b>{{__('label.address')}}</b> <a class="pull-right">{{$item->address}}</a>
                         </li>
-                        @if($item->type == \App\Helpers\Business::CUSTOMER_TYPE_COMPANY)
-                            <li class="list-group-item">
-                                <b>{{__('label.phone_company')}}</b> <a class="pull-right">{{$item->phone_company}}</a>
-                            </li>
-                             <li class="list-group-item">
-                                 <b>{{__('label.tax_code')}}</b> <a class="pull-right">{{$item->tax_code}}</a>
-                             </li>
-                            <li class="list-group-item">
-                                <b>{{__('label.debt')}}</b> <button id="debt" class="btn btn-success pull-right">{{ __('label.export') }}</button>
-                            </li>
-                         @endif
                     </ul>
                     @if(!$item->user->activated)
                         <a onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('customer.activated', $item->id)}}" class="btn btn-success btn-block"><b>{{__('label.active')}}</b></a>
                     @endif
-                    <a class="btn btn-danger btn-block btn-baned"><b>{{ ($item->user->baned) ? __('label.un_baned') : __('label.baned') }}</b></a>
+                    <a class="btn {{$item->user->baned ? 'btn-success' : 'btn-danger'}} btn-block btn-baned"><b>{{ ($item->user->baned) ? __('label.un_baned') : __('label.baned') }}</b></a>
+                    <a class="btn btn-warning btn-block btn-delete"><b>Xoá tài khoản</b></a>
                 </div>
                 <!-- /.box-body -->
             </div>
@@ -70,8 +65,10 @@
                             <th>{{ __('label.created') }}</th>
                         </tr>
                         </thead>
+
+                        @if(optional($item->user)->multiOrder)
                         <tbody>
-                        @foreach($item->order as $i)
+                        @foreach($item->user->multiOrder as $i)
                             <tr>
                                 <td><a target="_blank" href="{{route('order.detail', $i->id)}}">{{ $i->code }}</a></td>
                                 <td><span style="display: block; padding: 5px;" class="label {{$orderMethodColor[$i->payment_type]}}">{{ $orderMethod[$i->payment_type] }}</span></td>
@@ -81,6 +78,7 @@
                             </tr>
                         @endforeach
                         </tbody>
+                            @endif
                     </table>
                 </div>
             </div>
@@ -89,9 +87,10 @@
     </div>
     <!-- /.row -->
 </section>
-<form action="" id="frChangeAvatar" method="post" enctype="multipart/form-data" style="display: none">
+<form action="{{route('image.web.store')}}" id="frChangeAvatar" method="post" enctype="multipart/form-data" style="display: none">
     {{ csrf_field() }}
-    <input type="file" name="avatar" accept="image/jpeg, image/png" />
+    <input type="file" name="file" accept="image/jpeg, image/png" />
+    <input type="text" name="service_id" value="{{$item->user_id}}" />
 </form>
 <div class="modal fade modal-success" id="myModal" role="dialog">
     <div class="modal-dialog">
@@ -103,7 +102,7 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <form role="form" target="_blank" action="{{route('customer.exportDebt')}}" method="post" id="fr_export">
+                    <form role="form" target="_blank" action="{{route('dept.export')}}" method="post" id="fr_export">
                         {{csrf_field()}}
                         <input type="hidden" name="customer_id" value="{{$item->id}}" />
                         <div class="col-md-6">
@@ -142,16 +141,16 @@
 
 @endsection
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.css">
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datepicker/datepicker3.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datepicker/datepicker3.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
     <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2"></script>
-    <script src="{{asset('admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="{!! asset('public/js/sweetalert2.js') !!}"></script>
+    <script src="{{asset('public/admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
     <script>
         $(function () {
             $('#start_date, #end_date').datepicker({
@@ -197,22 +196,25 @@
 
             $('.btn-update-avatar').click(function (e) {
                 e.preventDefault();
-                $('input[name=avatar]').click();
-                $('input[name=avatar]').change(function(e){
+                $('input[name=file]').click();
+                $('input[name=file]').change(function(e){
                     $('#frChangeAvatar').submit();
                 });
             });
 
             $('.btn-baned').click(function(e){
                 e.preventDefault();
-                swal({
-                    title: "Are you sure?",
-                    text: "{{__('label.change_baned_customer')}}",
-                    icon: "warning",
-                    dangerMode: true,
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Bạn muốn thay đổi trạng thái!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Xác nhận!',
                     buttons: ["Cancel", "{{ ($item->user->baned) ? __('label.un_baned') : __('label.baned')}}"],
                 }).then((willDelete) => {
-                    if (willDelete) {
+                    if (willDelete.value) {
                         $.ajax({
                             type: "post",
                             url: "{{route('user.ajaxBaned', $item->user_id)}}",
@@ -220,13 +222,30 @@
                             if (data.code == 200) {
                                 window.location.reload(true);
                             } else {
-                                swal({
+                                Swal.fire({
                                     title: "Error!",
                                     text: data.message,
                                     icon: "error"
                                 });
                             }
                         });
+                    }
+                });
+            });
+
+            $('.btn-delete').click(function(e){
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Bạn muốn xoá vĩnh viễn khách hàng!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Xác nhận!',
+                }).then((willDelete) => {
+                    if (willDelete.value) {
+                        window.location.href = '{{route('user.deleteForce', $item->user_id)}}'
                     }
                 });
             });

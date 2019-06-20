@@ -67,6 +67,8 @@
                                 <th>{{ __('label.payment') }}</th>
                                 <th>{{ __('label.total_price') }}</th>
                                 <th>{{ __('label.customer') }}</th>
+                                <th>{{ __('label.address_sender') }}</th>
+                                <th>{{ __('label.address_receive') }}</th>
                                 <th>{{ __('label.created') }}</th>
                             </tr>
                             </thead>
@@ -92,15 +94,15 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.css">
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/bootstrap-daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/bootstrap-daterangepicker/daterangepicker.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
     <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
 
     <script>
@@ -121,10 +123,6 @@
                 @foreach($orderStatus as $k => $v)
                     orderStatus[{{$k}}] = '{{$v}}';
                 @endforeach
-
-                {{--@foreach($orderTypeColor as $k => $v)--}}
-                    {{--orderTypeColor[{{$k}}] = '{{$v}}';--}}
-                {{--@endforeach--}}
 
                 @foreach($orderType as $k => $v)
                     orderType[{{$k}}] = '{{$v}}';
@@ -149,7 +147,7 @@
                         "serverSide": true,
                         "searching": false,
                         "lengthChange": false,
-                        "order": [[7, "desc"]],
+                        "order": [[9, "desc"]],
                         "ajax": {
                             'type': "POST",
                             'url': "{{route('order.post.list')}}",
@@ -170,6 +168,8 @@
                             {"data": "is_payment"},
                             {"data": 'total_price'},
                             {"data": "customer"},
+                            {"data": "code"},
+                            {"data": "code"},
                             {"data": "created_at"}
                         ],
                         "columnDefs": [
@@ -209,7 +209,6 @@
                                 "targets": 5,
                                 class: 'text-center',
                                 "render": function ( data, type, full, meta ) {
-                                    //$('.price').number( true, 0 );
                                     return '<span class="price">'+$.number(data)+'</span>';
                                 }
                             },
@@ -217,7 +216,19 @@
                                 "targets": 6,
                                 "data": "customer",
                                 "render": function ( data, type, full, meta ) {
-                                    return '<a href="{{route('customer.detail')}}/' + full.uid +'">'+data+'</a>';
+                                    return '<a href="{{route('customer.detail')}}/' + full.cid +'">'+data+'</a>';
+                                }
+                            },
+                            {
+                                "targets": 7,
+                                "render": function ( data, type, full, meta ) {
+                                    return full.dsName + ' ' + full.psName;
+                                }
+                            },
+                            {
+                                "targets": 8,
+                                "render": function ( data, type, full, meta ) {
+                                    return full.drName + ' ' + full.prName;
                                 }
                             }
                         ],

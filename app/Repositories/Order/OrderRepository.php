@@ -32,13 +32,12 @@ class OrderRepository extends EloquentRepository implements OrderRepositoryContr
     {
         $conditions = $this->setCondition($request);
         $result = DB::table('orders as o')
-            ->select('o.id', 'o.car_type', 'o.car_option', 'o.payment_type', 'o.total_price', 'o.name', 'o.status', 'od.sender_name', 'od.receive_name', 'o.created_at', 'o.code', 'o.is_payment', 'o.user_id')
+            ->select('o.id', 'o.car_type', 'o.car_option', 'o.payment_type', 'o.total_price', 'o.name', 'o.status', 'od.sender_name', 'od.receive_name', 'o.created_at', 'o.code', 'o.is_payment', 'o.user_id', 'o.payer', 'od.take_money', 'o.is_speed', 'ps.name as sender_province_name', 'pr.name as receive_province_name', 'dr.name as receive_district_name', 'ds.name as sender_district_name')
             ->join('order_details as od', 'o.id', '=', 'od.order_id')
-//            ->leftJoin('images as i', function ($join){
-//                $join->on('o.id', '=', 'i.service_id')
-//                     ->where('i.type', Business::IMAGE_UPLOAD_TYPE_ORDER);
-//            })
-            //->where('i.type', Business::IMAGE_UPLOAD_TYPE_ORDER)
+            ->leftJoin('provinces as ps', 'ps.province_id', '=', 'od.sender_province_id')
+            ->leftJoin('districts as ds', 'ds.id', '=', 'od.sender_district_id')
+            ->leftJoin('provinces as pr', 'pr.province_id', '=', 'od.receive_province_id')
+            ->leftJoin('districts as dr', 'dr.id', '=', 'od.receive_district_id')
             ->orderBy($conditions['orderBy']['order_type'], $conditions['orderBy']['order_column'])
             ->where('o.user_id', $conditions['conditions']['user_id']);
 
@@ -53,7 +52,8 @@ class OrderRepository extends EloquentRepository implements OrderRepositoryContr
         }
 
         if (array_key_exists('date', $conditions['conditions'])){
-            $start = Carbon::createFromFormat('d/m/Y', $conditions['conditions']['date'])->format('Y-m-d H:i:s');
+            $start = Carbon::createFromFormat('d/m/Y', $conditions['conditions']['date'])
+                ->format('Y-m-d H:i:s');
             $end = Carbon::createFromFormat('Y-m-d H:i:s', $start)->addDay();
             $result->whereBetween('o.created_at', [$start, $end]);
             unset($conditions['conditions']['date']);
@@ -117,8 +117,14 @@ class OrderRepository extends EloquentRepository implements OrderRepositoryContr
         $condition = $this->setDataFilter($request);
 
         $result = DB::table('orders as o')
-            ->select('o.id', 'o.name', 'o.car_type', 'o.code', 'o.total_price', 'o.created_at', 'u.name as customer', 'u.id as uid', 'o.status', 'o.is_payment')
-            ->leftJoin('users as u', 'u.id', '=', 'o.user_id');
+            ->select('o.id', 'o.name', 'o.car_type', 'o.code', 'o.total_price', 'o.created_at', 'u.name as customer', 'u.id as uid', 'o.status', 'o.is_payment', 'c.id as cid', 'ds.name as dsName', 'ps.name as psName', 'dr.name as drName', 'pr.name as prName')
+            ->leftJoin('users as u', 'u.id', '=', 'o.user_id')
+            ->leftJoin('customers as c', 'u.id', '=', 'c.user_id')
+            ->leftJoin('order_details as od', 'o.id', '=', 'od.order_id')
+            ->leftJoin('provinces as ps', 'ps.province_id', '=', 'od.sender_province_id')
+            ->leftJoin('districts as ds', 'ds.id', '=', 'od.sender_district_id')
+            ->leftJoin('provinces as pr', 'pr.province_id', '=', 'od.receive_province_id')
+            ->leftJoin('districts as dr', 'dr.id', '=', 'od.receive_district_id');
         if ($condition['order']['column']){
             $result->orderBy($condition['order']['column'], $condition['order']['dir']);
         }
@@ -137,7 +143,8 @@ class OrderRepository extends EloquentRepository implements OrderRepositoryContr
 
             if (!empty($condition['search']['date']['start']) && !empty($condition['search']['date']['end'])) {
                 if ($condition['search']['date']['start'] == $condition['search']['date']['end']) {
-                    $result->whereDate('o.created_at', Carbon::createFromFormat('d/m/y', $condition['search']['date']['start'])->toDateString());
+                    $result->whereDate('o.created_at', Carbon::createFromFormat('d/m/y', $condition['search']['date']['start'])
+                        ->toDateString());
                 } else {
                     $dateMin = Carbon::createFromFormat('d/m/y', $condition['search']['date']['start'])->toDateString();
                     $dateMax = Carbon::createFromFormat('d/m/y', $condition['search']['date']['end'])->toDateString();
@@ -154,7 +161,8 @@ class OrderRepository extends EloquentRepository implements OrderRepositoryContr
             }
             if (!empty($condition['search']['keyword'])) {
                 $keySearch = $condition['search']['keyword'];
-                $result->whereRaw("(u.name like'%$keySearch%' OR u.phone like'%$keySearch%' OR o.name like'%$keySearch%' OR o.code like'%$keySearch%')");
+                $result->whereRaw("(u.name like'%$keySearch%' OR u.phone like'%$keySearch%' 
+                OR o.name like'%$keySearch%' OR o.code like'%$keySearch%')");
             }
         }
         $data['recordsTotal'] = $data['recordsFiltered'] = $result->count();
@@ -175,7 +183,8 @@ class OrderRepository extends EloquentRepository implements OrderRepositoryContr
     {
         $start = isset($request->start) ? $request->start : 0;
         $limit = isset($request->length) ? $request->length : Business::PAGE_SIZE;
-        $order = isset($request['order'][0]['column']) && isset($request['columns'][$request['order'][0]['column']]['data']) ? $request['columns'][$request['order'][0]['column']]['data'] : '';
+        $order = isset($request['order'][0]['column']) && isset($request['columns'][$request['order'][0]['column']]['data'])
+            ? $request['columns'][$request['order'][0]['column']]['data'] : '';
         $order_dir = isset($request['order'][0]['dir']) ? $request['order'][0]['dir'] : '';
         $type = isset($request->type) ? $request->type : '';
         $payment = isset($request->payment) ? $request->payment : null;
@@ -218,7 +227,8 @@ class OrderRepository extends EloquentRepository implements OrderRepositoryContr
             ->select('o.id', 'o.name', 'o.code', 'od.sender_name')
             ->orderBy('o.created_at', 'DESC');
         if ($keyword){
-            $result->whereRaw("(u.name like'%$keyword%' OR u.phone like'%$keyword%' OR o.code like'%$keyword%' OR od.sender_name like'%$keyword%' OR o.name like'%$keyword%')");
+            $result->whereRaw("(u.name like'%$keyword%' OR u.phone like'%$keyword%' OR o.code like'%$keyword%' 
+            OR od.sender_name like'%$keyword%' OR o.name like'%$keyword%')");
         }
         return $result->take(Business::PAGE_SIZE)->get();
     }
@@ -234,7 +244,8 @@ class OrderRepository extends EloquentRepository implements OrderRepositoryContr
             ->join('drivers as d', 'd.id', '=', 'dl.driver_id')
             ->join('order_details as od', 'dl.order_id', '=', 'od.order_id')
             ->select('d.lat', 'd.lng', 'd.current_address', 'od.sender_address', 'od.receive_address')
-            ->find($id);
+            ->where(['o.id' => $id])
+            ->first();
         return $result;
     }
 }

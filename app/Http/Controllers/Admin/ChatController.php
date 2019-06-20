@@ -9,9 +9,11 @@
 namespace App\Http\Controllers\Admin;
 
 
+use App\Events\NewMessageNotification;
 use App\Helpers\Business;
 use App\Http\Controllers\Controller;
 use App\Models\Contact;
+use App\Models\Notification;
 use App\Models\Room;
 use App\User;
 use Chatkit\Laravel\Facades\Chatkit;
@@ -20,10 +22,20 @@ use Illuminate\Support\Facades\DB;
 
 class ChatController extends Controller
 {
+    /**
+     * @param null $id
+     * @param Request $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function index($id=null, Request $request)
     {
         $title = 'Hỗ trợ';
-        $listUser = User::whereIn('level', [Business::USER_LEVEL_EMPLOYEE, Business::USER_LEVEL_CUSTOMER])->select(['id', 'chatkit_id', 'name', 'level'])->get();
+        if ($id){
+            $this->readNotification($id);
+        }
+        $listUser = User::whereIn('level', [Business::USER_LEVEL_DRIVER, Business::USER_LEVEL_CUSTOMER])
+            ->select(['id', 'chatkit_id', 'name', 'level'])
+            ->get();
         list($listCustomer, $listDriver) = $listUser->partition(function ($user) {
             return $user->level == Business::USER_LEVEL_CUSTOMER;
         });
@@ -31,11 +43,16 @@ class ChatController extends Controller
         $friend = ($id) ? User::find($id) : false;
         $roomID = ($id) ? $this->findOrCreateRoom($request->user()->id, $friend) : false;
         $listMessage = ($roomID) ? array_reverse($this->getMsg($roomID)) : [];
+        $notifications = Notification::where(['read' => null, 'type' => 1])->get(['to_id'])->pluck('to_id')->toArray();
 
-        //if($listMessage) dd($listMessage);
-        return view('admin.chat.list', compact('friend', 'title', 'listDriver', 'listCustomer', 'roomID', 'listMessage'));
+        return view('admin.chat.list', compact('friend', 'title', 'listDriver', 'listCustomer', 'roomID', 'listMessage', 'notifications'));
     }
 
+    /**
+     * @param $user1
+     * @param $userChat2
+     * @return bool
+     */
     private function create($user1, $userChat2)
     {
         try{
@@ -61,12 +78,21 @@ class ChatController extends Controller
 
     }
 
+    /**
+     * @param $user1
+     * @param $user2
+     * @return bool|mixed
+     */
     private function findOrCreateRoom($user1, $user2)
     {
         $result = DB::table('contacts as c')
             ->select('c.room_id')
-            ->where(['user1_id' => $user1, 'user2_id' => $user2->id])
-            ->orWhere(['user2_id' => $user1, 'user1_id' => $user2->id])
+            ->where(function ($query) use ($user1, $user2){
+                    $query->where(['user1_id' => $user1, 'user2_id' => $user2->id]);
+            })
+            ->orWhere(function ($query) use ($user1, $user2){
+                    $query->where(['user2_id' => $user1, 'user1_id' => $user2->id]);
+            })
             ->first();
         if ($result){
             return $result->room_id;
@@ -75,6 +101,11 @@ class ChatController extends Controller
         return $this->create($user1, $user2);
     }
 
+    /**
+     * @param User $user
+     * @param User $user2
+     * @return string
+     */
     private function generateRoomId(User $user, User $user2) : string
     {
         $chatkit_ids = [$user->chatkit_id, $user2->chatkit_id];
@@ -82,6 +113,10 @@ class ChatController extends Controller
         return md5(implode('', $chatkit_ids));
     }
 
+    /**
+     * @param $roomID
+     * @return bool
+     */
     private function getMessage($roomID)
     {
         dd(route('api.chat.getMessage'));
@@ -103,16 +138,26 @@ class ChatController extends Controller
         }
     }
 
+    /**
+     * @param $roomId
+     * @return array
+     */
     private function getMsg($roomId)
     {
         try{
-            $msg = Chatkit::getRoomMessages(['limit' => 30, 'room_id' => $roomId, 'direction' => 'older']);
+            $msg = Chatkit::getRoomMessages(['limit' => 100, 'room_id' => $roomId, 'direction' => 'older']);
             if ($msg['status'] == 200){
                 return $msg['body'];
             }
         }catch (\Exception $exception){
             logger(['service' => 'chatkit get msg', 'content' => $exception->getMessage()]);
-            return false;
+            return [];
         }
+        return [];
+    }
+
+    private function readNotification($toId)
+    {
+        Notification::where(['type' => 1, 'read' => null, 'to_id' => $toId])->update(['read' => date('Y-m-d H:i:s')]);
     }
 }

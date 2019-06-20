@@ -1,5 +1,4 @@
 @extends('layouts.admin')
-
 @section('content')
     <section class="content">
         <div class="row">
@@ -22,11 +21,16 @@
                             <li class="list-group-item">
                                 <b>{{__('label.weight')}}</b> <a class="pull-right">{{$item->weight}}</a>
                             </li>
+                            @if($item->owner)
                             <li class="list-group-item">
-                                <b>{{__('label.owner')}}</b> <a class="pull-right">{{$item->owner}}</a>
+                                <b>{{__('label.owner')}}</b> <a class="pull-right">{{$item->owner->user->name}}</a>
                             </li>
+                            @endif
                             <li class="list-group-item">
                                 <b>{{__('label.type')}}</b> <a class="pull-right">{{$item->type}}</a>
+                            </li>
+                            <li class="list-group-item">
+                                <b>{{__('label.type_car')}}</b> <a class="pull-right">{{$carTypeOther[$item->type_car]}}</a>
                             </li>
                         </ul>
 
@@ -43,7 +47,6 @@
                             <thead>
                             <tr>
                                 <th>{{ __('label.code') }}</th>
-                                <th>{{ __('label.type') }}</th>
                                 <th>{{ __('label.driver') }}</th>
                                 <th>{{ __('label.status') }}</th>
                                 <th>{{ __('label.total_price') }}</th>
@@ -54,7 +57,7 @@
                             @foreach($listHistory as $i)
                                 <tr>
                                     <td><a target="_blank" href="{{route('order.detail', $i->id)}}">{{ $i->code }}</a></td>
-                                    <td><span style="display: block; padding: 5px;" class="label {{$orderTypeColor[$i->type]}}">{{ $orderType[$i->type] }}</span></td>
+
                                     <td><a target="_blank" href="{{route('driver.detail', $i->dId)}}">{{ $i->name . ' (' . $i->phone . ')' }}</a></td>
                                     <td><span style="display: block; padding: 5px;" class="label {{$orderStatusColor[$i->status]}}">{{ $orderStatus[$i->status] }}</span></td>
                                     <td class="price">{{ $i->total_price }}</td>
@@ -78,14 +81,14 @@
 
 @endsection
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
     <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2"></script>
+    <script src="{!! asset('public/js/sweetalert2.js') !!}"></script>
 
     <script>
         $(function () {
@@ -125,14 +128,18 @@
             $('.btn-remove').click(function(e){
                 e.preventDefault();
                 var customerId = 1;
-                swal({
-                    title: "Are you sure?",
-                    text: "Once deleted, you will not be able to recover!",
-                    icon: "warning",
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Bạn muốn thay đổi trạng thái!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Xác nhận!',
                     dangerMode: true,
                     buttons: ["Cancel", "Delete"],
                 }).then((willDelete) => {
-                    if (willDelete) {
+                    if (willDelete.value) {
                         $.ajax({
                             type: "post",
                             url: "",
@@ -141,7 +148,7 @@
                             if (data.code == 200) {
                                 location.href = '';
                             } else {
-                                swal({
+                                Swal.fire({
                                     title: "Error!",
                                     text: data.message,
                                     icon: "error"

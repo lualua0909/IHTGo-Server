@@ -28,7 +28,7 @@
                         </div>
                         <div class="form-group">
                             <label>{{ __('label.acreage') }} (*)</label>
-                            <input type="text" required id="acreage" value="{{(old('acreage')) ? old('acreage') : (($item) ? $item->acreage : '') }}" name="acreage" class="form-control" placeholder="{{ __('label.acreage') }}">
+                            <input type="number" min="1" required id="acreage" value="{{(old('acreage')) ? old('acreage') : (($item) ? $item->acreage : '') }}" name="acreage" class="form-control" placeholder="{{ __('label.acreage') }}">
                             <span class="has-error">{{$errors->first('acreage')}}</span>
                         </div>
                         <div class="form-group">
@@ -57,11 +57,11 @@
     <!-- /.content -->
 @endsection
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/select2/select2.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/select2/select2.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/select2/select2.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/select2/select2.js"></script>
     <script>
         $(function () {
             $('#manager').select2();

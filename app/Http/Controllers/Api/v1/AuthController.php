@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Api\v1;
 use App\Helpers\Business;
 use App\Helpers\MessageApi;
 use App\Http\Resources\UserResource;
+use App\Models\Customer;
 use App\Models\Social;
 use App\Notifications\NexmoSendSMS;
 use App\Notifications\ResetPassword;
 use App\Repositories\Customer\CustomerRepositoryContract;
+use App\Repositories\Driver\DriverRepositoryContract;
+use App\Rules\CheckAccountCustomerExists;
+use App\Services\SmsService;
 use App\User;
 use Carbon\Carbon;
 use Chatkit\Laravel\ChatkitManager;
@@ -56,9 +60,9 @@ class AuthController extends ApiController
             return response()->json(MessageApi::error([], HttpCode::CODE_ERROR_SYSTEM)); // something went wrong whilst attempting to encode the token
         }
         $user = $this->repository->find($request->user()->id);
-//        if ($user->activated_phone){
-//            return response()->json(MessageApi::error([], HttpCode::CODE_IN_VERIFY));
-//        }
+        if ($user->activated_phone){
+            return response()->json(MessageApi::error([], HttpCode::CODE_IN_VERIFY));
+        }
         if (!$user->activated){
             return response()->json(MessageApi::error([], HttpCode::CODE_IN_ACTIVATED));
         }
@@ -93,6 +97,8 @@ class AuthController extends ApiController
      */
     public function register(Request $request, CustomerRepositoryContract $customerRepositoryContract)
     {
+        info('register input', $request->all());
+        logger(['service' => 'register input', 'content' => $request->all()]);
         $data = $this->validateData($request, $this->rulesRegister());
         if (!is_array($data)) {
             return $data;
@@ -105,8 +111,10 @@ class AuthController extends ApiController
                 'address' => $request->address,
                 'phone_company' => $request->phone_company,
                 'tax_code' => $request->tax_code,
-                'pic' => $request->pic
+                'pic' => $request->pic,
+                'company_id' => ($request->type && $request->type == Business::CUSTOMER_TYPE_COMPANY) ? $request->company_id : null
             ];
+            logger(['service' => 'Register Customer', 'content' => $dataCustomer]);
             $customerRepositoryContract->store($dataCustomer);
             return new UserResource(optional($user));
         }
@@ -161,11 +169,34 @@ class AuthController extends ApiController
      * @param Request $request
      * @return UserResource|\Illuminate\Http\JsonResponse
      */
-    public function profile(Request $request)
+    public function profile(Request $request, CustomerRepositoryContract $repositoryContract)
     {
         if (optional($request->user())->id){
-            $data = $request->all();
-            $this->repository->update($request->user()->id, $data);
+            if ($request->phone || $request->name || $request->gender){
+                $this->repository->update($request->user()->id, $request->only('name', 'phone', 'gender'));
+            }
+            if ($request->address){
+                $repositoryContract->update($request->user()->customer->id, $request->only('address'));
+            }
+            return new UserResource(optional($this->repository->find($request->user()->id)));
+        }
+        return response()->json(MessageApi::error([__('label.failed')]), HttpCode::SUCCESS);
+    }
+
+    /**
+     * @param Request $request
+     * @param DriverRepositoryContract $repositoryContract
+     * @return UserResource|\Illuminate\Http\JsonResponse
+     */
+    public function profileDriver(Request $request, DriverRepositoryContract $repositoryContract)
+    {
+        if (optional($request->user())->id){
+            if ($request->phone || $request->name || $request->gender){
+                $this->repository->update($request->user()->id, $request->only('name', 'phone', 'gender'));
+            }
+            if ($request->address){
+                $repositoryContract->update($request->user()->driver->id, $request->only('address'));
+            }
             return new UserResource(optional($this->repository->find($request->user()->id)));
         }
         return response()->json(MessageApi::error([__('label.failed')]), HttpCode::SUCCESS);
@@ -211,13 +242,20 @@ class AuthController extends ApiController
     {
         $rules = [
             'name'        => 'required|max:255',
-            'phone' => 'required|max:20',
-            'email'           => 'required|email|max:255|unique:users',
+            'phone' => [
+                'required',
+                'max:20',
+                new CheckAccountCustomerExists()
+            ],
+            'email'           => [
+                'required',
+                'email',
+                'max:255',
+                new CheckAccountCustomerExists()
+            ],
             'password'        => 'required|min:6',
             'type' => 'sometimes|nullable|in:1,2',
             'address' => 'sometimes|nullable|string|max:150',
-            'phone_company' => 'sometimes|nullable|string|max:20',
-            'tax_code' => 'sometimes|nullable|string|max:100',
             'birthday' => 'required|date_format:d/m/Y',
             'pic' => 'required_if:type,2'
         ];
@@ -306,7 +344,7 @@ class AuthController extends ApiController
         if (!is_array($data)) {
             return $data;
         }
-        $credentials = array_merge($this->credentialsByPhone($request), ['level' => Business::USER_LEVEL_EMPLOYEE]);
+        $credentials = array_merge($this->credentialsByPhone($request), ['level' => Business::USER_LEVEL_DRIVER]);
         try {
             if (!$token = JWTAuth::attempt($credentials)) { // attempt to verify the credentials and create a token for the user
                 return response()->json(MessageApi::error(['Thông tin đăng nhập không đúng'], HttpCode::CODE_VALIDATE_IN_VALID));
@@ -326,6 +364,7 @@ class AuthController extends ApiController
         }else{
             $user->avatar = null;
         }
+        $user->driver = $user->driver;
         return response()->json(['data' => $user,'token' => "Bearer $token", 'status' => HttpCode::SUCCESS, 'error_code' => HttpCode::CODE_SUCCESS]);
     }
 
@@ -340,20 +379,26 @@ class AuthController extends ApiController
             return $data;
         }
         try{
-            $newPassword = random_int(100000,999999);
-            $user = $this->repository->findByCondition(['phone' => $request->phone]);
+            $user = $this->repository->findByCondition(['phone' => $request->phone, 'level' => Business::USER_LEVEL_CUSTOMER]);
             if ($user){
+                $newPassword = random_int(100000,999999);
                 $user->password = bcrypt($newPassword);
                 if ($user->save()){
-                    $user->notify(new NexmoSendSMS(Business::SMS_RESET_PASSWORD));
+                    $sms = new SmsService();
+                    $message = sprintf(
+                        Business::SMS_RESET_PASSWORD,
+                        $newPassword,
+                        'IHT GO'
+                    );
+                    $sms->sendSMS($user->phone, $message);
                     return response()->json(MessageApi::success('success'));
                 }
             }
         }catch (\Exception $exception){
             logger($exception->getMessage());
-            return response()->json(MessageApi::success($newPassword), HttpCode::SUCCESS);
+            return response()->json(MessageApi::error([$exception->getMessage()]), HttpCode::SUCCESS);
         }
-        return response()->json(MessageApi::success($newPassword), HttpCode::SUCCESS);
+        return response()->json(MessageApi::error([__('Có lỗi, vui lòng thử lại')]), HttpCode::SUCCESS);
     }
 
     /**
@@ -374,23 +419,21 @@ class AuthController extends ApiController
      */
     public function social(Request $request, Social $social)
     {
+        info('social input', $request->all());
+        logger(['service' => 'social input', 'content' => $request->all()]);
         $data = $this->validateData($request, $this->ruleSocial());
         if (!is_array($data)) {
             return $data;
         }
         $user = null;
         $token = $this->handleSocial($request, $social, $user);
-        if ($user->activated_phone){
-            return response()->json(MessageApi::error([], HttpCode::CODE_IN_VERIFY));
+        if ($token) {
+            $user->avatar = $user->social->avatar;
+            $user->gender = $user->gender;
+            $user->customer = $user->customer;
+            return response()->json(['data' => $user,'token' => "Bearer $token", 'status' => HttpCode::SUCCESS, 'error_code' => HttpCode::CODE_SUCCESS]);
         }
-        if (!$user->activated){
-            return response()->json(MessageApi::error([], HttpCode::CODE_IN_ACTIVATED));
-        }
-        if ($user->baned){
-            return response()->json(MessageApi::error([], HttpCode::CODE_BANED));
-        }
-        $user->avatar = $user->social->avatar;
-        return response()->json(['data' => $user,'token' => "Bearer $token", 'status' => HttpCode::SUCCESS, 'error_code' => HttpCode::CODE_SUCCESS]);
+        return response()->json(MessageApi::error([], HttpCode::CODE_BANED));
     }
 
     /**
@@ -405,8 +448,11 @@ class AuthController extends ApiController
             $item = $social->where(['provider_user_id' => $request->provider_user_id, 'provider' => $request->provider])->first();
             if ($item){
                 $user = $item->user;
-                $token = JWTAuth::fromUser($user);
-                return $token;
+                if (!$user->baned && $user->activated) {
+                   $token = JWTAuth::fromUser($user);
+                    return $token;
+                }
+                return false;
             }
             $newSocial = $social->create($request->only('provider_user_id', 'provider', 'avatar'));
             $data = $request->all();
@@ -414,16 +460,51 @@ class AuthController extends ApiController
             if ($request->birthday){
                 $data['birthday'] = Carbon::createFromFormat('d/m/Y', $request->birthday)->format('Y-m-d');
             }
+            $data['activated'] = 1;
             $user = User::create($data);
+            Customer::create(['user_id' => $user->id, 'type' => Business::CUSTOMER_TYPE_USER]);
             $newSocial->user_id = $user->id;
             if ($newSocial->save()){
-                $token = JWTAuth::fromUser($newSocial->user);
+                $token = JWTAuth::fromUser($user);
                 return $token;
             }
         }catch (\Exception $exception){
             logger($exception->getMessage());
         }
         return false;
+    }
+
+    public function resendOtp(Request $request)
+    {
+        $data = $this->validateData($request, $this->ruleResendOtp());
+        if (!is_array($data)) {
+            return $data;
+        }
+
+        $user = $this->repository->findByCondition(['phone' => $request->phone, 'level' => Business::USER_LEVEL_CUSTOMER], true);
+        $otp = random_int(100000, 999999);
+        $user->activated_phone = $otp;
+        if ($user->save()) {
+            $sms = new SmsService();
+            $message = sprintf(
+                Business::SMS_ACTIVATED_ACCOUNT,
+                $user->activated_phone,
+                'IHT GO'
+            );
+            $sms->sendSMS($user->phone, $message);
+            return response()->json(MessageApi::success([]), HttpCode::SUCCESS);
+        }
+        return response()->json(MessageApi::error([__('Có lỗi, vui lòng thử lại')]));
+    }
+
+    /**
+     * @return array
+     */
+    private function ruleResendOtp()
+    {
+        return [
+            'phone' => 'required|exists:users,phone'
+        ];
     }
 
     /**

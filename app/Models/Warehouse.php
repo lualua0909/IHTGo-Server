@@ -27,7 +27,7 @@ class Warehouse extends Model
      */
     public function driver()
     {
-        return $this->hasMany(Driver::class);
+        return $this->hasMany(Driver::class)->withTrashed();
     }
 
     /**

@@ -30,8 +30,8 @@ class DriverRequest extends FormRequest
                 'name' => 'required|string|max:255',
                 'email' => "required|string|email|max:255|unique:users,email,$id",
                 'phone' => 'required|string|min:10|max:15',
-                'identification' => 'required',
-                'experience' => 'required',
+                'identification' => 'required|max:50',
+                'experience' => 'required|max:15',
                 'date' => 'required|date_format:d/m/Y',
                 'warehouse_id' => 'required|exists:warehouses,id'
             ];

@@ -44,7 +44,7 @@ class DriverController extends ApiController
         if (!is_array($data)) {
             return $data;
         }
-        $driverId = $request->user()->driver->id;
+        $driverId = optional(optional($request->user())->driver)->id;
         $dataLocation = $request->only('lat', 'lng', 'current_address');
         if ($this->repository->update($driverId, $dataLocation)){
             return response()->json(MessageApi::success('success'), HttpCode::SUCCESS);

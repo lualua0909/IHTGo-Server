@@ -11,7 +11,7 @@ class Car extends BaseModel
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'manufacturer', 'brand', 'weight', 'license_plate', 'owner_id', 'number', 'name', 'type'
+        'user_id', 'manufacturer', 'brand', 'weight', 'license_plate', 'owner_id', 'number', 'name', 'type', 'type_car'
     ];
 
     /**
@@ -27,7 +27,7 @@ class Car extends BaseModel
      */
     public function owner()
     {
-        return $this->belongsTo(Driver::class, 'owner_id', 'id');
+        return $this->belongsTo(Driver::class, 'owner_id', 'id')->withTrashed();
     }
 
     public static function boot()

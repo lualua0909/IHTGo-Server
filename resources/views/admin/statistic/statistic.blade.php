@@ -7,7 +7,7 @@
         <!-- Default box -->
         <div class="box">
             <div class="box-header with-border">
-                    <form role="form" action="{{route('statistic.index') }}" method="post" class="form-inline">
+                    <form role="form" action="{{route('statistic.index') }}" method="post" class="form-inline" id="fr-statistic">
                         @csrf
                         <div class="form-group" style="width: 350px">
                             <div class="input-group"style="width: 100%">
@@ -18,7 +18,8 @@
                             </div>
                             <!-- /.input group -->
                         </div>
-                        <button type="submit" class="btn btn-primary">{{__('label.search')}}</button>
+                        <button type="button" id="btn-statistic" class="btn btn-primary">{{__('label.search')}}</button>
+                        <button id="export" type="button" class="btn btn-success">{{__('label.export')}}</button>
                     </form>
             </div>
         </div>
@@ -69,13 +70,13 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/daterangepicker/daterangepicker.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/chartjs/Chart.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/chartjs/Chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/daterangepicker/daterangepicker.js"></script>
     <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
     <script>
         $(function () {
@@ -85,6 +86,16 @@
                 locale: {
                     format: 'DD/MM/YYYY'
                 }
+            });
+
+            $('#btn-statistic').off('click').on('click', function () {
+                $('#fr-statistic').attr('action', '{{route('statistic.index')}}').attr('target', '');
+                $('#fr-statistic').submit();
+            });
+
+            $('#export').on('click', function () {
+                $('#fr-statistic').attr('action', '{{route('statistic.export')}}').attr('target', '_blank');
+                $('#fr-statistic').submit();
             });
 
             //-------------

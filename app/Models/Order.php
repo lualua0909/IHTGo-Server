@@ -11,8 +11,14 @@ class Order extends BaseModel
 {
 
     protected $fillable = [
-        'code', 'name', 'car_type', 'total_price', 'payment_type', 'user_id', 'status', 'is_payment', 'car_option', 'is_admin', 'coupon_code'
+        'code', 'name', 'car_type', 'total_price', 'payment_type', 'user_id', 'status', 'is_payment', 'car_option',
+        'is_admin', 'coupon_code', 'payer', 'is_speed'
     ];
+
+    public function setIsPaymentAttribute($value)
+    {
+        $this->attributes['is_payment'] = $value ? $value : 0;
+    }
 
     public static function boot()
     {
@@ -69,21 +75,31 @@ class Order extends BaseModel
         return $this->hasMany(Image::class, 'service_id', 'id')->where(['type' => Business::IMAGE_UPLOAD_TYPE_ORDER])->select(['id', 'type']);
     }
 
+    /**
+     * @param $orderID
+     * @return mixed
+     */
     public function driverDevice($orderID)
     {
         $token = DB::table('deliveries as d')
-            ->join('drivers as dr', 'd.id', '=', 'd.driver_id')
+            ->join('drivers as dr', 'dr.id', '=', 'd.driver_id')
             ->join('devices as de', 'de.user_id', '=', 'dr.user_id')
             ->where(['d.order_id' => $orderID])
-            ->value('fcm');
-        return $token;
+            ->first();
+        return $token->fcm;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function route()
     {
         return $this->hasMany(OrderDelivery::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function receive()
     {
         return $this->hasMany(OrderReceive::class);

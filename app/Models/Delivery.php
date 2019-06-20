@@ -16,7 +16,7 @@ class Delivery extends Model
      */
     public function driver()
     {
-        return $this->belongsTo(Driver::class, 'driver_id', 'id');
+        return $this->belongsTo(Driver::class, 'driver_id', 'id')->withTrashed();
     }
 
     /**

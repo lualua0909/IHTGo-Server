@@ -25,17 +25,16 @@ class CarRequest extends FormRequest
     {
         $id = $this->id;
         $rule = [
-            'manufacturer' => 'required',
-            'brand' => 'required',
-            'type' => 'required|in:1,2',
-            'weight' => 'required',
-            'license_plate' => 'required|unique:cars,license_plate',
-            'number' => 'required|unique:cars,number',
-            'name' => 'required'
+            'manufacturer' => 'required|string|max:30',
+            'brand' => 'required|string|max:30',
+            'weight' => 'required|string|max:20',
+            'license_plate' => 'required|string|max:20|unique:cars,license_plate',
+            'number' => 'required|string|max:30|unique:cars,number',
+            'name' => 'required|string|max:50'
         ];
         if ($id){
-            $rule['license_plate'] = "required|unique:cars,license_plate,$id";
-            $rule['number'] = "required|unique:cars,number,$id";
+            $rule['license_plate'] = "required|string|max:20|unique:cars,license_plate,$id";
+            $rule['number'] = "required|string|max:30|unique:cars,number,$id";
         }
         return $rule;
     }

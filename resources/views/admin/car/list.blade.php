@@ -19,10 +19,10 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>{{ __('label.manufacturer') }}</th>
+                        <th>{{ __('label.number_car') }}</th>
                         <th>{{ __('label.type') }}</th>
                         <th>{{ __('label.weight') }}</th>
-                        <th>{{ __('label.license_plate') }}</th>
+                        <th>{{ __('label.type_car') }}</th>
                         <th>{{ __('label.owner') }}</th>
                         <th>{{ __('label.created') }}</th>
                         <th class="text-center">{{ __('label.action') }}</th>
@@ -31,11 +31,11 @@
                     <tbody>
                     @foreach($listResult as $item)
                         <tr>
-                            <td><a href="{{route('car.detail', $item->id)}}">{{ $item->manufacturer }}</a></td>
-                            <td> <span class="label {{$carTypeColor[$item->type]}}">{{ isset($carType[$item->type]) ? $carType[$item->type] : '' }}</span></td>
+                            <td><a href="{{route('car.detail', $item->id)}}">{{ $item->number }}</a></td>
+                            <td>{{ $carType[$item->type] }}</td>
                             <td>{{ $item->weight }}</td>
-                            <td>{{ $item->license_plate }}</td>
-                            <td>{{ isset($item->owner) ? $item->owner->user->name : __('label.company') }}</td>
+                            <td>{{ $carTypeOther[$item->type_car] }}</td>
+                            <td>{{ ($item->owner) ? optional($item->owner->user)->name : __('label.company') }}</td>
                             <td>{!! \App\Helpers\Util::showCreatedAt($item->created_at) !!}</td>
                             <td class="text-center">
                                 @can('edit-car')
@@ -62,12 +62,12 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
     <script>
         $(function () {

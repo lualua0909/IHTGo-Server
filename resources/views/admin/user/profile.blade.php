@@ -9,18 +9,9 @@
                 <!-- Profile Image -->
                 <div class="box box-primary">
                     <div class="box-body box-profile">
+                        <button class="btn btn-sm pull-right btn-update-avatar" data-toggle="tooltip" data-placement="bottom" title="Update Avatar"><i class="fa fa-pencil-square-o"></i></button>
                         <img id="profile-user-img" class="profile-user-img img-responsive img-circle"
-                             src="/admin/dist/img/user4-128x128.jpg'}}" alt="User profile picture">
-                        <form enctype="multipart/form-data"  id="formContent" method="post">
-                            <input type="file" id="avatar-file" style="display: none" name="photo" accept="image/*" onchange="loadFile(event)">
-                            <input type="hidden" name="service" value="avatar">
-                            <input type="hidden" name="user_id" value="{{ ($user) ? $user->id : '' }}">
-                            <div>
-                                <button id="submit-avatar" type="submit" class="btn btn-primary btn-xs pull-right" style="display: none"><b>{{ __('label.submit') }}</b></button>
-                                <button id="cancel-avatar" type="button" class="btn btn-warning btn-xs pull-left" style="display: none"><b>{{ __('label.cancel') }}</b></button>
-                            </div>
-                        </form>
-
+                             src="{{ $user->image ? route('api.image.show', ['id' => $user->image->id, 'type' => $user->image->type]) : '' }}" alt="User profile picture">
                         <hr>
                         <h3 class="profile-username text-center">{{ ($user) ? $user->name : 'Admin Manager' }}</h3>
                         <p class="text-muted text-center">
@@ -58,7 +49,7 @@
                             </li>
                             <li class="list-group-item">
                                 <b>{{ __('label.birthday') }}</b> <a class="pull-right">
-                                    {{ ($user && $user->birthday) ? \Carbon\Carbon::createFromFormat('Y-m-d', $user->birthday)->format('d-m-Y') : 'Birthday' }}
+                                    {{ ($user && $user->birthday) ? $user->birthday : 'Birthday' }}
                                 </a>
                             </li>
                             <li class="list-group-item">
@@ -145,7 +136,7 @@
                                             <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>
-                                            <input type="text" name="birthday" value="{{(old('birthday')) ? old('birthday') : ($user->birthday) ? \Carbon\Carbon::createFromFormat('Y-m-d', $user->birthday)->format('d/m/Y') : null}}" class="form-control pull-right" id="datepicker" required />
+                                            <input type="text" name="birthday" value="{{(old('birthday')) ? old('birthday') : ($user->birthday) ? $user->birthday : null}}" class="form-control pull-right" id="datepicker" required />
                                         </div>
                                         <span class="has-error">{{ $errors->first('birthday') }}</span>
                                     </div>
@@ -184,14 +175,19 @@
 
     </section>
     <!-- /.content -->
+    <form action="{{route('image.web.store')}}" id="frChangeAvatar" method="post" enctype="multipart/form-data" style="display: none">
+        {{ csrf_field() }}
+        <input type="file" name="file" accept="image/jpeg, image/png" />
+        <input type="text" name="service_id" value="{{$user->id}}" />
+    </form>
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datepicker/datepicker3.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datepicker/datepicker3.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
     <script type="text/javascript">
         $('#datepicker').datepicker({
             autoclose: true
@@ -205,13 +201,12 @@
         $('#li-password').addClass('active');
         @endif
 
-        $('img#profile-user-img').on('click', function(){
-            $('input#avatar-file').click();
-            $('input#avatar-file').on('change', function(){
-                $('button#submit-avatar').show();
-                $('button#cancel-avatar').show();
+        $('.btn-update-avatar').click(function (e) {
+            e.preventDefault();
+            $('input[name=file]').click();
+            $('input[name=file]').change(function(e){
+                $('#frChangeAvatar').submit();
             });
-
         });
 
         var loadFile = function(event) {

@@ -14,7 +14,7 @@
                             <div class="bh-sl-form-container searchLocation">
                                 <form id="bh-sl-user-location" method="post" action="#">
                                     <div class="input-group">
-                                        <input type="text" class="form-control" name="bh-sl-address" id="bh-sl-address" placeholder="Search for ...">
+                                        <input type="text" class="form-control" name="bh-sl-address" id="bh-sl-address" placeholder="Nhập vị trí cần tìm ...">
                                         <span class="input-group-btn">
             <button class="btn btn-default" id="bh-sl-submit" type="submit"><span class="glyphicon glyphicon-search"></span></button>
             </span>
@@ -32,7 +32,7 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" type="text/css" href="{{ asset('publicStore-Locator/dist/assets/css/storelocator.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('Store-Locator/dist/assets/css/storelocator.css') }}" />
     <style>
         .searchLocation {
             background-color: #808080;
@@ -46,9 +46,9 @@
 @endsection
 
 @section('script')
-    <script src="{{ asset('publicStore-Locator') }}/dist/assets/js/libs/handlebars.min.js"></script>
-    <script src="//maps.google.com/maps/api/js?key=AIzaSyDiNhC5BRZeGaHoPvfAwZVW6G0EGkY-qvI"></script>
-    <script src="{{ asset('publicStore-Locator') }}/dist/assets/js/plugins/storeLocator/jquery.storelocator.js"></script>
+    <script src="{{ asset('Store-Locator') }}/dist/assets/js/libs/handlebars.min.js"></script>
+    <script src="//maps.google.com/maps/api/js?key=AIzaSyDfSv05H_wc3k9b3Xr3nwI6jDD6maBA9aw"></script>
+    <script src="{{ asset('Store-Locator') }}/dist/assets/js/plugins/storeLocator/jquery.storelocator.js"></script>
     <script>
         $(function() {
             $('#bh-sl-map-container').storeLocator({

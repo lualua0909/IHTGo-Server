@@ -30,7 +30,7 @@
                                 <b>{{__('label.birthday')}}</b> <a class="pull-right">{!! \App\Helpers\Util::showCreatedAt($item->user->birthday, 'd-m-Y', 'Y-m-d') !!}</a>
                             </li>
                             <li class="list-group-item">
-                                <b>{{__('label.address')}}</b> <a class="pull-right">{{$item->user->address}}</a>
+                                <b>{{__('label.address')}}</b> <a class="pull-right">{{$item->address}}</a>
                             </li>
                             <li class="list-group-item">
                                 <b>{{__('label.rate')}}</b>
@@ -53,7 +53,7 @@
                         @if(!$item->user->activated)
                             <button class="btn btn-success btn-block btn-activated"><b>{{__('label.delete')}}</b></button>
                         @endif
-                        <a class="btn btn-danger btn-block btn-baned"><b>{{ ($item->user->baned) ? __('label.un_baned') : __('label.baned') }}</b></a>
+                        <a class="btn {{ ($item->user->baned) ? 'btn-success' : 'btn-danger' }} btn-block btn-baned"><b>{{ ($item->user->baned) ? __('label.un_baned') : __('label.baned') }}</b></a>
                     </div>
                     <!-- /.box-body -->
                 </div>
@@ -66,7 +66,6 @@
                             <thead>
                             <tr>
                                 <th>{{ __('label.code') }}</th>
-                                <th>{{ __('label.type') }}</th>
                                 <th>{{ __('label.car') }}</th>
                                 <th>{{ __('label.status') }}</th>
                                 <th>{{ __('label.total_price') }}</th>
@@ -77,7 +76,6 @@
                             @foreach($listHistory as $i)
                                 <tr>
                                     <td><a target="_blank" href="{{route('order.detail', $i->id)}}">{{ $i->code }}</a></td>
-                                    <td><span style="display: block; padding: 5px;" class="label {{$orderTypeColor[$i->type]}}">{{ $orderType[$i->type] }}</span></td>
                                     <td><a target="_blank" href="{{route('car.detail', $i->cId)}}">{{ $i->cName . ' (' . $i->number . ')' }}</a></td>
                                     <td><span style="display: block; padding: 5px;" class="label {{$orderStatusColor[$i->status]}}">{{ $orderStatus[$i->status] }}</span></td>
                                     <td class="price">{{ $i->total_price }}</td>
@@ -100,21 +98,21 @@
     </section>
     <form action="{{route('image.web.store')}}" id="frChangeAvatar" method="post" enctype="multipart/form-data" style="display: none">
         {{ csrf_field() }}
-        <input type="file" name="photo" accept="image/jpeg, image/png" />
+        <input type="file" name="file" accept="image/jpeg, image/png" />
         <input type="text" name="service_id" value="{{$item->user_id}}" />
     </form>
 
 @endsection
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.css">
 @endsection
 
 @section('script')
     {!! $map['js'] !!}
-    <script src="{{asset('admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
     <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2"></script>
+    <script src="{!! asset('public/js/sweetalert2.js') !!}"></script>
 
     <script>
         $(function () {
@@ -125,7 +123,7 @@
             if($("#example1").length > 0) {
                 $("#example1").DataTable(
                     {
-                        "order": [[ 5, "desc" ]],
+                        "order": [[ 4, "desc" ]],
 
                         "language": {
                             "lengthMenu": "{{ __('label.lengthMenu') }}",
@@ -147,22 +145,24 @@
 
             $('.btn-update-avatar').click(function (e) {
                 e.preventDefault();
-                $('input[name=photo]').click();
-                $('input[name=photo]').change(function(e){
+                $('input[name=file]').click();
+                $('input[name=file]').change(function(e){
                     $('#frChangeAvatar').submit();
                 });
             });
 
             $('.btn-baned').click(function(e){
                 e.preventDefault();
-                swal({
-                    title: "Are you sure?",
-                    text: "{{__('label.change_baned_customer')}}",
-                    icon: "warning",
-                    dangerMode: true,
-                    buttons: ["Cancel", "Delete"],
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Bạn muốn thay đổi trạng thái!",
+                    type: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Xác nhận!'
                 }).then((willDelete) => {
-                    if (willDelete) {
+                    if (willDelete.value) {
                         $.ajax({
                             type: "post",
                             url: "{{route('user.ajaxBaned', $item->user_id)}}",
@@ -170,7 +170,7 @@
                             if (data.code == 200) {
                                 window.location.reload(true);
                             } else {
-                                swal({
+                                Swal.fire({
                                     title: "Error!",
                                     text: data.message,
                                     icon: "error"

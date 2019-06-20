@@ -33,7 +33,7 @@
                                 </div>
                                 <div class="form-group">
                                     <label>{{ __('label.identification') }} (*)</label>
-                                    <input {{ ($item) ? 'readonly' : '' }} type="text" required id="identification" value="{{(old('identification')) ? old('identification') : (($item) ? $item->identification : '') }}" name="identification" class="form-control" placeholder="{{ __('label.identification') }}">
+                                    <input type="text" required id="identification" value="{{(old('identification')) ? old('identification') : (($item) ? $item->identification : '') }}" name="identification" class="form-control" placeholder="{{ __('label.identification') }}">
                                     <span class="has-error">{{$errors->first('identification')}}</span>
                                 </div>
                                 <div class="form-group">
@@ -47,7 +47,7 @@
                                         <div class="input-group-addon">
                                             <i class="fa fa-calendar"></i>
                                         </div>
-                                        <input type="text" name="date" value="{{(old('date')) ? old('date') : ( $item && $item->date) ? \Carbon\Carbon::createFromFormat('Y-m-d', $item->date)->format('d/m/Y') : null}}" class="form-control pull-right" id="datepicker" required />
+                                        <input type="text" name="date" value="{{$item && $item->date ? \Carbon\Carbon::createFromFormat('Y-m-d', $item->date)->format('d/m/Y') : null}}" class="form-control pull-right" id="datepicker" required />
                                     </div>
                                     <span class="has-error">{{ $errors->first('date') }}</span>
                                 </div>
@@ -76,7 +76,7 @@
                             <div class="box-body">
                                 <div class="form-group">
                                     <label>{{ __('label.email') }} (*)</label>
-                                    <input {{ ($item) ? 'readonly' : '' }} type="email" required id="email" value="{{(old('email')) ? old('email') : (($item) ? $item->user->email : '') }}" name="email" class="form-control" placeholder="{{ __('label.email') }}">
+                                    <input type="email" required id="email" value="{{(old('email')) ? old('email') : (($item) ? $item->user->email : '') }}" name="email" class="form-control" placeholder="{{ __('label.email') }}">
                                     <span class="has-error">{{$errors->first('email')}}</span>
                                 </div>
                                 <div class="form-group">
@@ -94,14 +94,22 @@
                                     <div class="form-group">
                                         <div class="checkbox icheck">
                                             <label>
-                                                <input type="checkbox" name="active" {{ (old('active') || $item->active == \App\Helpers\Business::USER_ACTIVE) ? 'checked' : '' }}>  {{ __('label.active') }}
+                                                <input
+                                                        type="checkbox"
+                                                        name="active"
+                                                        {{ (old('active') || $item->user->activated == \App\Helpers\Business::USER_ACTIVE) ? 'checked' : '' }}
+                                                />  {{ __('label.active') }}
                                             </label>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <div class="checkbox icheck">
                                             <label>
-                                                <input type="checkbox" name="baned" {{ (old('baned') || $item->baned == \App\Helpers\Business::USER_BANED) ? 'checked' : '' }}>  {{ __('label.baned') }}
+                                                <input
+                                                        type="checkbox"
+                                                        name="baned"
+                                                        {{ (old('baned') || $item->user->baned == \App\Helpers\Business::USER_BANED) ? 'checked' : '' }}
+                                                />  {{ __('label.baned') }}
                                             </label>
                                         </div>
                                     </div>
@@ -117,13 +125,13 @@
 @endsection
 @section('style')
     <link rel="stylesheet" href="{{ asset('public/admin') }}/plugins/select2/select2.min.css">
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datepicker/datepicker3.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datepicker/datepicker3.css">
     <link rel="stylesheet" href="{{ asset('public/admin') }}/plugins/iCheck/square/blue.css">
 @endsection
 
 @section('script')
     <script src="{{ asset('public/admin') }}/plugins/select2/select2.full.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
     <script src="{{ asset('public/admin') }}/plugins/iCheck/icheck.min.js"></script>
     <script>
         $(function () {

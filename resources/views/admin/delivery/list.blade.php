@@ -65,15 +65,15 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.css">
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/bootstrap-daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/bootstrap-daterangepicker/daterangepicker.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/bootstrap-daterangepicker/daterangepicker.js"></script>
 
     <script>
         $(function () {
@@ -124,7 +124,7 @@
                             "targets": 0,
                             "data": "code",
                             "render": function ( data, type, full, meta ) {
-                                return '<a href="{{route('order.detail')}}/' + full.id +'">#'+data+'</a>';
+                                return '<a href="{{route('order.detail')}}/' + full.order_id +'">#'+data+'</a>';
                             }
                         },
                         {

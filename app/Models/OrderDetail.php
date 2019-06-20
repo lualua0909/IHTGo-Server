@@ -10,8 +10,9 @@ use Illuminate\Database\Eloquent\Model;
 class OrderDetail extends Model
 {
     protected $fillable = [
-       'order_id', 'sender_name', 'sender_phone','sender_address', 'sender_date', 'receive_name', 'receive_phone', 'receive_address', 'warehouse_id',
-        'receive_date', 'km', 'weight', 'sender_province_id', 'sender_district_id', 'receive_province_id', 'receive_district_id', 'price_id', 'note', 'driver_note'
+       'order_id', 'sender_name', 'sender_phone','sender_address', 'sender_date', 'receive_name', 'receive_phone',
+        'receive_address', 'warehouse_id', 'receive_date', 'km', 'weight', 'sender_province_id', 'sender_district_id',
+        'receive_province_id', 'receive_district_id', 'price_id', 'note', 'driver_note', 'take_money', 'admin_note'
     ];
 
     public $timestamps = false;

@@ -6,5 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class District extends Model
 {
-    //
+    protected $fillable = [
+      'name', 'province_id', 'publish', 'type'
+    ];
+
+    public $timestamps = false;
 }

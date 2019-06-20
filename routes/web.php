@@ -15,64 +15,8 @@ Route::get('/', function(){
     return redirect(\route('dashboard'));
 });
 
-Route::get('/map', function(){
-    $config = array();
-    $config['center'] = 'Đà Nẵng';
-    $config['zoom'] = '14';
-    $config['height'] = 'auto';
-    $config['width'] = 'auto';
-    $config['directions'] = TRUE;
-    $config['directionsStart'] = 'Hồ Chí Minh City';
-    $config['directionsEnd'] = 'Hà Nội City';
-    $config['directionsDivID'] = 'directionsDiv';
-
-    app('map')->initialize($config);
-
-    // set up the marker ready for positioning
-    // once we know the users location
-    $marker = array();
-    $marker['position'] = 'Đà Nẵng City';
-    $marker['infowindow_content'] = 'Đà Nẵng';
-    $marker['title'] = 'ThaiLe';
-    app('map')->add_marker($marker);
-
-    $map = app('map')->create_map();
-    return view('admin.map.street', compact('map'));
-});
-
-Route::get('/map-info', function(){
-    $urlBasic = sprintf(\App\Helpers\Business::GOOGLE_URL_GET_INFO, 'Hồ Chí Minh City', 'Đà Nẵng City');
-    $url = str_replace(' ', '+', $urlBasic);
-    try{
-        $curl = curl_init();
-        //dd($url);
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_TIMEOUT => 30000,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "GET",
-            CURLOPT_HTTPHEADER => array(
-                // Set Here Your Requesred Headers
-                'Content-Type: application/json',
-            ),
-        ));
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-        curl_close($curl);
-
-        if ($err) {
-            echo "cURL Error #:" . $err;
-        } else{
-            $km = str_replace(' km', '', json_decode($response, true)['rows'][0]['elements'][0]['distance']['text']);
-            return $km;
-        }
-    }catch (Exception $exception){
-        dd($exception->getMessage());
-    }
-
+Route::get('privacy-policy', function(){
+    return view('privacy_policy');
 });
 
 \Illuminate\Support\Facades\Auth::routes();
@@ -85,7 +29,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::post('language', 'LanguageController@changeLanguage')->name('language');
 
 // Manager
-Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function () {
     // Manager dashboard
     Route::group(['prefix' => 'dashboard'], function () {
         Route::get('', 'Admin\DashboardController@dashboard')->name('dashboard')->middleware(['can:dashboard']);
@@ -118,6 +62,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::put('profile', 'Admin\UserController@updateProfile')->name('user.profile');
         Route::post('password', 'Admin\UserController@password')->name('user.password');
         Route::post('ajaxBaned/{id?}', 'Admin\UserController@ajaxBaned')->name('user.ajaxBaned')->middleware(['can:edit-user']);
+        Route::get('delete-force/{id?}', 'Admin\UserController@deleteForce')->name('user.deleteForce')->middleware(['can:edit-user']);
     });
 
     // Manager Car
@@ -169,8 +114,16 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
     // Manager Other
     Route::group(['prefix' => 'other'], function () {
         Route::get('/{id?}', 'Admin\OtherController@getList')->name('other.list')->middleware(['can:view-other']);
-        Route::post('action/{id?}', 'Admin\OtherController@action')->name('other.action')->middleware(['can:action-other']);
+        Route::post('action/{id?}', 'Admin\OtherController@action')->name('other.action')->middleware(['can:create-other']);
         Route::get('delete/{id?}', 'Admin\OtherController@delete')->name('other.delete')->middleware(['can:delete-other']);
+    });
+
+    // Statistic
+    Route::group(['prefix' => 'data'], function () {
+        Route::get('district/{province_id?}', 'Admin\DistrictController@district')->name('district.index')->middleware(['can:data']);
+        Route::post('district/{id?}', 'Admin\DistrictController@action')->name('district.action')->middleware(['can:data']);
+        Route::get('', 'Admin\ProvinceController@index')->name('province.index')->middleware(['can:data']);
+        Route::post('/{province_id?}', 'Admin\ProvinceController@action')->name('province.action')->middleware(['can:data']);
     });
 
     // Manager Delivery
@@ -184,33 +137,27 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::get('delete/{id?}', 'Admin\DeliveryController@delete')->name('delivery.delete')->middleware(['can:delete-delivery']);
     });
 
-    // Management Setting
-//    Route::group(['prefix' => 'setting'], function () {
-//        Route::get('price/{id?}', 'Admin\SettingController@listManagerPrice')->name('price.list')->middleware(['can:view-setting']);
-//        Route::post('/price/action/{id?}', 'Admin\SettingController@actionManagerPrice')->name('price.action')->middleware(['can:action-setting']);
-//        Route::get('delete/{id?}', 'Admin\SettingController@delete')->name('setting.delete')->middleware(['can:delete-price']);
-//    });
-
     // Manager Customer
     Route::group(['prefix' => 'customer'], function () {
         Route::get('', 'Admin\CustomerController@getList')->name('customer.list')->middleware(['can:view-customer']);
         Route::post('', 'Admin\CustomerController@getListCustomer')->name('customer.post.list')->middleware(['can:view-customer']);
         Route::get('detail/{id?}', 'Admin\CustomerController@detail')->name('customer.detail')->middleware(['can:view-customer-detail']);
         Route::post('debt/{id?}', 'Admin\CustomerController@exportDebt')->name('customer.exportDebt')->middleware(['can:view-customer']);
-        Route::get('activated/{id?}', 'Admin\CustomerController@activated')->name('customer.activated')->middleware(['can:view-customer-detail']);
+        Route::get('activated/{id?}', 'Admin\CustomerController@activated')->name('customer.activated')->middleware(['can:view-customer']);
         Route::get('ajaxSelect2', 'Admin\CustomerController@ajaxSelect2')->name('customer.ajaxSelect2')->middleware(['can:view-customer']);
     });
 
     Route::group(['prefix' => 'dept'], function () {
         Route::get('', 'Admin\DeptController@getList')->name('dept.list')->middleware(['can:view-dept']);
         Route::post('', 'Admin\DeptController@getListDept')->name('dept.post.list')->middleware(['can:view-dept']);
+        Route::post('export', 'Admin\DeptController@export')->name('dept.export')->middleware(['can:export-dept']);
     });
 
     // Manager Evaluate
     Route::group(['prefix' => 'evaluate'], function () {
         Route::get('', 'Admin\EvaluateController@getList')->name('evaluate.list')->middleware(['can:view-evaluate']);
         Route::post('', 'Admin\EvaluateController@getListEvaluate')->name('evaluate.post.list')->middleware(['can:view-evaluate']);
-        Route::get('detail/{id?}', 'Admin\EvaluateController@detail')->name('evaluate.detail')->middleware(['can:view-evaluate-detail']);
+        Route::get('detail/{id?}', 'Admin\EvaluateController@detail')->name('evaluate.detail')->middleware(['can:view-evaluate']);
     });
 
     // Manager Customer Order
@@ -228,6 +175,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::get('district/{province_id?}', 'Admin\OrderController@district')->name('order.district')->middleware(['can:create-order']);
         Route::post('payment/{id?}', 'Admin\OrderController@payment')->name('order.payment')->middleware(['can:edit-order']);
         Route::post('coupon/{id?}', 'Admin\OrderController@couponCode')->name('order.coupon_code')->middleware(['can:edit-order']);
+        Route::post('admin-note/{id?}', 'Admin\OrderController@adminNote')->name('order.admin_note')->middleware(['can:edit-order']);
     });
 
     // Map
@@ -242,6 +190,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'statistic'], function () {
         Route::get('statistic', 'Admin\StatisticController@index')->name('statistic.index')->middleware(['can:statistic']);
         Route::post('statistic', 'Admin\StatisticController@statistic')->name('statistic.index')->middleware(['can:statistic']);
+        Route::post('export', 'Admin\StatisticController@export')->name('statistic.export')->middleware(['can:statistic']);
         Route::get('driver', 'Admin\StatisticController@showDriver')->name('statistic.driver')->middleware(['can:statistic']);
         Route::post('driver', 'Admin\StatisticController@postDriver')->name('statistic.driver')->middleware(['can:statistic']);
     });
@@ -251,8 +200,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::get('', 'Admin\FinanceController@index')->name('finance.list')->middleware(['can:view-finance']);
         Route::post('', 'Admin\FinanceController@getList')->name('finance.getList')->middleware(['can:view-finance']);
         Route::get('detail', 'Admin\FinanceController@detail')->name('finance.detail')->middleware(['can:view-finance']);
-        Route::get('add/{type?}', 'Admin\FinanceController@create')->name('finance.add')->middleware(['can:add-finance']);
-        Route::post('add/{type?}', 'Admin\FinanceController@store')->name('finance.store')->middleware(['can:add-finance']);
+        Route::get('add/{type?}', 'Admin\FinanceController@create')->name('finance.add')->middleware(['can:create-finance']);
+        Route::post('add/{type?}', 'Admin\FinanceController@store')->name('finance.store')->middleware(['can:create-finance']);
         Route::get('edit/{type?}/{id?}', 'Admin\FinanceController@edit')->name('finance.edit')->middleware(['can:edit-finance']);
         Route::post('edit/{type?}/{id?}', 'Admin\FinanceController@update')->name('finance.update')->middleware(['can:edit-finance']);
     });
@@ -261,6 +210,37 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
     Route::group(['prefix' => 'chat'], function (){
         Route::get('/{id?}', 'Admin\ChatController@index')->name('chat.list')->middleware(['can:view-chat']);
         Route::post('', 'Admin\ChatController@getList')->name('chat.getList')->middleware(['can:view-chat']);
+    });
+
+    // Manager Log
+    Route::group(['prefix' => 'log'], function (){
+        Route::get('', 'Admin\LogController@index')->name('log.list')->middleware(['can:view-log']);
+        Route::post('', 'Admin\LogController@getList')->name('log.getList')->middleware(['can:view-log']);
+    });
+
+    //Company
+    Route::group(['prefix' => 'company'], function () {
+        Route::get('', 'Admin\CompanyController@getList')->name('company.list')->middleware(['can:view-company']);
+        Route::post('', 'Admin\CompanyController@postList')->name('company.post.list')->middleware(['can:view-company']);
+        Route::get('add', 'Admin\CompanyController@create')->name('company.add')->middleware(['can:create-company']);
+        Route::post('add', 'Admin\CompanyController@store')->name('company.store')->middleware(['can:create-company']);
+        Route::get('edit/{id?}', 'Admin\CompanyController@edit')->name('company.edit')->middleware(['can:edit-company']);
+        Route::post('edit/{id?}', 'Admin\CompanyController@update')->name('company.update')->middleware(['can:edit-company']);
+        Route::get('detail/{id?}', 'Admin\CompanyController@detail')->name('company.detail')->middleware(['can:view-company-detail']);
+        Route::delete('{id?}', 'Admin\CompanyController@delete')->name('company.delete')->middleware(['can:delete-customer']);
+        Route::post('export', 'Admin\CompanyController@export')->name('company.export')->middleware(['can:view-company']);
+    });
+
+    //Company
+    Route::group(['prefix' => 'collection'], function () {
+        Route::get('', 'Admin\CollectionOfDebtController@getList')->name('collection.list')->middleware(['can:view-collection']);
+        Route::post('', 'Admin\CollectionOfDebtController@postList')->name('collection.post.list')->middleware(['can:view-collection']);
+        Route::get('add', 'Admin\CollectionOfDebtController@create')->name('collection.add')->middleware(['can:create-collection']);
+        Route::post('add', 'Admin\CollectionOfDebtController@store')->name('collection.store')->middleware(['can:create-collection']);
+        Route::get('edit/{id?}', 'Admin\CollectionOfDebtController@edit')->name('collection.edit')->middleware(['can:edit-collection']);
+        Route::post('edit/{id?}', 'Admin\CollectionOfDebtController@update')->name('collection.update')->middleware(['can:edit-collection']);
+        Route::get('detail/{id?}', 'Admin\CollectionOfDebtController@detail')->name('collection.detail')->middleware(['can:view-collection-detail']);
+        Route::delete('{id?}', 'Admin\CollectionOfDebtController@delete')->name('collection.delete')->middleware(['can:delete-collection']);
     });
 });
 

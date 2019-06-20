@@ -22,6 +22,19 @@ class DriverRepository extends EloquentRepository implements DriverRepositoryCon
        return Driver::class;
     }
 
+    public function getAllWithTrash()
+    {
+        // TODO: Implement getAllWithTrash() method.
+        return $this->_model->withTrashed()->get();
+    }
+
+    public function findWithTrash($id)
+    {
+        // TODO: Implement findWithTrash() method.
+        return $this->_model->withTrashed()->find($id);
+    }
+
+
     /**
      * @param Request $request
      * @param bool $driverId
@@ -37,7 +50,10 @@ class DriverRepository extends EloquentRepository implements DriverRepositoryCon
             ->join('deliveries as dl', 'dr.id', '=', 'dl.driver_id')
             ->join('orders as o', 'dl.order_id', '=', 'o.id')
             ->join('cars as c', 'dl.car_id', '=', 'c.id')
-            ->select('o.code', 'o.id', 'c.id as cId', 'c.number', 'c.name as cName', 'o.status', 'o.total_price', 'o.car_type', 'o.car_option', 'dl.created_at')
+            ->join('users as u', 'o.user_id', '=', 'u.id')
+            ->join('order_details as od', 'od.order_id', '=', 'o.id')
+            ->orderBy('o.id', 'DESC')
+            ->select('o.code', 'o.id', 'c.id as cId', 'c.number', 'c.name as cName', 'o.status', 'o.total_price', 'o.car_type', 'o.car_option', 'dl.created_at', 'u.chatkit_id', 'o.payer', 'od.take_money', 'o.is_speed', 'o.name as oName')
             ->where(['dr.id' => $driverId]);
         if ($status){
             $result->where(['o.status' => $status]);
@@ -70,6 +86,7 @@ class DriverRepository extends EloquentRepository implements DriverRepositoryCon
         $keyword = $request->keyword;
         $result = DB::table('drivers as d')
             ->join('users as u', 'd.user_id', '=', 'u.id')
+            ->where(['d.deleted_at' => null])
             ->select('d.id', 'u.name', 'u.phone');
         if ($keyword){
             $result->whereRaw("(u.name like'%$keyword%' OR u.phone like'%$keyword%' OR d.identification like'%$keyword%')");

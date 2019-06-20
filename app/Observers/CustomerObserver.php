@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Events\CustomerNotification;
 use App\Helpers\Business;
 use App\Models\Customer;
 
@@ -15,6 +16,7 @@ class CustomerObserver
      */
     public function created(Customer $customer)
     {
+        event(new CustomerNotification(Business::SOCKET_NEW_CUSTOMER, $customer, 'success'));
         if ($customer->type == Business::CUSTOMER_TYPE_COMPANY){
             $count = Customer::select(['code'])->count() + 1;
             $code = sprintf("IHT-KH%s%'.02d", date('Ymd'), $count);

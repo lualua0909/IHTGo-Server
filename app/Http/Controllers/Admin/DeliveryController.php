@@ -81,16 +81,19 @@ class DeliveryController extends Controller
         return view('admin.delivery.form', compact('title', 'listDriver', 'item', 'listCar'));
     }
 
-    public function createDelivery(DeliveryRequest $request)
+    public function createDelivery(DeliveryRequest $request, Order $order)
     {
         $data = [
             'driver_id' => $request->driver_id,
             'car_id' => $request->car_id,
             'user_id' => $request->user()->id
         ];
-        foreach ($request->order as $order){
-            $data['order_id'] = $order;
-            $this->repository->store($data);
+        foreach ($request->order as $orderID){
+            $item = $order->find($orderID);
+            if ($item && $item->status == Business::ORDER_STATUS_WAITING) {
+                $data['order_id'] = $order;
+                $this->repository->store($data);
+            }
         }
         return redirect(route('delivery.list'))->with($this->messageResponse());
     }
@@ -98,30 +101,38 @@ class DeliveryController extends Controller
     /**
      * @param Request $request
      * @return \Illuminate\Http\RedirectResponse
+     * @param Order $order
      */
-    public function store(Request $request)
+    public function store(Request $request, Order $order)
     {
-        $data = $request->only('car_id', 'order_id', 'driver_id', 'user_id');
-        if ($this->repository->store($data)){
-            return redirect()->back()->with($this->messageResponse());
+        $item = $order->find($request->order_id);
+        if ($item && $item->status == Business::ORDER_STATUS_WAITING) {
+            $data = $request->only('car_id', 'order_id', 'driver_id', 'user_id');
+            if ($this->repository->store($data)){
+                return redirect()->back()->with($this->messageResponse());
+            }
         }
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
     }
 
     /**
      * @param Request $request
+     * @param Order $order
      * @param DriverRepositoryContract $driverRepositoryContract
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function storeDriver(Request $request, DriverRepositoryContract $driverRepositoryContract)
+    public function storeDriver(Request $request, DriverRepositoryContract $driverRepositoryContract, Order $order)
     {
-        $data = $request->only('order_id', 'user_id');
-        $driver = $driverRepositoryContract->find($request->id_driver_only);
-        if ($driver && $driver->car){
-            $data['driver_id'] = $driver->id;
-            $data['car_id'] = $driver->car->id;
-            if ($this->repository->store($data)){
-                return redirect()->back()->with($this->messageResponse());
+        $item = $order->find($request->order_id);
+        if ($item && $item->status == Business::ORDER_STATUS_WAITING) {
+            $data = $request->only('order_id', 'user_id');
+            $driver = $driverRepositoryContract->find($request->id_driver_only);
+            if ($driver && $driver->car){
+                $data['driver_id'] = $driver->id;
+                $data['car_id'] = $driver->car->id;
+                if ($this->repository->store($data)){
+                    return redirect()->back()->with($this->messageResponse());
+                }
             }
         }
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));

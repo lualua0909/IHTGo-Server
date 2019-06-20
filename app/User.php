@@ -7,10 +7,12 @@ use App\Models\Customer;
 use App\Models\Device;
 use App\Models\Driver;
 use App\Models\Image;
+use App\Models\Order;
 use App\Models\Social;
 use Carbon\Carbon;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
@@ -23,7 +25,8 @@ class User extends Authenticatable implements JWTSubject
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'code', 'activated', 'baned', 'phone', 'level', 'activated_phone', 'birthday', 'chatkit_id'
+        'name', 'email', 'password', 'code', 'activated', 'baned', 'phone', 'level',
+        'activated_phone', 'birthday', 'chatkit_id', 'support', 'gender'
     ];
 
     /**
@@ -136,9 +139,25 @@ class User extends Authenticatable implements JWTSubject
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
+    public function order()
+    {
+        return $this->hasOne(Order::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function multiOrder()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function driver()
     {
-        return $this->hasOne(Driver::class)->select('id');
+        return $this->hasOne(Driver::class)->withTrashed();
     }
 
     /**
@@ -156,7 +175,9 @@ class User extends Authenticatable implements JWTSubject
      */
     public function image()
     {
-        return $this->hasOne(Image::class, 'service_id', 'id')->where(['type' => Business::IMAGE_UPLOAD_TYPE_AVATAR])->select(['id', 'type'])->latest('id');
+        return $this->hasOne(Image::class, 'service_id', 'id')
+            ->where(['type' => Business::IMAGE_UPLOAD_TYPE_AVATAR])
+            ->select(['id', 'type'])->latest('id');
     }
 
     /**
@@ -167,8 +188,53 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasOne(Social::class);
     }
 
+    /**
+     * @return mixed
+     */
     public function device()
     {
-        return $this->hasOne(Device::class)->value('fcm');
+        return $this->hasOne(Device::class)->select('fcm');
     }
+
+    public function hasPermission($key)
+    {
+        $sql = "select count(*) as permission from users as u join
+                    (select user_id from user_role as ur join
+                            (select role_id from role_permission as rp
+                                    join permissions as p
+                                    on rp.permission_id = p.id
+                                where p.key = '" . $key . "') as RPtemp
+                            on ur.role_id = RPtemp.role_id) as URtemp
+                    on u.id = URtemp.user_id";
+        $check = DB::select($sql)[0];
+
+        return $check->permission;
+    }
+
+
+    /**
+     * @param $key
+     * @param $userId
+     * @return bool
+     */
+    public function hasFilePermission($key, $userId)
+    {
+        $fileName = config_path('permission') . '/' . $userId . '.json';
+        if (file_exists($fileName)) {
+            $jsonPermission = file_get_contents($fileName);
+            if ($jsonPermission && $jsonPermission != '') {
+                $arrPermission = json_decode($jsonPermission, true);
+                $data = [];
+                foreach ($arrPermission as $item) {
+                    $data = array_merge($data, $item);
+                }
+
+                return in_array($key, $data);
+            }
+        } else {
+            return $this->hasPermission($key);
+        }
+    }
+
+
 }

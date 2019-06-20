@@ -12,7 +12,7 @@ class Driver extends BaseModel
     use SoftDeletes;
 
     protected $fillable = [
-        'user_id', 'lat', 'lng', 'available', 'identification', 'date', 'experience', 'current_address', 'warehouse_id'
+        'user_id', 'lat', 'lng', 'available', 'identification', 'date', 'experience', 'current_address', 'warehouse_id', 'address'
     ];
 
     /**

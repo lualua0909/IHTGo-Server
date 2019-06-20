@@ -8,7 +8,7 @@
         <div class="box">
             <div class="box-header with-border">
                 <h3 class="box-title">{{ $title }}</h3>
-                @can('add-employer')
+                @can('create-user')
                     <div class="box-tools pull-right">
                         <a href="{{route('user.add')}}" class="btn btn-success btn-sm">
                             <i class="fa fa-plus"></i> {{ __('label.add_new') }}</a>
@@ -35,7 +35,7 @@
                             <td>{{ $item->phone }}</td>
                             <td>{{ $item->email }}</td>
                             <td>
-                                @if($item->active == \App\Helpers\Business::USER_ACTIVE)
+                                @if($item->activated == \App\Helpers\Business::USER_ACTIVE)
                                     <span class="label label-success">{{ __('label.active') }}</span>
                                 @else
                                     <span class="label label-warning">{{ __('label.un_active') }}</span>
@@ -55,18 +55,18 @@
                                         <i class="fa fa-edit"></i>
                                     </a>
                                 @endcan
-                                @if($item->active == \App\Helpers\Business::USER_ACTIVE && $item->baned == \App\Helpers\Business::USER_UN_BANED)
+                                @if($item->baned == !\App\Helpers\Business::USER_BANED)
                                     @can('delete-user')
                                         <a onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('user.delete', $item->id)}}" class="btn btn-danger btn-sm">
                                             <i class="fa fa-close"></i>
                                         </a>
                                     @endcan
-                                    @can('permission')
-                                            <a href="{{ route('role.postAddRoleForUser', $item->id) }}" class="btn btn-success btn-sm">
-                                                <i class="fa fa-fw fa-key"></i>
-                                            </a>
-                                    @endcan
                                 @endif
+                                @can('create-permission')
+                                    <a href="{{ route('role.addRoleForUser', $item->id) }}" class="btn btn-success btn-sm">
+                                        <i class="fa fa-fw fa-key"></i>
+                                    </a>
+                                @endcan
                             </td>
                         </tr>
                     @endforeach
@@ -81,12 +81,12 @@
 @endsection
 
 @section('style')
-    <link rel="stylesheet" href="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.css">
+    <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.css">
 @endsection
 
 @section('script')
-    <script src="{{asset('admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
-    <script src="{{asset('admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
     <script>
         $(function () {

@@ -18,55 +18,55 @@
 
     <!-- Favicon
     ============================================ -->
-    <link rel="shortcut icon" type="image/x-icon" href="{{asset('orianna')}}/img/favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="{{asset('orianna')}}/public/img/favicon.ico">
 
     <!-- CSS  -->
 
-    <link rel="stylesheet" href="{{asset('orianna')}}/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{asset('orianna')}}/public/css/bootstrap.min.css">
 
     <!-- owl.carousel CSS
     ============================================ -->
-    <link rel="stylesheet" href="{{asset('orianna')}}/css/owl.carousel.css">
+    <link rel="stylesheet" href="{{asset('orianna')}}/public/css/owl.carousel.css">
 
     <!-- owl.theme CSS
     ============================================ -->
-    <link rel="stylesheet" href="{{asset('orianna')}}/css/owl.theme.css">
+    <link rel="stylesheet" href="{{asset('orianna')}}/public/css/owl.theme.css">
 
     <!-- owl.transitions CSS
     ============================================ -->
-    <link rel="stylesheet" href="{{asset('orianna')}}/css/owl.transitions.css">
+    <link rel="stylesheet" href="{{asset('orianna')}}/public/css/owl.transitions.css">
 
     <!-- font-awesome CSS
     ============================================ -->
-    <link rel="stylesheet" href="{{asset('orianna')}}/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{asset('orianna')}}/public/css/font-awesome.min.css">
 
     <!-- animate CSS
     ============================================ -->
-    <link rel="stylesheet" href="{{asset('orianna')}}/css/animate.css">
+    <link rel="stylesheet" href="{{asset('orianna')}}/public/css/animate.css">
 
     <!-- slicknav CSS
     ============================================ -->
-    <link rel="stylesheet" href="{{asset('orianna')}}/css/slicknav.css">
+    <link rel="stylesheet" href="{{asset('orianna')}}/public/css/slicknav.css">
 
     <!-- rs-plugin CSS
     ============================================ -->
-    <link href="{{asset('orianna')}}/lib/rs-plugin/css/settings.css" rel="stylesheet"/>
+    <link href="{{asset('orianna')}}/public/lib/rs-plugin/css/settings.css" rel="stylesheet"/>
 
     <!-- normalize CSS
     ============================================ -->
-    <link rel="stylesheet" href="{{asset('orianna')}}/css/normalize.css">
+    <link rel="stylesheet" href="{{asset('orianna')}}/public/css/normalize.css">
 
     <!-- main CSS
     ============================================ -->
-    <link rel="stylesheet" href="{{asset('orianna')}}/css/main.css">
+    <link rel="stylesheet" href="{{asset('orianna')}}/public/css/main.css">
 
     <!-- style CSS
     ============================================ -->
-    <link rel="stylesheet" href="{{asset('orianna')}}/style.css">
+    <link rel="stylesheet" href="{{asset('orianna')}}/public/style.css">
 
     <!-- responsive CSS
     ============================================ -->
-    <link rel="stylesheet" href="{{asset('orianna')}}/css/responsive.css">
+    <link rel="stylesheet" href="{{asset('orianna')}}/public/css/responsive.css">
     <style>
         #scrollUp {
             bottom: 5px
@@ -75,7 +75,7 @@
 @yield('style')
 <!-- modernizr js
     ============================================ -->
-    <script src="{{asset('orianna')}}/js/vendor/modernizr-2.8.3.min.js"></script>
+    <script src="{{asset('orianna')}}/public/js/vendor/modernizr-2.8.3.min.js"></script>
 
 </head>
 <body>
@@ -273,4 +273,3 @@
 
 </body>
 </html>
-

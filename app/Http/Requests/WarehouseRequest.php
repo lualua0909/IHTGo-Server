@@ -23,6 +23,16 @@ class WarehouseRequest extends FormRequest
      */
     public function rules()
     {
+        $id = $this->id;
+        if ($id){
+            return [
+                'code' => 'required|string|max:255|unique:warehouses,code,' . $id,
+                'distribution' => 'required|string|max:250',
+                'acreage' => 'required|string|max:255',
+                'address' => 'required|string|max:250',
+                'manager_id' => 'required|exists:users,id'
+            ];
+        }
         return [
             'code' => 'required|string|max:255|unique:warehouses,code',
             'distribution' => 'required|string|max:250',

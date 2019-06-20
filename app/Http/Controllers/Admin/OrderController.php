@@ -64,31 +64,28 @@ class OrderController extends Controller
             Business::ORDER_STATUS_FAIL => 'label-danger'
         );
 
-//        $orderType = [
-//            Business::CAR_TYPE_MOTORBIKE => __('label.motorbike'),
-//            Business::CAR_TYPE_TRUCK => __('label.truck'),
-//        ];
-//
-//        $orderTypeColor = [
-//            Business::CAR_TYPE_MOTORBIKE => 'label-primary',
-//            Business::CAR_TYPE_TRUCK => 'label-danger',
-//        ];
         $listCar = Other::select('id', 'name')->where(['type' => Business::OTHER_TYPE_CAR])->get();
         $orderType = $this->convertObjectToArray($listCar);
 
         $orderPayment = array(
             Business::ORDER_STATUS_PAYMENT => __('label.payment_yes'),
-            Business::ORDER_STATUS_NO_PAYMENT => __('label.payment_no')
+            Business::ORDER_STATUS_NO_PAYMENT => __('label.payment_no'),
+            Business::PAYMENT_DEPT => __('label.payment_dept')
         );
         $orderPaymentColor = array(
             Business::ORDER_STATUS_PAYMENT => 'label-success',
-            Business::ORDER_STATUS_NO_PAYMENT => 'label-danger'
+            Business::ORDER_STATUS_NO_PAYMENT => 'label-danger',
+            Business::PAYMENT_DEPT => 'label-primary'
         );
 
         return view('admin.order.list', compact('orderType', 'title', 'orderTypeColor', 'orderStatus',
             'orderStatusColor', 'orderPayment', 'orderPaymentColor'));
     }
 
+    /**
+     * @param $objectCar
+     * @return array
+     */
     private function convertObjectToArray($objectCar)
     {
         $result = [];
@@ -137,17 +134,12 @@ class OrderController extends Controller
             Business::ORDER_STATUS_FAIL => 'label-danger'
         );
 
-//        $orderType = [
-//            Business::CAR_TYPE_MOTORBIKE => __('label.motorbike'),
-//            Business::CAR_TYPE_TRUCK => __('label.truck'),
-//        ];
-//
-//        $orderTypeColor = [
-//            Business::CAR_TYPE_MOTORBIKE => 'label-primary',
-//            Business::CAR_TYPE_TRUCK => 'label-danger',
-//        ];
+        $listSpeed = [
+            Business::ORDER_SPEED => __('label.speed'),
+            Business::ORDER_UN_SPEED => __('label.un_speed'),
+        ];
 
-        $listCar = Other::select('id', 'name')->where(['type' => Business::OTHER_TYPE_CAR])->get();
+        $listCar = Other::where(['type' => Business::OTHER_TYPE_CAR])->get(['id', 'name']);
         $orderType = $this->convertObjectToArray($listCar);
 
         $genderType = array(
@@ -166,14 +158,10 @@ class OrderController extends Controller
             Business::PAYMENT_METHOD_OTHER => 'label-warning'
         );
 
-//        $orderPayment = array(
-//            Business::ORDER_STATUS_PAYMENT => __('label.payment_yes'),
-//            Business::ORDER_STATUS_NO_PAYMENT => __('label.payment_no')
-//        );
-//        $orderPaymentColor = array(
-//            Business::ORDER_STATUS_PAYMENT => 'label-success',
-//            Business::ORDER_STATUS_NO_PAYMENT => 'label-danger'
-//        );
+        $listPayer = [
+            Business::PAYER_RECEIVE => __('label.payer_receive'),
+            Business::PAYER_SENDER => __('label.payer_sender'),
+        ];
 
         $orderPayment = array(
             Business::PAYMENT_DONE => __('label.payment_done'),
@@ -199,16 +187,18 @@ class OrderController extends Controller
         $listWarehouse = Warehouse::all();
 
         $config = $this->setConfigMaps();
-        $config['directionsStart'] = $item->detail->sender_address . ', ' . optional(optional($item->detail)->districtSender)->name . ', ' . optional(optional($item->detail)->provinceSender)->name;
-        $config['directionsEnd'] = $item->detail->receive_address . ', ' . optional(optional($item->detail)->districtReceive)->name . ', ' . optional(optional($item->detail)->provinceReceive)->name;
+        $config['directionsStart'] = optional($item->detail)->sender_address . ', '
+            . optional(optional($item->detail)->districtSender)->name . ', '
+            . optional(optional($item->detail)->provinceSender)->name;
+        $config['directionsEnd'] = optional($item->detail)->receive_address . ', '
+            . optional(optional($item->detail)->districtReceive)->name . ', '
+            . optional(optional($item->detail)->provinceReceive)->name;
         app('map')->initialize($config);
 
         $map = app('map')->create_map();
 
         $title = $item->name;
-        return view('admin.order.detail', compact('map', 'orderMethod', 'orderMethodColor', 'item', 'title',
-            'orderStatusColor', 'orderStatus', 'orderType', 'orderTypeColor', 'genderType', 'orderPayment', 'orderPaymentColor',
-            'listType', 'listTypeColor', 'listWarehouse'));
+        return view('admin.order.detail', compact('map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'orderTypeColor', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
     }
 
     /**
@@ -247,6 +237,11 @@ class OrderController extends Controller
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
     }
 
+    /**
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function ajaxPrice($id, Request $request)
     {
         if ($request->ajax()){
@@ -282,6 +277,10 @@ class OrderController extends Controller
         return response()->json($this->repository->ajaxSelect2($request));
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function warehouse(Request $request)
     {
         $order = OrderDetail::where(['order_id' => $request->order_id])->first();
@@ -295,6 +294,9 @@ class OrderController extends Controller
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
     }
 
+    /**
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function create()
     {
         $title = __('label.create');
@@ -306,7 +308,8 @@ class OrderController extends Controller
         );
         $orderPayment = array(
             Business::ORDER_STATUS_PAYMENT => __('label.payment_yes'),
-            Business::ORDER_STATUS_NO_PAYMENT => __('label.payment_no')
+            Business::ORDER_STATUS_NO_PAYMENT => __('label.payment_no'),
+            Business::ORDER_STATUS_PAYMENT_DEPT => __('label.payment_dept')
         );
 
         $listType = [
@@ -315,24 +318,42 @@ class OrderController extends Controller
             Business::PRICE_BY_TH3 => __('label.th3'),
         ];
 
+        $listPayer = [
+            Business::PAYER_RECEIVE => __('label.payer_receive'),
+            Business::PAYER_SENDER => __('label.payer_sender'),
+        ];
+
         $listProvince = Province::where(['publish' => 1])->get();
 
         $listCar = Other::where(['type' => Business::OTHER_TYPE_CAR])->get();
-        return view('admin.order.form', compact('title', 'item', 'orderMethod', 'orderPayment', 'listType', 'listCar', 'listProvince'));
+        return view('admin.order.form', compact('title', 'item', 'orderMethod', 'orderPayment',
+            'listType', 'listCar', 'listProvince', 'listPayer'));
     }
 
+    /**
+     * @param OrderRequest $request
+     * @param OrderDetailRepositoryContract $detailRepositoryContract
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function store(OrderRequest $request, OrderDetailRepositoryContract $detailRepositoryContract)
     {
-        $dataOrder = $request->only('name', 'type', 'payment_type','car_type', 'car_option', 'user_id', 'coupon_code');
+        $dataOrder = $request->only('name', 'type', 'payment_type','car_type', 'car_option', 'user_id',
+            'coupon_code', 'payer', 'is_speed');
         $dataOrder['total_price'] = str_replace(',', '', $request->total_price);
         $dataOrder['is_admin'] = 1;
         $orderId = $this->repository->store($dataOrder);
         if ($orderId){
-            $dataOrderDetail =  $request->only('sender_name', 'sender_phone','sender_address', 'receive_name', 'receive_phone', 'price_id',
-                'receive_address', 'km', 'weight', 'sender_province_id', 'sender_district_id', 'receive_province_id', 'receive_district_id', 'note');
+            $dataOrderDetail =  $request->only('sender_name', 'sender_phone','sender_address', 'receive_name',
+                'receive_phone', 'price_id', 'receive_address', 'km', 'weight', 'sender_province_id', 'sender_district_id',
+                'receive_province_id', 'receive_district_id', 'note', 'take_money');
+            if ($request->take_money){
+                $dataOrderDetail['take_money'] = str_replace(',', '', $request->take_money);
+            }
             $dataOrderDetail['order_id'] = $orderId;
-            $dataOrderDetail['sender_date'] = ($request->sender_date) ? Carbon::createFromFormat('d/m/Y', $request->sender_date)->format('Y-m-d') : date('Y-m-d');
-            $dataOrderDetail['receive_date'] = ($request->receive_date) ? Carbon::createFromFormat('d/m/Y', $request->receive_date)->format('Y-m-d') : null;
+            $dataOrderDetail['sender_date'] = ($request->sender_date) ? Carbon::createFromFormat('d/m/Y', $request->sender_date)
+                ->format('Y-m-d') : date('Y-m-d');
+            $dataOrderDetail['receive_date'] = ($request->receive_date) ? Carbon::createFromFormat('d/m/Y', $request->receive_date)
+                ->format('Y-m-d') : null;
 
             if ($detailRepositoryContract->store($dataOrderDetail)){
                 return redirect(route('order.list'))->with($this->messageResponse());
@@ -343,12 +364,22 @@ class OrderController extends Controller
         return redirect(route('order.list'))->with($this->messageResponse('danger', __('label.failed')));
     }
 
+    /**
+     * @param $provinceID
+     * @param District $district
+     * @return \Illuminate\Contracts\Routing\ResponseFactory|\Illuminate\Http\Response
+     */
     public function district($provinceID, District $district)
     {
-        $listDistrict = $district->select('id', 'name as text')->where(['province_id' => $provinceID, 'publish' => 1])->get();
+        $listDistrict = $district->select('id', 'name as text')->where(['province_id' => $provinceID])->get();
         return response(['district' => $listDistrict]);
     }
 
+    /**
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function payment($id, Request $request)
     {
         $order = $this->repository->find($id);
@@ -360,6 +391,12 @@ class OrderController extends Controller
         }
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
     }
+
+    /**
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function couponCode($id, Request $request)
     {
         $request->validate([
@@ -369,6 +406,27 @@ class OrderController extends Controller
         $order = $this->repository->find($id);
         if ($order) {
             $order->coupon_code = $request->coupon_code;
+            if ($order->save()) {
+                return redirect()->back()->with($this->messageResponse());
+            }
+        }
+        return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
+    }
+
+    /**
+     * @param $id
+     * @param Request $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function adminNote($id, Request $request)
+    {
+        $request->validate([
+            'admin_note' => 'required|max:255'
+        ]);
+
+        $order = OrderDetail::where(['order_id' => $id])->first();
+        if ($order) {
+            $order->admin_note = $request->admin_note;
             if ($order->save()) {
                 return redirect()->back()->with($this->messageResponse());
             }
