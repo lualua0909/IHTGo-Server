@@ -76,8 +76,8 @@
                     <!-- User image -->
                     <li class="user-header" style="height: 120px">
                         <p>
-                            Admin - Web Developer
-                            <small>Copyright: 2018</small>
+                            Admin - Web Developer (ghi tạm)
+                            <small>Thông tin cơ bản</small>
                         </p>
                     </li>
                     <!-- Menu Footer-->
