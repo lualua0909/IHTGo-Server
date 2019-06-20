@@ -84,7 +84,13 @@
 <script src="{{ asset('js/echo.js') }}"></script>
 <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
 
-
+<script>
+    Pusher.log = function( msg ) {
+      $(document.body).prepend( '<div>' + msg + '</div>' );
+    };
+    var pusher = new Pusher('');
+    Pusher.log( 'key="' + pusher.key + '"' );
+  </script>
 <script>
     Pusher.logToConsole = true;
 

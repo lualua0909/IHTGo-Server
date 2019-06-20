@@ -18933,7 +18933,7 @@ var Connector = function () {
             auth: {
                 headers: {}
             },
-            authEndpoint: '/broadcasting/auth',
+            authEndpoint: 'IHTGo-Server/broadcasting/auth',
             broadcaster: 'pusher',
             csrfToken: null,
             host: null,

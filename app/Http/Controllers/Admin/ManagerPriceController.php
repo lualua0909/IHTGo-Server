@@ -8,11 +8,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-
 use App\Helpers\Business;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ManagerPriceRequest;
-use App\Models\Data\District;
 use App\Models\Data\Other;
 use App\Models\Data\Province;
 use App\Models\ManagerPrice;
@@ -43,14 +41,14 @@ class ManagerPriceController extends Controller
         );
 
 //        $listOption = [
-//            Business::SETTING_MONEY_BY_KM => __('label.km'),
-//            Business::SETTING_MONEY_BY_WEIGHT => __('label.weight')
-//        ];
-//
-//        $listOptionColor = [
-//            Business::SETTING_MONEY_BY_KM => 'label-primary',
-//            Business::SETTING_MONEY_BY_WEIGHT => 'label-warning'
-//        ];
+        //            Business::SETTING_MONEY_BY_KM => __('label.km'),
+        //            Business::SETTING_MONEY_BY_WEIGHT => __('label.weight')
+        //        ];
+        //
+        //        $listOptionColor = [
+        //            Business::SETTING_MONEY_BY_KM => 'label-primary',
+        //            Business::SETTING_MONEY_BY_WEIGHT => 'label-warning'
+        //        ];
 
         $listType = [
             Business::PRICE_BY_TH1 => __('label.th1'),
@@ -65,16 +63,16 @@ class ManagerPriceController extends Controller
         ];
 
 //        $listTypeCar = [
-//            Business::CAR_TYPE_MOTORBIKE => __('label.motorbike'),
-//            Business::CAR_TYPE_TRUCK => __('label.truck'),
-//        ];
+        //            Business::CAR_TYPE_MOTORBIKE => __('label.motorbike'),
+        //            Business::CAR_TYPE_TRUCK => __('label.truck'),
+        //        ];
 
         $listTypeCar = Other::select('id', 'name')->where(['type' => Business::OTHER_TYPE_CAR])->get()->pluck('name', 'id')->toArray();
 
 //        $listTypeCarColor = [
-//            Business::CAR_TYPE_MOTORBIKE => 'label-primary',
-//            Business::CAR_TYPE_TRUCK => 'label-danger',
-//        ];
+        //            Business::CAR_TYPE_MOTORBIKE => 'label-primary',
+        //            Business::CAR_TYPE_TRUCK => 'label-danger',
+        //        ];
 
         $listResult = $this->model->all();
         return view('admin.price.list', compact(
@@ -82,8 +80,8 @@ class ManagerPriceController extends Controller
             'title',
             'listType',
             'listTypeColor',
-            'listOption',
-            'listOptionColor',
+            // 'listOption',
+            // 'listOptionColor',
             'listPublish',
             'listPublishColor',
             'listTypeCar'
@@ -93,14 +91,14 @@ class ManagerPriceController extends Controller
     public function create($type)
     {
 //        $listOption = [
-//            Business::SETTING_MONEY_BY_KM => __('label.km'),
-//            Business::SETTING_MONEY_BY_WEIGHT => __('label.weight')
-//        ];
-//        $listType = [
-//            Business::PRICE_BY_TH1 => __('label.th1'),
-//            Business::PRICE_BY_TH2 => __('label.th2'),
-//            Business::PRICE_BY_TH3 => __('label.th3'),
-//        ];
+        //            Business::SETTING_MONEY_BY_KM => __('label.km'),
+        //            Business::SETTING_MONEY_BY_WEIGHT => __('label.weight')
+        //        ];
+        //        $listType = [
+        //            Business::PRICE_BY_TH1 => __('label.th1'),
+        //            Business::PRICE_BY_TH2 => __('label.th2'),
+        //            Business::PRICE_BY_TH3 => __('label.th3'),
+        //        ];
         $view = $this->getFormCreate($type);
 
         $listProvince = Province::where(['publish' => Business::PUBLISH])->get();
@@ -110,7 +108,7 @@ class ManagerPriceController extends Controller
         $listTypeCar = Other::select('id', 'name')->where(['type' => Business::OTHER_TYPE_CAR])->get()->pluck('name', 'id')->toArray();
         $title = __('label.manager_price_create');
         $item = false;
-        return view('admin.price.' . $view, compact('item', 'title', 'listTypeCar','type', 'listProvince'));
+        return view('admin.price.' . $view, compact('item', 'title', 'listTypeCar', 'type', 'listProvince'));
     }
 
     public function store($type, ManagerPriceRequest $request)
@@ -120,16 +118,16 @@ class ManagerPriceController extends Controller
         $dataStore['option'] = Business::SETTING_MONEY_BY_WEIGHT;
         $dataStore['type'] = $type;
 //        if ($request->from && $request->to && $request->value){
-//            $advance = [];
-//            for($i = 0; $i < count($request->value); $i++){
-//                array_push($advance, [
-//                    'from' => $request->from[$i],
-//                    'to' => $request->to[$i],
-//                    'value' => str_replace(',', '', $request->value[$i])
-//                ]);
-//            }
-//            $dataStore['advance'] = $advance;
-//        }
+        //            $advance = [];
+        //            for($i = 0; $i < count($request->value); $i++){
+        //                array_push($advance, [
+        //                    'from' => $request->from[$i],
+        //                    'to' => $request->to[$i],
+        //                    'value' => str_replace(',', '', $request->value[$i])
+        //                ]);
+        //            }
+        //            $dataStore['advance'] = $advance;
+        //        }
         $dataStore['min_value'] = str_replace(',', '', $request->min_value);
         $dataStore['increase_value'] = str_replace(',', '', $request->increase_value);
         $dataStore['publish'] = Business::PUBLISH;
@@ -144,7 +142,7 @@ class ManagerPriceController extends Controller
     public function detail($id)
     {
         $item = $this->model->find($id);
-        if ($item){
+        if ($item) {
             $title = __('label.detail');
             $listPublish = array(
                 Business::PUBLISH => __('label.active'),
@@ -158,12 +156,12 @@ class ManagerPriceController extends Controller
 
             $listOption = [
                 Business::SETTING_MONEY_BY_KM => __('label.km'),
-                Business::SETTING_MONEY_BY_WEIGHT => __('label.weight')
+                Business::SETTING_MONEY_BY_WEIGHT => __('label.weight'),
             ];
 
             $listOptionColor = [
                 Business::SETTING_MONEY_BY_KM => 'label-primary',
-                Business::SETTING_MONEY_BY_WEIGHT => 'label-warning'
+                Business::SETTING_MONEY_BY_WEIGHT => 'label-warning',
             ];
 
             $listType = [
@@ -200,7 +198,7 @@ class ManagerPriceController extends Controller
         if ($listResult) {
             $listOption = [
                 Business::SETTING_MONEY_BY_KM => __('label.km'),
-                Business::SETTING_MONEY_BY_WEIGHT => __('label.weight')
+                Business::SETTING_MONEY_BY_WEIGHT => __('label.weight'),
             ];
 
             $listType = [
@@ -210,13 +208,13 @@ class ManagerPriceController extends Controller
             ];
 
             $listTypeCar = Other::select('id', 'name')->where(['type' => Business::OTHER_TYPE_CAR])->get()->pluck('name', 'id')->toArray();
-            return view('admin.price.show2', compact('listType','listTypeCar', 'listResult', 'listOption'));
+            return view('admin.price.show2', compact('listType', 'listTypeCar', 'listResult', 'listOption'));
         }
     }
 
     public function delete($id)
     {
-        if ($this->model->where(['id' => $id])->update(['publish' => Business::UN_PUBLISH])){
+        if ($this->model->where(['id' => $id])->update(['publish' => Business::UN_PUBLISH])) {
             return redirect(route('price.list'))->with($this->messageResponse());
         }
         return redirect(route('price.list'))->with($this->messageResponse('danger', __('label.failed')));
@@ -229,7 +227,7 @@ class ManagerPriceController extends Controller
 
     private function getFormCreate($type)
     {
-        switch ($type){
+        switch ($type) {
             case Business::PRICE_BY_TH1:
                 return 'provincial';
                 break;

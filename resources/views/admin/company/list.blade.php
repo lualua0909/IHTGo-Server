@@ -22,7 +22,7 @@
                     @endcan
                 </div>
                 </div>
-               
+
                 <hr>
                 <div class="row">
                     <div class="col-md-12">
@@ -110,7 +110,7 @@
                                     }
                                 } );
                                 return '<a ' +
-                                    'href="/admin/company/edit/' + data + '"' +
+                                    'href="company/edit/' + data + '"' +
                                     'class="btn btn-primary">' +
                                     '<i class="fa fa-edit"></i> ' +
                                     '</a> ' +

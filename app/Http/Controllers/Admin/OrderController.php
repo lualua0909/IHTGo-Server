@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-
 use App\Helpers\Business;
 use App\Helpers\HttpCode;
 use App\Http\Controllers\Controller;
@@ -18,8 +17,8 @@ use App\Models\Data\Other;
 use App\Models\Data\Province;
 use App\Models\OrderDetail;
 use App\Models\Warehouse;
-use App\Repositories\Order\OrderRepositoryContract;
 use App\Repositories\OrderDetail\OrderDetailRepositoryContract;
+use App\Repositories\Order\OrderRepositoryContract;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -52,7 +51,7 @@ class OrderController extends Controller
             Business::ORDER_STATUS_DONE_DELIVERY => __('label.done_delivery'),
             Business::ORDER_STATUS_CUSTOMER_CANCEL => __('label.customer_cancel'),
             Business::ORDER_STATUS_IHT_CANCEL => __('label.iht_cancel'),
-            Business::ORDER_STATUS_FAIL => __('label.order_fail')
+            Business::ORDER_STATUS_FAIL => __('label.order_fail'),
         );
         $orderStatusColor = array(
             Business::ORDER_STATUS_WAITING => 'label-warning',
@@ -61,7 +60,7 @@ class OrderController extends Controller
             Business::ORDER_STATUS_DONE_DELIVERY => 'label-success',
             Business::ORDER_STATUS_CUSTOMER_CANCEL => 'label-danger',
             Business::ORDER_STATUS_IHT_CANCEL => 'label-danger',
-            Business::ORDER_STATUS_FAIL => 'label-danger'
+            Business::ORDER_STATUS_FAIL => 'label-danger',
         );
 
         $listCar = Other::select('id', 'name')->where(['type' => Business::OTHER_TYPE_CAR])->get();
@@ -70,15 +69,15 @@ class OrderController extends Controller
         $orderPayment = array(
             Business::ORDER_STATUS_PAYMENT => __('label.payment_yes'),
             Business::ORDER_STATUS_NO_PAYMENT => __('label.payment_no'),
-            Business::PAYMENT_DEPT => __('label.payment_dept')
+            Business::PAYMENT_DEPT => __('label.payment_dept'),
         );
         $orderPaymentColor = array(
             Business::ORDER_STATUS_PAYMENT => 'label-success',
             Business::ORDER_STATUS_NO_PAYMENT => 'label-danger',
-            Business::PAYMENT_DEPT => 'label-primary'
+            Business::PAYMENT_DEPT => 'label-primary',
         );
 
-        return view('admin.order.list', compact('orderType', 'title', 'orderTypeColor', 'orderStatus',
+        return view('admin.order.list', compact('orderType', 'title', 'orderStatus',
             'orderStatusColor', 'orderPayment', 'orderPaymentColor'));
     }
 
@@ -89,7 +88,7 @@ class OrderController extends Controller
     private function convertObjectToArray($objectCar)
     {
         $result = [];
-        foreach ($objectCar as $car){
+        foreach ($objectCar as $car) {
             $result[$car->id] = $car->name;
         }
         return $result;
@@ -112,7 +111,7 @@ class OrderController extends Controller
     public function detail($id)
     {
         $item = $this->repository->find($id);
-        if (!$item){
+        if (!$item) {
             return abort(404);
         }
         $orderStatus = array(
@@ -122,7 +121,7 @@ class OrderController extends Controller
             Business::ORDER_STATUS_DONE_DELIVERY => __('label.done_delivery'),
             Business::ORDER_STATUS_CUSTOMER_CANCEL => __('label.customer_cancel'),
             Business::ORDER_STATUS_IHT_CANCEL => __('label.iht_cancel'),
-            Business::ORDER_STATUS_FAIL => __('label.order_fail')
+            Business::ORDER_STATUS_FAIL => __('label.order_fail'),
         );
         $orderStatusColor = array(
             Business::ORDER_STATUS_WAITING => 'label-warning',
@@ -131,7 +130,7 @@ class OrderController extends Controller
             Business::ORDER_STATUS_DONE_DELIVERY => 'label-success',
             Business::ORDER_STATUS_CUSTOMER_CANCEL => 'label-danger',
             Business::ORDER_STATUS_IHT_CANCEL => 'label-danger',
-            Business::ORDER_STATUS_FAIL => 'label-danger'
+            Business::ORDER_STATUS_FAIL => 'label-danger',
         );
 
         $listSpeed = [
@@ -149,13 +148,13 @@ class OrderController extends Controller
 
         $orderMethod = array(
             Business::PAYMENT_METHOD_CASH => __('label.method_cash'),
-            Business::PAYMENT_METHOD_MONTH =>__('label.method_month'),
-            Business::PAYMENT_METHOD_OTHER => __('label.method_other')
+            Business::PAYMENT_METHOD_MONTH => __('label.method_month'),
+            Business::PAYMENT_METHOD_OTHER => __('label.method_other'),
         );
         $orderMethodColor = array(
             Business::PAYMENT_METHOD_CASH => 'label-danger',
             Business::PAYMENT_METHOD_MONTH => 'label-info',
-            Business::PAYMENT_METHOD_OTHER => 'label-warning'
+            Business::PAYMENT_METHOD_OTHER => 'label-warning',
         );
 
         $listPayer = [
@@ -165,11 +164,11 @@ class OrderController extends Controller
 
         $orderPayment = array(
             Business::PAYMENT_DONE => __('label.payment_done'),
-            Business::PAYMENT_DEPT => __('label.payment_dept')
+            Business::PAYMENT_DEPT => __('label.payment_dept'),
         );
         $orderPaymentColor = array(
             Business::PAYMENT_DONE => 'label-success',
-            Business::PAYMENT_DEPT => 'label-danger'
+            Business::PAYMENT_DEPT => 'label-danger',
         );
 
         $listType = [
@@ -188,17 +187,17 @@ class OrderController extends Controller
 
         $config = $this->setConfigMaps();
         $config['directionsStart'] = optional($item->detail)->sender_address . ', '
-            . optional(optional($item->detail)->districtSender)->name . ', '
-            . optional(optional($item->detail)->provinceSender)->name;
+        . optional(optional($item->detail)->districtSender)->name . ', '
+        . optional(optional($item->detail)->provinceSender)->name;
         $config['directionsEnd'] = optional($item->detail)->receive_address . ', '
-            . optional(optional($item->detail)->districtReceive)->name . ', '
-            . optional(optional($item->detail)->provinceReceive)->name;
+        . optional(optional($item->detail)->districtReceive)->name . ', '
+        . optional(optional($item->detail)->provinceReceive)->name;
         app('map')->initialize($config);
 
         $map = app('map')->create_map();
 
         $title = $item->name;
-        return view('admin.order.detail', compact('map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'orderTypeColor', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
+        return view('admin.order.detail', compact('map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
     }
 
     /**
@@ -206,13 +205,13 @@ class OrderController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update($id=null, Request $request)
+    public function update($id = null, Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $order = $this->repository->find($id);
-            if ($order){
+            if ($order) {
                 $order->status = $request->status;
-                if ($order->save()){
+                if ($order->save()) {
                     return response()->json(['code' => 200], HttpCode::SUCCESS);
                 }
             }
@@ -225,12 +224,12 @@ class OrderController extends Controller
      * @param int $status
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function updateStatus($id=null, $status=Business::ORDER_STATUS_IHT_CANCEL)
+    public function updateStatus($id = null, $status = Business::ORDER_STATUS_IHT_CANCEL)
     {
         $order = $this->repository->find($id);
-        if ($order && $order->status == Business::ORDER_STATUS_WAITING){
+        if ($order && $order->status == Business::ORDER_STATUS_WAITING) {
             $order->status = $status;
-            if ($order->save()){
+            if ($order->save()) {
                 return redirect()->back()->with($this->messageResponse());
             }
         }
@@ -244,10 +243,10 @@ class OrderController extends Controller
      */
     public function ajaxPrice($id, Request $request)
     {
-        if ($request->ajax()){
+        if ($request->ajax()) {
             $order = $this->repository->find($id);
             $order->total_price = $request->price ? str_replace(',', '', $request->price) : '-1';
-            if ($order->save()){
+            if ($order->save()) {
                 return redirect()->back()->with($this->messageResponse());
             }
             return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
@@ -264,7 +263,7 @@ class OrderController extends Controller
         $config['zoom'] = '14';
         $config['height'] = 'auto';
         $config['width'] = 'auto';
-        $config['directions'] = TRUE;
+        $config['directions'] = true;
         $config['directionsDivID'] = 'directionsDiv';
         return $config;
     }
@@ -284,9 +283,9 @@ class OrderController extends Controller
     public function warehouse(Request $request)
     {
         $order = OrderDetail::where(['order_id' => $request->order_id])->first();
-        if ($order){
+        if ($order) {
             $order->warehouse_id = $request->id_warehouse;
-            if ($order->save()){
+            if ($order->save()) {
                 return redirect()->back()->with($this->messageResponse());
             }
             return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
@@ -303,13 +302,13 @@ class OrderController extends Controller
         $item = false;
         $orderMethod = array(
             Business::PAYMENT_METHOD_CASH => __('label.method_cash'),
-            Business::PAYMENT_METHOD_MONTH =>__('label.method_month'),
-            Business::PAYMENT_METHOD_OTHER => __('label.method_other')
+            Business::PAYMENT_METHOD_MONTH => __('label.method_month'),
+            Business::PAYMENT_METHOD_OTHER => __('label.method_other'),
         );
         $orderPayment = array(
             Business::ORDER_STATUS_PAYMENT => __('label.payment_yes'),
             Business::ORDER_STATUS_NO_PAYMENT => __('label.payment_no'),
-            Business::ORDER_STATUS_PAYMENT_DEPT => __('label.payment_dept')
+            Business::ORDER_STATUS_PAYMENT_DEPT => __('label.payment_dept'),
         );
 
         $listType = [
@@ -337,16 +336,16 @@ class OrderController extends Controller
      */
     public function store(OrderRequest $request, OrderDetailRepositoryContract $detailRepositoryContract)
     {
-        $dataOrder = $request->only('name', 'type', 'payment_type','car_type', 'car_option', 'user_id',
+        $dataOrder = $request->only('name', 'type', 'payment_type', 'car_type', 'car_option', 'user_id',
             'coupon_code', 'payer', 'is_speed');
         $dataOrder['total_price'] = str_replace(',', '', $request->total_price);
         $dataOrder['is_admin'] = 1;
         $orderId = $this->repository->store($dataOrder);
-        if ($orderId){
-            $dataOrderDetail =  $request->only('sender_name', 'sender_phone','sender_address', 'receive_name',
+        if ($orderId) {
+            $dataOrderDetail = $request->only('sender_name', 'sender_phone', 'sender_address', 'receive_name',
                 'receive_phone', 'price_id', 'receive_address', 'km', 'weight', 'sender_province_id', 'sender_district_id',
                 'receive_province_id', 'receive_district_id', 'note', 'take_money');
-            if ($request->take_money){
+            if ($request->take_money) {
                 $dataOrderDetail['take_money'] = str_replace(',', '', $request->take_money);
             }
             $dataOrderDetail['order_id'] = $orderId;
@@ -355,9 +354,9 @@ class OrderController extends Controller
             $dataOrderDetail['receive_date'] = ($request->receive_date) ? Carbon::createFromFormat('d/m/Y', $request->receive_date)
                 ->format('Y-m-d') : null;
 
-            if ($detailRepositoryContract->store($dataOrderDetail)){
+            if ($detailRepositoryContract->store($dataOrderDetail)) {
                 return redirect(route('order.list'))->with($this->messageResponse());
-            }else{
+            } else {
                 $this->repository->delete($orderId);
             }
         }
@@ -383,9 +382,9 @@ class OrderController extends Controller
     public function payment($id, Request $request)
     {
         $order = $this->repository->find($id);
-        if ($order){
+        if ($order) {
             $order->is_payment = $request->is_payment;
-            if ($order->save()){
+            if ($order->save()) {
                 return redirect()->back()->with($this->messageResponse());
             }
         }
@@ -400,7 +399,7 @@ class OrderController extends Controller
     public function couponCode($id, Request $request)
     {
         $request->validate([
-            'coupon_code' => 'required|unique:orders,coupon_code'
+            'coupon_code' => 'required|unique:orders,coupon_code',
         ]);
 
         $order = $this->repository->find($id);
@@ -421,7 +420,7 @@ class OrderController extends Controller
     public function adminNote($id, Request $request)
     {
         $request->validate([
-            'admin_note' => 'required|max:255'
+            'admin_note' => 'required|max:255',
         ]);
 
         $order = OrderDetail::where(['order_id' => $id])->first();

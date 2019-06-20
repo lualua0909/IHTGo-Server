@@ -2,16 +2,15 @@
 <script src="{{ asset('public/admin') }}/plugins/jQuery/jquery-2.2.3.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
 <script src="{{ asset('public/admin') }}/bootstrap/js/bootstrap.min.js"></script>
-{{--<script src="/js/app.js"></script>--}}
 <!-- SlimScroll -->
 <script src="{{ asset('public/admin') }}/plugins/slimScroll/jquery.slimscroll.min.js"></script>
 <!-- FastClick -->
 <script src="{{ asset('public/admin') }}/plugins/fastclick/fastclick.js"></script>
-<script src="/js/noty/lib/noty.min.js"></script>
+<script src="{{ asset('public/js/noty/lib/noty.min.js') }}"></script>
 
-<script src="{{ asset('js/echo.js') }}"></script>
+<script src="{{ asset('public/js/echo.js') }}"></script>
 <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
-<script src="{{asset('js')}}/notifications.js"></script>
+<script src="{{asset('public/js/notifications.js')}}"></script>
 <script>
     $( window ).load(function() {
         setTimeout(getNotification('{{route('api.notification.order')}}', 'count-order', 'show-order'), 1000);
@@ -64,9 +63,9 @@
 
 @yield('script')
 
-<script src="{{asset('js')}}/my_script.js"></script>
+<script src="{{asset('public/js/my_script.js')}}"></script>
 
 <!-- AdminLTE App -->
-<script src="{{ asset('public/admin') }}/dist/js/app.min.js"></script>
+<script src="{{ asset('public/admin/dist/js/app.min.js') }}"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="{{ asset('public/admin') }}/dist/js/demo.js"></script>
+<script src="{{ asset('public/admin/dist/js/demo.js') }}"></script>
