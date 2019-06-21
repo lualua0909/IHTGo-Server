@@ -96,7 +96,7 @@
 
     window.Echo = new Echo({
         broadcaster: 'pusher',
-        key: '558d93c3203367a6f98d',
+        key: '884ae9a5425e14da32b6',
         cluster: 'ap1',
         encrypted: true,
         logToConsole: true

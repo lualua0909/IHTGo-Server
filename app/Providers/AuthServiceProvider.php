@@ -3,8 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Permission\Permission;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -26,16 +26,17 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        Gate::before(function ($user){
-            if ($user->level == 1){
+        Gate::before(function ($user) {
+            if ($user->level == 1) {
                 return true;
             }
         });
 
-        if (!$this->app->runningInConsole()){
-            foreach (Permission::select('key')->get() as $permission){
-                Gate::define($permission->key, function ($user) use ($permission){
-                    return  $user->hasFilePermission($permission->key, $user->id);
+        if (!$this->app->runningInConsole()) {
+            $permissions = Permission::select('key')->get();
+            foreach ($permissions as $permission) {
+                Gate::define($permission->key, function ($user) use ($permission) {
+                    return $user->hasFilePermission($permission->key, $user->id);
                 });
             }
         }

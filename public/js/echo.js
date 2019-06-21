@@ -196,7 +196,7 @@ var Connector = (function() {
       auth: {
         headers: {}
       },
-      authEndpoint: "IHTGo-Server/broadcasting/auth",
+      authEndpoint: "broadcasting/auth",
       broadcaster: "pusher",
       csrfToken: null,
       host: null,
