@@ -253,12 +253,6 @@
       })
     }
   });</script>
-<!--[if lt IE 8]>
-<![endif]-->
-
-<!-- Add your site or application content here -->
-
-<!-- header start -->
 <header>
     @include('web.common.header_home')
 </header>

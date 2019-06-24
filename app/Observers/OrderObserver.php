@@ -44,32 +44,32 @@ class OrderObserver
      */
     public function updated(Order $order)
     {
-        try{
-            if ($order->status == Business::ORDER_STATUS_NO_DELIVERY){
+        try {
+            if ($order->status == Business::ORDER_STATUS_NO_DELIVERY) {
                 OrderDelivery::create(['order_id' => $order->id, 'status' => Business::ORDER_DELIVERY_GIAO]);
-            }else if ($order->status == Business::ORDER_STATUS_BEING_DELIVERY){
+            } else if ($order->status == Business::ORDER_STATUS_BEING_DELIVERY) {
                 OrderDelivery::create(['order_id' => $order->id, 'status' => Business::ORDER_DELIVERY_BEING]);
-            }else if ($order->status == Business::ORDER_STATUS_DONE_DELIVERY){
+            } else if ($order->status == Business::ORDER_STATUS_DONE_DELIVERY) {
                 OrderDelivery::create(['order_id' => $order->id, 'status' => Business::ORDER_DELIVERY_DONE]);
-            }else if ($order->status == Business::ORDER_STATUS_FAIL){
+            } else if ($order->status == Business::ORDER_STATUS_FAIL) {
                 OrderDelivery::create(['order_id' => $order->id, 'status' => Business::ORDER_DELIVERY_FAIL]);
             }
             if ($order->status != Business::ORDER_STATUS_WAITING
-                || $order->status != Business::ORDER_STATUS_CUSTOMER_CANCEL){
+                || $order->status != Business::ORDER_STATUS_CUSTOMER_CANCEL) {
                 $msg = $this->handleMsgToDevice($order->status);
                 $bodyMsg = sprintf(Business::FCM_CUSTOMER_STATUS, $order->code, $msg);
                 $this->streamMessageToDevice->sendMsgToDevice(optional(optional($order->customer)->device)->fcm, Business::FCM_ORDER_TITLE, $bodyMsg);
-                if ($order->status == Business::ORDER_STATUS_NO_DELIVERY){
+                if ($order->status == Business::ORDER_STATUS_NO_DELIVERY) {
                     $this->streamMessageToDevice->sendMsgToDevice($order->driverDevice($order->id), Business::FCM_ORDER_TITLE, $bodyMsg);
                 }
-            }else{
+            } else {
                 //$this->socketClient->msgNewOrder($order);
             }
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             logger([
                 'service' => 'fcm noti',
                 'content' => $exception->getMessage(),
-                'user' => request()->user()
+                'user' => request()->user(),
             ]);
         }
     }
@@ -91,7 +91,7 @@ class OrderObserver
     private function handleMsgToDevice($status)
     {
         $msg = __('label.undefined');
-        switch ($status){
+        switch ($status) {
             case Business::ORDER_STATUS_NO_DELIVERY:
                 $msg = __('label.no_delivery');
                 break;

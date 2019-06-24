@@ -36,9 +36,9 @@
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
-<script src="{{ asset('Store-Locator') }}/dist/assets/js/libs/handlebars.min.js"></script>
+<script src="{{ asset('public/Store-Locator/dist/assets/js/libs/handlebars.min.js') }}"></script>
 <script src="https://maps.google.com/maps/api/js?key=AIzaSyCoYHFhB9SbbUGXJ9jzhmSMihCJOOoQFyY"></script>
-<script src="{{ asset('Store-Locator') }}/dist/assets/js/plugins/storeLocator/jquery.storelocator.js"></script>
+<script src="{{ asset('public/Store-Locator/dist/assets/js/plugins/storeLocator/jquery.storelocator.js') }}"></script>
 <script>
     $(function() {
         $.ajaxSetup({
@@ -48,7 +48,7 @@
         });
         $('#bh-sl-map-container').storeLocator({
             dataType: 'json',
-            dataLocation: 'http://127.0.0.1:8000/Store-Locator/dist/data/locations.json'
+            dataLocation: 'http://127.0.0.1/Store-Locator/dist/data/locations.json'
         });
     });
 </script>

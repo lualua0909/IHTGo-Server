@@ -8,17 +8,11 @@
 
 namespace App\Events;
 
-use App\Helpers\Business;
 use App\Models\Customer;
-use App\Models\Order;
 use Illuminate\Broadcasting\Channel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class CustomerNotification implements ShouldBroadcastNow
 {
@@ -38,7 +32,7 @@ class CustomerNotification implements ShouldBroadcastNow
             'content' => sprintf($msg, $customer->user->name, route('customer.detail', $customer->id), $customer->user->name),
             'type' => $type,
             'orderID' => $customer->id,
-            'route' => route('customer.detail', $customer->id)
+            'route' => route('customer.detail', $customer->id),
         ];
     }
 

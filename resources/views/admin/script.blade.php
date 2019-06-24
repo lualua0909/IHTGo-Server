@@ -17,8 +17,9 @@
         setTimeout(getNotification('{{route('api.notification.chat')}}', 'count-chat', 'show-chat'), 1000);
     });
 
-    Pusher.logToConsole = false;
+    Pusher.logToConsole = true;
     window.Echo = new Echo({
+        authEndpoint : 'http://127.0.0.1/IHTGo-Server/broadcasting/auth',
         broadcaster: 'pusher',
         key: '{{config()->get('broadcasting.connections.pusher.key')}}',
         cluster: '{{config()->get('broadcasting.connections.pusher.options.cluster')}}',

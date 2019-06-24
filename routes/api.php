@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | is assigned the "api" middleware group. Enjoy building your API!
 |
-*/
+ */
 
 Route::get('/', function () {
     return response()->json([
@@ -35,7 +35,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::namespace('Api\v1')->group(function (){
+Route::namespace ('Api\v1')->group(function () {
 
     Route::group(['prefix' => 'v1'], function () {
 
@@ -73,9 +73,9 @@ Route::namespace('Api\v1')->group(function (){
         });
         Route::post('driver/login', 'AuthController@driverLogin')->name('api.driver.login');
         // company
-            Route::group(['prefix' => 'company'], function () {
-                Route::post('', 'CompanyController@getList')->name('api.company.list');
-            });
+        Route::group(['prefix' => 'company'], function () {
+            Route::post('', 'CompanyController@getList')->name('api.company.list');
+        });
         Route::group(['middleware' => 'jwt'], function () {
             Route::post('evaluate', 'EvaluateController@store')->name('api.evaluate.store');
 
@@ -107,8 +107,6 @@ Route::namespace('Api\v1')->group(function (){
             Route::get('support/driver', 'ChatController@driver')->name('api.support.driver');
             Route::get('support/customer', 'ChatController@customer')->name('api.support.customer');
 
-            
-
             // Collection Of Debt
             Route::group(['prefix' => 'collection'], function () {
                 Route::get('', 'CollectionOfDebtController@getList')->name('api.collection.list');
@@ -130,5 +128,3 @@ Route::namespace('Api\v1')->group(function (){
 });
 
 Route::post('noti', 'Api\v1\DataController@noti')->name('api.data.noti');
-
-
