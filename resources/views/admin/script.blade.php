@@ -19,7 +19,7 @@
 
     Pusher.logToConsole = true;
     window.Echo = new Echo({
-        authEndpoint : 'http://127.0.0.1/IHTGo-Server/broadcasting/auth',
+        authEndpoint : 'https://admin.ihtgo.com.vn/broadcasting/auth',
         broadcaster: 'pusher',
         key: '{{config()->get('broadcasting.connections.pusher.key')}}',
         cluster: '{{config()->get('broadcasting.connections.pusher.options.cluster')}}',
