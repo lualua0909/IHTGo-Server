@@ -130,7 +130,6 @@ class DeliveryController extends Controller
                 $data['driver_id'] = $driver->id;
                 $data['car_id'] = $driver->car->id;
                 if ($this->repository->store($data)) {
-                    dd($data);
                     return redirect()->back()->with($this->messageResponse());
                 }
             }
