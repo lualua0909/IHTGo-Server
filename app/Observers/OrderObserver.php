@@ -67,6 +67,7 @@ class OrderObserver
                 }
             }
         } catch (\Exception $exception) {
+            dd($exception->getMessage());
             logger([
                 'service' => 'fcm noti',
                 'content' => $exception->getMessage(),

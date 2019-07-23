@@ -46,11 +46,11 @@ class DownstreamMessageToDevice
 
             //return Array - you should try to resend the message to the tokens in the array
             $downstreamResponse->tokensToRetry();
-            dd('da gui');
             return true;
 
             // return Array (key:token, value:errror) - in production you should remove from your database the tokens
         } catch (\Exception $exception) {
+            dd($exception->getMessage());
             logger(['service' => 'FCM Notification', 'content' => $exception->getMessage()]);
             return false;
         }
