@@ -31,7 +31,7 @@ class DownstreamMessageToDevice
             $option = $optionBuilder->build();
             $notification = $notificationBuilder->build();
             $data = $dataBuilder->build();
-            $downstreamResponse = FCM::sendTo('eruXegJvFHg:APA91bEYwi85EFxglSQUaVokO8PTT3bAa2_gt260k0uURT53U205hG_igCz-WnhCkFaSziNCnRIVB8QF4tQBEvLcNm6xC57Q_R7s_UVdpOyda9ZGOwZhY8YLQ4Ha5MJXUDJlbVF99CoM', $option, $notification, $data);
+            $downstreamResponse = FCM::sendTo($token, $option, $notification, $data);
 
             $downstreamResponse->numberSuccess();
             $downstreamResponse->numberFailure();
@@ -49,7 +49,6 @@ class DownstreamMessageToDevice
 
             // return Array (key:token, value:errror) - in production you should remove from your database the tokens
         } catch (\Exception $exception) {
-            dd($exception);
             logger(['service' => 'FCM Notification', 'content' => $exception->getMessage()]);
             return false;
         }
