@@ -31,6 +31,7 @@ class DownstreamMessageToDevice
             $option = $optionBuilder->build();
             $notification = $notificationBuilder->build();
             $data = $dataBuilder->build();
+            echo $token;
             $downstreamResponse = FCM::sendTo($token, $option, $notification, $data);
 
             $downstreamResponse->numberSuccess();

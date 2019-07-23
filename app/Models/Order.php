@@ -86,7 +86,6 @@ class Order extends BaseModel
             ->join('devices as de', 'de.user_id', '=', 'dr.user_id')
             ->where(['d.order_id' => $orderID])
             ->first();
-        dd($token);
         return $token->fcm;
     }
 
