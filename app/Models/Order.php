@@ -79,7 +79,7 @@ class Order extends BaseModel
      * @param $orderID
      * @return mixed
      */
-    public function driverDevice($orderID)
+    public static function driverDevice($orderID)
     {
         $token = DB::table('deliveries as d')
             ->join('drivers as dr', 'dr.id', '=', 'd.driver_id')
