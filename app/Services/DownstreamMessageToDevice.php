@@ -31,6 +31,7 @@ class DownstreamMessageToDevice
             $option = $optionBuilder->build();
             $notification = $notificationBuilder->build();
             $data = $dataBuilder->build();
+            echo $token;
             $downstreamResponse = FCM::sendTo($token, $option, $notification, $data);
 
             $downstreamResponse->numberSuccess();
@@ -45,7 +46,7 @@ class DownstreamMessageToDevice
 
             //return Array - you should try to resend the message to the tokens in the array
             $downstreamResponse->tokensToRetry();
-
+            dd('da gui');
             return true;
 
             // return Array (key:token, value:errror) - in production you should remove from your database the tokens

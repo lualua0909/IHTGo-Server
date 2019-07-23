@@ -63,8 +63,6 @@ class OrderObserver
 
                     $bodyMsg = sprintf(Business::FCM_DRIVER_ORDER, $order->code);
                     $fcm = Order::driverDevice($order->id);
-                    echo $fcm;
-                    dd($order);
                     $this->streamMessageToDevice->sendMsgToDevice($fcm, Business::FCM_ORDER_TITLE, $bodyMsg, $order->id);
                 }
             }
