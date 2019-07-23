@@ -56,15 +56,15 @@ class OrderObserver
             }
             if ($order->status != Business::ORDER_STATUS_WAITING
                 || $order->status != Business::ORDER_STATUS_CUSTOMER_CANCEL) {
+                echo $order->id;
                 $msg = $this->handleMsgToDevice($order->status);
                 $bodyMsg = sprintf(Business::FCM_CUSTOMER_STATUS, $order->code, $msg);
                 $this->streamMessageToDevice->sendMsgToDevice(optional(optional($order->customer)->device)->fcm, Business::FCM_ORDER_TITLE, $bodyMsg, $order->id);
                 if ($order->status == Business::ORDER_STATUS_NO_DELIVERY) {
+                    echo '1234';
                     $bodyMsg = sprintf(Business::FCM_DRIVER_ORDER, $order->code);
                     $this->streamMessageToDevice->sendMsgToDevice($order->driverDevice($order->id), Business::FCM_ORDER_TITLE, $bodyMsg, $order->id);
                 }
-            } else {
-                //$this->socketClient->msgNewOrder($order);
             }
         } catch (\Exception $exception) {
             logger([
