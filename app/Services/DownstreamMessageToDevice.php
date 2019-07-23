@@ -12,20 +12,21 @@ use LaravelFCM\Facades\FCM;
 use LaravelFCM\Message\OptionsBuilder;
 use LaravelFCM\Message\PayloadDataBuilder;
 use LaravelFCM\Message\PayloadNotificationBuilder;
+
 class DownstreamMessageToDevice
 {
-    public function sendMsgToDevice($token, $title, $body)
+    public function sendMsgToDevice($token, $title, $body, $order_id)
     {
-        try{
+        try {
             $optionBuilder = new OptionsBuilder();
-            $optionBuilder->setTimeToLive(60*20);
+            $optionBuilder->setTimeToLive(60 * 20);
 
             $notificationBuilder = new PayloadNotificationBuilder($title);
             $notificationBuilder->setBody($body)
                 ->setSound('default');
 
             $dataBuilder = new PayloadDataBuilder();
-            $dataBuilder->addData(['a_data' => 'my_data']);
+            $dataBuilder->addData(['order_id' => $order_id]);
 
             $option = $optionBuilder->build();
             $notification = $notificationBuilder->build();
@@ -49,7 +50,7 @@ class DownstreamMessageToDevice
             return true;
 
             // return Array (key:token, value:errror) - in production you should remove from your database the tokens
-        }catch (\Exception $exception){
+        } catch (\Exception $exception) {
             logger(['service' => 'FCM Notification', 'content' => $exception->getMessage()]);
             return false;
         }

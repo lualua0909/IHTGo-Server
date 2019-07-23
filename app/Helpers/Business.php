@@ -8,7 +8,6 @@
 
 namespace App\Helpers;
 
-
 class Business
 {
     const PAGE_SIZE = 10;
@@ -125,7 +124,7 @@ class Business
 
     //FCM
     const FCM_CUSTOMER_STATUS = 'Đơn hàng <%1$s> của bạn đang được xử lý <%2$s>';
-    const FCM_DRIVER_ORDER = 'Bạn vừa được phân công phụ trach đơn hàng <%1$s>';
+    const FCM_DRIVER_ORDER = 'Bạn vừa được phân công đơn hàng <%1$s>';
     const FCM_ORDER_TITLE = 'Thông báo đơn hàng';
     const FCM_DEPT_DRIVER = 'Bạn vừa được phân công phụ trach thu tien ho <%1$s>';
 

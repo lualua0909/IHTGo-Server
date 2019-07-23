@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\Admin;
 
-
 use App\Helpers\Business;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\DeliveryRequest;
@@ -48,7 +47,7 @@ class DeliveryController extends Controller
             Business::ORDER_STATUS_DONE_DELIVERY => __('label.done_delivery'),
             Business::ORDER_STATUS_CUSTOMER_CANCEL => __('label.customer_cancel'),
             Business::ORDER_STATUS_IHT_CANCEL => __('label.iht_cancel'),
-            Business::ORDER_STATUS_FAIL => __('label.order_fail')
+            Business::ORDER_STATUS_FAIL => __('label.order_fail'),
         );
         $orderStatusColor = array(
             Business::ORDER_STATUS_WAITING => 'label-warning',
@@ -57,7 +56,7 @@ class DeliveryController extends Controller
             Business::ORDER_STATUS_DONE_DELIVERY => 'label-success',
             Business::ORDER_STATUS_CUSTOMER_CANCEL => 'label-danger',
             Business::ORDER_STATUS_IHT_CANCEL => 'label-danger',
-            Business::ORDER_STATUS_FAIL => 'label-danger'
+            Business::ORDER_STATUS_FAIL => 'label-danger',
         );
         return view('admin.delivery.list', compact('title', 'orderStatus', 'orderStatusColor'));
     }
@@ -86,9 +85,9 @@ class DeliveryController extends Controller
         $data = [
             'driver_id' => $request->driver_id,
             'car_id' => $request->car_id,
-            'user_id' => $request->user()->id
+            'user_id' => $request->user()->id,
         ];
-        foreach ($request->order as $orderID){
+        foreach ($request->order as $orderID) {
             $item = $order->find($orderID);
             if ($item && $item->status == Business::ORDER_STATUS_WAITING) {
                 $data['order_id'] = $order;
@@ -108,7 +107,7 @@ class DeliveryController extends Controller
         $item = $order->find($request->order_id);
         if ($item && $item->status == Business::ORDER_STATUS_WAITING) {
             $data = $request->only('car_id', 'order_id', 'driver_id', 'user_id');
-            if ($this->repository->store($data)){
+            if ($this->repository->store($data)) {
                 return redirect()->back()->with($this->messageResponse());
             }
         }
@@ -127,10 +126,11 @@ class DeliveryController extends Controller
         if ($item && $item->status == Business::ORDER_STATUS_WAITING) {
             $data = $request->only('order_id', 'user_id');
             $driver = $driverRepositoryContract->find($request->id_driver_only);
-            if ($driver && $driver->car){
+            if ($driver && $driver->car) {
                 $data['driver_id'] = $driver->id;
                 $data['car_id'] = $driver->car->id;
-                if ($this->repository->store($data)){
+                if ($this->repository->store($data)) {
+                    dd($data);
                     return redirect()->back()->with($this->messageResponse());
                 }
             }
@@ -144,7 +144,7 @@ class DeliveryController extends Controller
      */
     public function delete($id)
     {
-        if ($this->repository->delete($id)){
+        if ($this->repository->delete($id)) {
             return redirect()->back()->with($this->messageResponse());
         }
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
