@@ -60,8 +60,9 @@ class OrderObserver
                 $bodyMsg = sprintf(Business::FCM_CUSTOMER_STATUS, $order->code, $msg);
                 $this->streamMessageToDevice->sendMsgToDevice(optional(optional($order->customer)->device)->fcm, Business::FCM_ORDER_TITLE, $bodyMsg, $order->id);
                 if ($order->status == Business::ORDER_STATUS_NO_DELIVERY) {
-                    $bodyMsg = sprintf(Business::FCM_DRIVER_ORDER, $order->code);
                     echo $order->driverDevice($order->id);
+                    $bodyMsg = sprintf(Business::FCM_DRIVER_ORDER, $order->code);
+
                     $this->streamMessageToDevice->sendMsgToDevice($order->driverDevice($order->id), Business::FCM_ORDER_TITLE, $bodyMsg, $order->id);
                 }
             }
