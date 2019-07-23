@@ -49,6 +49,7 @@ class DownstreamMessageToDevice
 
             // return Array (key:token, value:errror) - in production you should remove from your database the tokens
         } catch (\Exception $exception) {
+            dd($exception);
             logger(['service' => 'FCM Notification', 'content' => $exception->getMessage()]);
             return false;
         }
