@@ -15,7 +15,7 @@ use LaravelFCM\Message\PayloadNotificationBuilder;
 
 class DownstreamMessageToDevice
 {
-    public function sendMsgToDevice($token, $title, $body, $order_id)
+    public function sendMsgToDevice($token, $title, $body, $order_id, $action = 0)
     {
         try {
             $optionBuilder = new OptionsBuilder();
@@ -27,6 +27,7 @@ class DownstreamMessageToDevice
 
             $dataBuilder = new PayloadDataBuilder();
             $dataBuilder->addData(['order_id' => $order_id]);
+            $dataBuilder->addData(['action' => $action]);
 
             $option = $optionBuilder->build();
             $notification = $notificationBuilder->build();
@@ -49,6 +50,7 @@ class DownstreamMessageToDevice
 
             // return Array (key:token, value:errror) - in production you should remove from your database the tokens
         } catch (\Exception $exception) {
+            dd($exception->getMessage());
             logger(['service' => 'FCM Notification', 'content' => $exception->getMessage()]);
             return false;
         }

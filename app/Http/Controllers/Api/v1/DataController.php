@@ -8,7 +8,6 @@
 
 namespace App\Http\Controllers\Api\v1;
 
-
 use App\Helpers\Business;
 use App\Helpers\HttpCode;
 use App\Helpers\MessageApi;
@@ -47,7 +46,6 @@ class DataController extends ApiController
     public function noti(DownstreamMessageToDevice $messageToDevice)
     {
         $token = "faCdrYmJz3Q:APA91bH2L9BJlbagsHyXN7ITk_38dLsfZAA5FRS6yeu-sMtH0u0T02R6cw6hkmhWCxSxAwPhQel5nK6m2c6rtau1F-qM5WlUF-vq7-HGCCcGyR0xhtmn2NaZaB4F5hRV3NpiCnRR5-xu";
-        dd($messageToDevice->sendMsgToDevice($token));
     }
 
     /**
@@ -59,9 +57,9 @@ class DataController extends ApiController
     {
         $userId = $request->user()->id;
         $device->where(['user_id' => $userId])->delete();
-        $data = $request->only('fcm','device_id','device_name','os','app_version');
+        $data = $request->only('fcm', 'device_id', 'device_name', 'os', 'app_version');
         $data['user_id'] = $userId;
-        if ($device->create($data)){
+        if ($device->create($data)) {
             return response()->json(MessageApi::success([]));
         }
         return response()->json(MessageApi::error([MessageApi::ITEM_DOES_NOT_EXISTS]), HttpCode::SUCCESS);

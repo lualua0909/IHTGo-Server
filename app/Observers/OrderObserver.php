@@ -58,15 +58,16 @@ class OrderObserver
                 || $order->status != Business::ORDER_STATUS_CUSTOMER_CANCEL) {
                 $msg = $this->handleMsgToDevice($order->status);
                 $bodyMsg = sprintf(Business::FCM_CUSTOMER_STATUS, $order->code, $msg);
-                $this->streamMessageToDevice->sendMsgToDevice(optional(optional($order->customer)->device)->fcm, Business::FCM_ORDER_TITLE, $bodyMsg, $order->id);
+                $this->streamMessageToDevice->sendMsgToDevice(optional(optional($order->customer)->device)->fcm, Business::FCM_ORDER_TITLE, $bodyMsg, $order->id, 0);
                 if ($order->status == Business::ORDER_STATUS_NO_DELIVERY) {
 
                     $bodyMsg = sprintf(Business::FCM_DRIVER_ORDER, $order->code);
                     $fcm = Order::driverDevice($order->id);
-                    $this->streamMessageToDevice->sendMsgToDevice($fcm, Business::FCM_ORDER_TITLE, $bodyMsg, $order->id);
+                    $this->streamMessageToDevice->sendMsgToDevice($fcm, Business::FCM_ORDER_TITLE, $bodyMsg, $order->id, 0);
                 }
             }
         } catch (\Exception $exception) {
+            dd($exception->getMessage());
             logger([
                 'service' => 'fcm noti',
                 'content' => $exception->getMessage(),

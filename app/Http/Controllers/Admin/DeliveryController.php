@@ -16,6 +16,7 @@ use App\Models\Driver;
 use App\Models\Order;
 use App\Repositories\Delivery\DeliveryRepositoryContract;
 use App\Repositories\Driver\DriverRepositoryContract;
+use App\Services\DownstreamMessageToDevice;
 use Illuminate\Http\Request;
 
 class DeliveryController extends Controller
@@ -24,7 +25,7 @@ class DeliveryController extends Controller
      * @var DeliveryRepositoryContract
      */
     public $repository;
-
+    public $streamMessageToDevice;
     /**
      * DeliveryController constructor.
      * @param DeliveryRepositoryContract $repositoryContract
@@ -32,6 +33,7 @@ class DeliveryController extends Controller
     public function __construct(DeliveryRepositoryContract $repositoryContract)
     {
         $this->repository = $repositoryContract;
+        $this->streamMessageToDevice = new DownstreamMessageToDevice();
     }
 
     /**
@@ -143,7 +145,9 @@ class DeliveryController extends Controller
      */
     public function delete($id)
     {
+        $fcm = Order::findFCMByDelivery($id);
         if ($this->repository->delete($id)) {
+            $this->streamMessageToDevice->sendMsgToDevice($fcm->fcm, 'Thông báo hủy đơn hàng', 'Có 1 đơn hàng vừa bị hủy', $fcm->order_id, 1);
             return redirect()->back()->with($this->messageResponse());
         }
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));

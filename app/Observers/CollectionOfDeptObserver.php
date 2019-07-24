@@ -31,10 +31,9 @@ class CollectionOfDeptObserver
      */
     public function updated(CollectionOfDebt $collectionOfDebt)
     {
-        if ($collectionOfDebt->employee_id)
-        {
+        if ($collectionOfDebt->employee_id) {
             $bodyMsg = sprintf(Business::FCM_DEPT_DRIVER, $collectionOfDebt->name);
-            $this->streamMessageToDevice->sendMsgToDevice(optional($collectionOfDebt->user)->device, Business::FCM_ORDER_TITLE, $bodyMsg);
+            $this->streamMessageToDevice->sendMsgToDevice(optional($collectionOfDebt->user)->device, Business::FCM_ORDER_TITLE, $bodyMsg, 0);
         }
     }
 
