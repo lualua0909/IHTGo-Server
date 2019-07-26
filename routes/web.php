@@ -122,6 +122,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
     Route::group(['prefix' => 'data'], function () {
         Route::get('district/{province_id?}', 'Admin\DistrictController@district')->name('district.index')->middleware(['can:data']);
         Route::post('district/{id?}', 'Admin\DistrictController@action')->name('district.action')->middleware(['can:data']);
+        Route::post('district2/{id?}', 'Admin\DistrictController@action2')->name('district.action2')->middleware(['can:data']);
         Route::get('', 'Admin\ProvinceController@index')->name('province.index')->middleware(['can:data']);
         Route::post('/{province_id?}', 'Admin\ProvinceController@action')->name('province.action')->middleware(['can:data']);
     });

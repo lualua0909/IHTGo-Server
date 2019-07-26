@@ -51,4 +51,16 @@ class DistrictController extends Controller
         }
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
     }
+    public function action2($id=null, Request $request)
+    {
+        $item = $this->district->find($id);
+        if ($item){
+            $publish_2 = ($request->publish_2) ? $request->publish_2 : 0;
+            $item->publish_2 = $publish_2;
+            if ($item->save()){
+                return redirect(route('district.index', $item->province_id))->with($this->messageResponse());
+            }
+        }
+        return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
+    }
 }

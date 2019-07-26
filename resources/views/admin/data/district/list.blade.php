@@ -16,18 +16,29 @@
                         <th>{{ __('label.name') }}</th>
                         <th>{{ __('label.status') }}</th>
                         <th class="text-center">{{ __('label.action') }}</th>
+                        <th class="text-center">Văn phòng</th>
                     </tr>
                     </thead>
                     <tbody>
                     @foreach($listResult as $item)
                         <tr>
-                            <td>{{ $item->name }}</td>
+                            <td>{{ $item->name }} </td>
                             <td> <span class="label {{$listPublishColor[$item->publish]}}">{{ $listPublish[$item->publish] }}</span></td>
                             <td class="text-center">
                                     <form action="{{route('district.action', $item->id)}}" method="post">
                                         @csrf
                                         <input name="publish" type="checkbox" value="1" @if($item->publish == 1) checked @endif />
                                         <button class="btn btn-primary btn-sm">
+                                            <i class="fa fa-edit"></i>
+                                        </button>
+                                    </form>
+
+                            </td>
+                            <td class="text-center">
+                                    <form action="{{route('district.action2', $item->id)}}" method="post">
+                                        @csrf
+                                        <input name="publish_2" type="checkbox" value="1" @if($item->publish_2 == 1) checked @endif />
+                                        <button type="submit" class="btn btn-primary btn-sm">
                                             <i class="fa fa-edit"></i>
                                         </button>
                                     </form>
