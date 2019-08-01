@@ -49,8 +49,8 @@
                                 <td>{{ optional($item->detail)->sender_address . ', ' . optional(optional($item->detail)->districtSender)->name . ', ' . optional(optional($item->detail)->provinceSender)->name }}</td>
                             </tr>
                             <tr>
-                                <th style="width: 40%">{{ __('label.sender_date') }}</th>
-                                <td>{{ optional($item->detail)->sender_date }}</td>
+                                <th>{{ __('label.created') }}</th>
+                                <td>{{ optional($item->customer)->created_at }}</td>
                             </tr>
                         </table>
                     </div>
