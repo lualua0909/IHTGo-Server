@@ -61,7 +61,7 @@
         <span>Không xác định</span>
 @endswitch
                                  </td>
-                            <td>{{ $order->total_price }} </td>
+                            <td>{{ number_format($order->total_price) }} </td>
                             <td>{{ $order->user_id }}</td>
                             <td>{{ $order->created_at }} </td>
                             </tr>
