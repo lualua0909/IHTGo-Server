@@ -123,6 +123,12 @@
                     <span>{{ __('label.order') }}</span>
                 </a>
             </li>
+            <li class="{{ ($str == 'order') ? 'active' : '' }}">
+                <a href="{{ route('order.list.new') }}">
+                    <i class="fa fa-fw fa-shopping-cart"></i>
+                    <span>Đơn hàng (very fastttt)</span>
+                </a>
+            </li>
         @endcan
         @can('view-delivery')
             <li class="{{ ($str == 'delivery') ? 'active' : '' }}">

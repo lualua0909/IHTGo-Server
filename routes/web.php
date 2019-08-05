@@ -9,13 +9,13 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
-Route::get('/', function(){
+Route::get('/', function () {
     return redirect(\route('dashboard'));
 });
 
-Route::get('privacy-policy', function(){
+Route::get('privacy-policy', function () {
     return view('privacy_policy');
 });
 
@@ -23,7 +23,6 @@ Route::get('privacy-policy', function(){
 
 Route::get('/activated/{user}', 'HomeController@activated')->name('activated')->middleware('signed');
 Route::post('/image/upload', 'ImageController@storeWeb')->name('image.web.store');
-
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('language', 'LanguageController@changeLanguage')->name('language');
@@ -164,6 +163,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
     // Manager Customer Order
     Route::group(['prefix' => 'order'], function () {
         Route::get('', 'Admin\OrderController@getList')->name('order.list')->middleware(['can:view-order']);
+        Route::get('list-new', 'Admin\OrderController@getListNew')->name('order.list.new')->middleware(['can:view-order']);
         Route::post('', 'Admin\OrderController@getListOrder')->name('order.post.list')->middleware(['can:view-order']);
         Route::get('add', 'Admin\OrderController@create')->name('order.add')->middleware(['can:create-order']);
         Route::post('add', 'Admin\OrderController@store')->name('order.store')->middleware(['can:create-order']);
@@ -197,7 +197,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
     });
 
     // Manager Finance
-    Route::group(['prefix' => 'finance'], function (){
+    Route::group(['prefix' => 'finance'], function () {
         Route::get('', 'Admin\FinanceController@index')->name('finance.list')->middleware(['can:view-finance']);
         Route::post('', 'Admin\FinanceController@getList')->name('finance.getList')->middleware(['can:view-finance']);
         Route::get('detail', 'Admin\FinanceController@detail')->name('finance.detail')->middleware(['can:view-finance']);
@@ -208,13 +208,13 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
     });
 
     // Manager Chat
-    Route::group(['prefix' => 'chat'], function (){
+    Route::group(['prefix' => 'chat'], function () {
         Route::get('/{id?}', 'Admin\ChatController@index')->name('chat.list')->middleware(['can:view-chat']);
         Route::post('', 'Admin\ChatController@getList')->name('chat.getList')->middleware(['can:view-chat']);
     });
 
     // Manager Log
-    Route::group(['prefix' => 'log'], function (){
+    Route::group(['prefix' => 'log'], function () {
         Route::get('', 'Admin\LogController@index')->name('log.list')->middleware(['can:view-log']);
         Route::post('', 'Admin\LogController@getList')->name('log.getList')->middleware(['can:view-log']);
     });
@@ -247,8 +247,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
 
 Route::get('logs', '\Rap2hpoutre\LaravelLogViewer\LogViewerController@index');
 // Clear Cache
-Route::get('cache', function()
-{
+Route::get('cache', function () {
     $exitCode = \Illuminate\Support\Facades\Artisan::call('cache:clear');
     $exitCode = \Illuminate\Support\Facades\Artisan::call('view:clear');
     $exitCode = \Illuminate\Support\Facades\Artisan::call('config:clear');

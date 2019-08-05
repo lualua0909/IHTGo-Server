@@ -15,6 +15,7 @@ use App\Http\Requests\OrderRequest;
 use App\Models\Data\District;
 use App\Models\Data\Other;
 use App\Models\Data\Province;
+use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Warehouse;
 use App\Repositories\OrderDetail\OrderDetailRepositoryContract;
@@ -81,6 +82,12 @@ class OrderController extends Controller
             'orderStatusColor', 'orderPayment', 'orderPaymentColor'));
     }
 
+    public function getListNew()
+    {
+        $orders = Order::getListNew();
+        return view('admin.order.list2', compact('orders'));
+    }
+
     /**
      * @param $objectCar
      * @return array
@@ -110,13 +117,13 @@ class OrderController extends Controller
      */
     public function detail($id)
     {
-       
+
         $item = $this->repository->find($id);
-    
+
         if (!$item) {
             return abort(404);
         }
-        try{
+        try {
             $orderStatus = array(
                 Business::ORDER_STATUS_WAITING => __('label.waiting'),
                 Business::ORDER_STATUS_NO_DELIVERY => __('label.no_delivery'),
@@ -135,20 +142,20 @@ class OrderController extends Controller
                 Business::ORDER_STATUS_IHT_CANCEL => 'label-danger',
                 Business::ORDER_STATUS_FAIL => 'label-danger',
             );
-    
+
             $listSpeed = [
                 Business::ORDER_SPEED => __('label.speed'),
                 Business::ORDER_UN_SPEED => __('label.un_speed'),
             ];
-    
+
             $listCar = Other::where(['type' => Business::OTHER_TYPE_CAR])->get(['id', 'name']);
             $orderType = $this->convertObjectToArray($listCar);
-   
+
             $genderType = array(
                 Business::GENDER_MALE => __('label.male'),
                 Business::GENDER_FEMALE => __('label.female'),
             );
-    
+
             $orderMethod = array(
                 Business::PAYMENT_METHOD_CASH => __('label.method_cash'),
                 Business::PAYMENT_METHOD_MONTH => __('label.method_month'),
@@ -159,12 +166,12 @@ class OrderController extends Controller
                 Business::PAYMENT_METHOD_MONTH => 'label-info',
                 Business::PAYMENT_METHOD_OTHER => 'label-warning',
             );
-    
+
             $listPayer = [
                 Business::PAYER_RECEIVE => __('label.payer_receive'),
                 Business::PAYER_SENDER => __('label.payer_sender'),
             ];
-    
+
             $orderPayment = array(
                 Business::PAYMENT_DONE => __('label.payment_done'),
                 Business::PAYMENT_DEPT => __('label.payment_dept'),
@@ -173,20 +180,20 @@ class OrderController extends Controller
                 Business::PAYMENT_DONE => 'label-success',
                 Business::PAYMENT_DEPT => 'label-danger',
             );
-    
+
             $listType = [
                 Business::PRICE_BY_TH1 => __('label.th1'),
                 Business::PRICE_BY_TH2 => __('label.th2'),
                 Business::PRICE_BY_TH3 => __('label.th3'),
             ];
-    
+
             $listTypeColor = [
                 Business::PRICE_BY_TH1 => 'label-primary',
                 Business::PRICE_BY_TH2 => 'label-danger',
                 Business::PRICE_BY_TH3 => 'label-success',
             ];
-    
-           $listWarehouse  = Warehouse::all();
+
+            $listWarehouse = Warehouse::all();
             $config = $this->setConfigMaps();
             $config['directionsStart'] = optional($item->detail)->sender_address . ', '
             . optional(optional($item->detail)->districtSender)->name . ', '
@@ -195,16 +202,16 @@ class OrderController extends Controller
             . optional(optional($item->detail)->districtReceive)->name . ', '
             . optional(optional($item->detail)->provinceReceive)->name;
             app('map')->initialize($config);
-    
+
             $map = app('map')->create_map();
-    
+
             $title = $item->name;
             return view('admin.order.detail', compact('map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
-        
-        }catch(\Exception $e) {
+
+        } catch (\Exception $e) {
             dd($e);
         }
-       }
+    }
 
     /**
      * @param null $id
