@@ -36,25 +36,25 @@
                             <td>
                                 @switch($order->status)
         @case(1)
-        <span style="background-color: orange">Đang chờ</span>
+        <span style="border-radius: 5px; color: white; background-color: #f39c12; padding: 5px">Đang chờ</span>
         @break
         @case(2)
-        <span style="color: blue">Chưa giao</span>
+        <span style="border-radius: 5px; color: white; background-color: #3c8dbc; padding: 5px">Chưa giao</span>
         @break
         @case(3)
-        <span style="background-color: red">Đang giao</span>
+        <span style="border-radius: 5px; color: white; background-color: #dd4b39; padding: 5px">Đang giao</span>
         @break
         @case(4)
-        <span style="background-color: green">Đã hoàn thành</span>
+        <span style="border-radius: 5px; color: white; background-color: #00a65a; padding: 5px">Đã hoàn thành</span>
         @break
         @case(5)
-        <span style="background-color: gray">Khách hủy</span>
+        <span style="border-radius: 5px; color: white; background-color: gray; padding: 5px">Khách hủy</span>
         @break
         @case(6)
-        <span style="background-color: gray">IHT hủy</span>
+        <span style="border-radius: 5px; color: white; background-color: gray; padding: 5px">IHT hủy</span>
         @break
         @case(7)
-        <span style="background-color: gray">Không thành công</span>
+        <span style="border-radius: 5px; color: white; background-color: gray; padding: 5px">Không thành công</span>
         @break
 
     @default
