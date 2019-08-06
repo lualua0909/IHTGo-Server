@@ -13,12 +13,39 @@ class Order extends BaseModel
     public static function getListNew()
     {
         $orders = DB::table('orders')
-            ->select('orders.id as id', 'orders.code as code', 'orders.name as name', 'orders.car_type as car_type', 'orders.status as status', 'orders.total_price as total_price', 'users.id as user_id', 'orders.created_at as created_at')
+            ->select('orders.id as id', 'orders.code as code', 'orders.name as name', 'orders.car_type as car_type', 'orders.status as status', 'orders.total_price as total_price', 'users.name as user_id', 'orders.created_at as created_at')
             ->join('users', 'orders.user_id', '=', 'users.id')
             ->orderBy('orders.id', 'desc')->paginate(20);
         return $orders;
     }
-
+    public static function getListNewSearch($data)
+    {
+        $orders = DB::table('orders')
+            ->select('orders.id as id', 'orders.code as code', 'orders.name as name', 'orders.car_type as car_type', 'orders.status as status', 'orders.total_price as total_price', 'users.name as user_id', 'orders.created_at as created_at')
+            ->join('users', 'orders.user_id', '=', 'users.id');
+        if ($data->status != 0) {
+            $orders = $orders->where('orders.status', $data->status);
+        }
+        if ($data->payment_type != 0) {
+            $orders = $orders->where('orders.payment_type', $data->payment_type);
+        }
+        return $orders->orderBy('orders.id', 'desc')->paginate(20);
+    }
+    public static function postSearchListNew($data)
+    {
+        $orders = DB::table('orders')
+            ->select('orders.id as id', 'orders.code as code', 'orders.name as name', 'orders.car_type as car_type', 'orders.status as status', 'orders.total_price as total_price', 'users.name as user_id', 'orders.created_at as created_at')
+            ->join('users', 'orders.user_id', '=', 'users.id')
+            ->join('order_details','orders.id','=','order_details.order_id')
+            ->where('orders.code','LIKE', '%'.  $data->search. '%')
+            ->orWhere('orders.name','LIKE', '%'.  $data->search. '%')
+            ->orWhere('order_details.sender_name','LIKE', '%'.  $data->search. '%')
+            ->orWhere('order_details.sender_phone','LIKE', '%'.  $data->search. '%')
+            ->orWhere('order_details.receive_name','LIKE', '%'.  $data->search. '%')
+            ->orWhere('order_details.receive_phone','LIKE', '%'.  $data->search. '%')
+            ->orderBy('orders.id', 'desc')->paginate(20);
+        return $orders;
+    }
     protected $fillable = [
         'code', 'name', 'car_type', 'total_price', 'payment_type', 'user_id', 'status', 'is_payment', 'car_option',
         'is_admin', 'coupon_code', 'payer', 'is_speed',

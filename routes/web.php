@@ -164,6 +164,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
     Route::group(['prefix' => 'order'], function () {
         Route::get('', 'Admin\OrderController@getList')->name('order.list')->middleware(['can:view-order']);
         Route::get('list-new', 'Admin\OrderController@getListNew')->name('order.list.new')->middleware(['can:view-order']);
+        Route::post('list-new', 'Admin\OrderController@postListNew')->name('order.post.list.new');
+        Route::post('search-list-new', 'Admin\OrderController@postSearchListNew')->name('order.post.search.list.new');
         Route::post('', 'Admin\OrderController@getListOrder')->name('order.post.list')->middleware(['can:view-order']);
         Route::get('add', 'Admin\OrderController@create')->name('order.add')->middleware(['can:create-order']);
         Route::post('add', 'Admin\OrderController@store')->name('order.store')->middleware(['can:create-order']);

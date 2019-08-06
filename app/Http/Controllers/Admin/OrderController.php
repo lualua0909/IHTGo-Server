@@ -88,6 +88,16 @@ class OrderController extends Controller
         return view('admin.order.list2', compact('orders'));
     }
 
+    public function postListNew(Request $req)
+    {
+        $orders = Order::getListNewSearch($req);
+        return view('admin.order.list2', compact('orders'));
+    }
+    public function postSearchListNew(Request $req)
+    {
+        $orders = Order::postSearchListNew($req);
+        return view('admin.order.list2', compact('orders'));
+    }
     /**
      * @param $objectCar
      * @return array
