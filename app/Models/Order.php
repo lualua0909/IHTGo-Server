@@ -6,6 +6,7 @@ use App\Helpers\Business;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class Order extends BaseModel
 {
@@ -36,13 +37,13 @@ class Order extends BaseModel
         $orders = DB::table('orders')
             ->select('orders.id as id', 'orders.code as code', 'orders.name as name', 'orders.car_type as car_type', 'orders.status as status', 'orders.total_price as total_price', 'users.name as user_id', 'orders.created_at as created_at')
             ->join('users', 'orders.user_id', '=', 'users.id')
-            ->join('order_details','orders.id','=','order_details.order_id')
-            ->where('orders.code','LIKE', '%'.  $data->search. '%')
-            ->orWhere('orders.name','LIKE', '%'.  $data->search. '%')
-            ->orWhere('order_details.sender_name','LIKE', '%'.  $data->search. '%')
-            ->orWhere('order_details.sender_phone','LIKE', '%'.  $data->search. '%')
-            ->orWhere('order_details.receive_name','LIKE', '%'.  $data->search. '%')
-            ->orWhere('order_details.receive_phone','LIKE', '%'.  $data->search. '%')
+            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
+            ->where('orders.code', 'LIKE', '%' .  $data->search . '%')
+            ->orWhere('orders.name', 'LIKE', '%' .  $data->search . '%')
+            ->orWhere('order_details.sender_name', 'LIKE', '%' .  $data->search . '%')
+            ->orWhere('order_details.sender_phone', 'LIKE', '%' .  $data->search . '%')
+            ->orWhere('order_details.receive_name', 'LIKE', '%' .  $data->search . '%')
+            ->orWhere('order_details.receive_phone', 'LIKE', '%' .  $data->search . '%')
             ->orderBy('orders.id', 'desc')->paginate(20);
         return $orders;
     }
@@ -149,5 +150,32 @@ class Order extends BaseModel
     public function receive()
     {
         return $this->hasMany(OrderReceive::class);
+    }
+    //raymond---lịch sử thông tin người gửi/nhận
+    public static function loadInfoSender($request)
+    {
+        $user = $request->user();
+        dd($user);
+
+        $search = $request->get('term');
+        $res = DB::table(config('constants.ORDER_DETAIL_TABLE'))
+            ->select([DB::RAW('DISTINCT(sender_name)'), 'sender_phone', 'sender_address', 'sender_province_id', 'sender_district_id'])
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->where('order_details.sender_name', 'LIKE', '%' . $search . '%')
+            ->where('orders.user_id', $user_id)->distinct()->get();
+
+
+        return response()->json($res);
+    }
+    public static function loadInfoReceive($request)
+    {
+        $user_id = Auth::user()->id;
+        $search = $request->get('term');
+        $res = DB::table(config('constants.ORDER_DETAIL_TABLE'))
+            ->select('receive_name', 'receive_phone', 'receive_address', 'receive_province_id', 'receive_district_id')
+            ->join('orders', 'orders.id', '=', 'order_details.order_id')
+            ->where('order_details.receive_name', 'LIKE', '%' . $search . '%')
+            ->where('orders.user_id', $user_id)->orderBy('orders.id', 'desc')->distinct()->get();
+        return response()->json($res);
     }
 }

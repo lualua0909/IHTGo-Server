@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: thai
@@ -17,6 +18,7 @@ use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Validator;
+use App\Models\Order;
 
 class ApiController extends BaseController
 {
@@ -37,5 +39,24 @@ class ApiController extends BaseController
     protected function getCurrentTimestamp()
     {
         return Carbon::now()->timestamp;
+    }
+    //raymond
+    public function loadInfoSender(Request $req)
+    {
+        try {
+            $data = Order::loadInfoSender($req);
+            return response()->json(['data' => $data, 'code' => 200]);
+        } catch (\Exception $e) {
+            return response()->json(['code' => 500]);
+        }
+    }
+    public function loadInfoReceive(Request $req)
+    {
+        try {
+            $data = Order::loadInfoReceive($req);
+            return response()->json(['data' => $data, 'code' => 200]);
+        } catch (\Exception $e) {
+            return response()->json(['code' => 500]);
+        }
     }
 }
