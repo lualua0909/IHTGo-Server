@@ -24,6 +24,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 use App\Repositories\User\UserRepositoryContract;
 use App\Http\Controllers\Api\ApiController;
 use App\Helpers\HttpCode;
+use Illuminate\Support\Facades\Auth;
 
 class AuthController extends ApiController
 {

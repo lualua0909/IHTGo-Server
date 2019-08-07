@@ -308,15 +308,18 @@
                         <div class="box-body">
                             <button class="{{$orderStatusColor[$item->status]}}">{{ $orderStatus[$item->status] }}</button>
                             <br>
+                            
                             @if($item->status == \App\Helpers\Business::ORDER_STATUS_WAITING)
                                 <div class="pull-right">
                                     <button class="btn pull-right btn-success" id="create_delivery">{{ __('label.create_delivery') }}</button>
                                     --  OR --
                                     <button class="btn pull-left btn-primary" id="create_driver">{{ __('label.create_delivery_driver') }}</button>
                                 </div>
-
+                                @can('delete-order')
                                 <a  onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('order.updateStatus', ['id' => $item->id, 'status' => \App\Helpers\Business::ORDER_STATUS_IHT_CANCEL])}}" class="btn btn-danger pull-left">{{ __('label.cancel_order') }}</a>
-                            @endif
+                                @endcan
+                                @endif
+                           
                         </div>
                     </div>
                 </div>

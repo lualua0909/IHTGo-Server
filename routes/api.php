@@ -35,7 +35,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::namespace ('Api\v1')->group(function () {
+Route::namespace('Api\v1')->group(function () {
 
     Route::group(['prefix' => 'v1'], function () {
 
@@ -90,7 +90,6 @@ Route::namespace ('Api\v1')->group(function () {
                 Route::post('list', 'OrderController@listOrder')->name('api.order.list');
                 Route::post('update/{id?}', 'OrderController@update')->name('api.order.update');
                 Route::post('delete/{id?}', 'OrderController@delete')->name('api.order.delete');
-
             });
 
             // Driver
@@ -128,3 +127,6 @@ Route::namespace ('Api\v1')->group(function () {
 });
 
 Route::post('noti', 'Api\v1\DataController@noti')->name('api.data.noti');
+//raymond-load info sender & receive
+    Route::post('load-info-sender', 'Api\ApiController@loadInfoSender');
+    Route::post('load-info-receive', 'Api\ApiController@loadInfoReceive');
