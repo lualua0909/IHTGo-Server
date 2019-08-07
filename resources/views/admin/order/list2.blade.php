@@ -53,6 +53,8 @@
                                 <th>Trạng thái</th>
                                 <th>Tổng tiền</th>
                                 <th>Khách hàng</th>
+                                <th>Địa chỉ gửi</th>
+                                <th>Địa chỉ nhận</th>
                                 <th>Ngày tạo</th>
                             </tr>
                         </thead>
@@ -99,7 +101,9 @@
                                     @endswitch
                                 </td>
                                 <td>{{ number_format($order->total_price) }} </td>
-                                <td>{{ $order->user_id }}</td>
+                                <td><a href="{{url('admin/customer/detail/'.$order->customer_id.'')}}"> {{ $order->user_name }}</a></td>
+                                <td>{{ $order->sender_district_name }} {{ $order->sender_province_name }}</td>
+                                <td>{{ $order->receive_district_name }} {{ $order->receive_province_name }}</td>
                                 <td>{{ $order->created_at }} </td>
                             </tr>
                             @endforeach

@@ -13,38 +13,62 @@ class Order extends BaseModel
 
     public static function getListNew()
     {
-        $orders = DB::table('orders')
-            ->select('orders.id as id', 'orders.code as code', 'orders.name as name', 'orders.car_type as car_type', 'orders.status as status', 'orders.total_price as total_price', 'users.name as user_id', 'orders.created_at as created_at')
-            ->join('users', 'orders.user_id', '=', 'users.id')
-            ->orderBy('orders.id', 'desc')->paginate(20);
+        $orders = DB::table('orders as o')
+            ->select(
+                "o.*","u.name as user_name","c.id as customer_id",
+                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
+                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
+                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
+                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
+            )
+            ->join('order_details as od', 'od.order_id', '=', 'o.id')
+            ->join('users as u', 'u.id', '=', 'o.user_id')
+            ->join('customers as c', 'c.user_id', '=', 'u.id')
+            ->paginate(20);
         return $orders;
     }
     public static function getListNewSearch($data)
     {
-        $orders = DB::table('orders')
-            ->select('orders.id as id', 'orders.code as code', 'orders.name as name', 'orders.car_type as car_type', 'orders.status as status', 'orders.total_price as total_price', 'users.name as user_id', 'orders.created_at as created_at')
-            ->join('users', 'orders.user_id', '=', 'users.id');
+        $orders = DB::table('orders as o')
+        ->select(
+            "o.*","u.name as user_name","c.id as customer_id",
+            DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
+            DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
+            DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
+            DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
+        )
+        ->join('order_details as od', 'od.order_id', '=', 'o.id')
+        ->join('users as u', 'u.id', '=', 'o.user_id')
+        ->join('customers as c', 'c.user_id', '=', 'u.id');
+        
         if ($data->status != 0) {
-            $orders = $orders->where('orders.status', $data->status);
+            $orders = $orders->where('o.status', $data->status);
         }
         if ($data->payment_type != 0) {
-            $orders = $orders->where('orders.payment_type', $data->payment_type);
+            $orders = $orders->where('o.payment_type', $data->payment_type);
         }
-        return $orders->orderBy('orders.id', 'desc')->paginate(20);
+        return $orders->orderBy('o.id', 'desc')->paginate(20);
     }
     public static function postSearchListNew($data)
     {
-        $orders = DB::table('orders')
-            ->select('orders.id as id', 'orders.code as code', 'orders.name as name', 'orders.car_type as car_type', 'orders.status as status', 'orders.total_price as total_price', 'users.name as user_id', 'orders.created_at as created_at')
-            ->join('users', 'orders.user_id', '=', 'users.id')
-            ->join('order_details', 'orders.id', '=', 'order_details.order_id')
-            ->where('orders.code', 'LIKE', '%' .  $data->search . '%')
-            ->orWhere('orders.name', 'LIKE', '%' .  $data->search . '%')
-            ->orWhere('order_details.sender_name', 'LIKE', '%' .  $data->search . '%')
-            ->orWhere('order_details.sender_phone', 'LIKE', '%' .  $data->search . '%')
-            ->orWhere('order_details.receive_name', 'LIKE', '%' .  $data->search . '%')
-            ->orWhere('order_details.receive_phone', 'LIKE', '%' .  $data->search . '%')
-            ->orderBy('orders.id', 'desc')->paginate(20);
+        $orders = DB::table('orders as o')
+            ->select(
+                "o.*","u.name as user_name","c.id as customer_id",
+                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
+                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
+                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
+                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
+            )
+            ->join('order_details as od', 'od.order_id', '=', 'o.id')
+            ->join('users as u', 'u.id', '=', 'o.user_id')
+            ->join('customers as c', 'c.user_id', '=', 'u.id')
+            ->where('o.code', 'LIKE', '%' .  $data->search . '%')
+            ->orWhere('o.name', 'LIKE', '%' .  $data->search . '%')
+            ->orWhere('od.sender_name', 'LIKE', '%' .  $data->search . '%')
+            ->orWhere('od.sender_phone', 'LIKE', '%' .  $data->search . '%')
+            ->orWhere('od.receive_name', 'LIKE', '%' .  $data->search . '%')
+            ->orWhere('od.receive_phone', 'LIKE', '%' .  $data->search . '%')
+            ->orderBy('o.id', 'desc')->paginate(20);
         return $orders;
     }
     protected $fillable = [
@@ -154,8 +178,8 @@ class Order extends BaseModel
     //raymond---lịch sử thông tin người gửi/nhận
     public static function loadInfoSender($request)
     {
-        $user = $request->user();
-        dd($user);
+        $user_id = Auth::user();
+        dd($user_id);
 
         $search = $request->get('term');
         $res = DB::table(config('constants.ORDER_DETAIL_TABLE'))

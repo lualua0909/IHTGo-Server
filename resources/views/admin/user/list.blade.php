@@ -49,7 +49,7 @@
                                 @endif
                             </td>
                             <td>{!! \App\Helpers\Util::showCreatedAt($item->created_at) !!}</td>
-                            <td class="text-center">
+                            <td >
                                 @can('edit-user')
                                     <a href="{{route('user.edit', $item->id)}}" class="btn btn-primary btn-sm">
                                         <i class="fa fa-edit"></i>
