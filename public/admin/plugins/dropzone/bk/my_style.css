@@ -1,0 +1,100 @@
+#upload-area{
+	background:#fff;
+	min-height: 250px;
+	border:1px dashed #000;
+	padding:10px;
+	color:#515151;
+	cursor: pointer;
+	width: 100%;
+	position: relative;
+	display: inline-block;
+}
+#upload-area .dz-preview{
+	    width: 31%;
+
+	    display: inline-block;
+	    border: 1px solid #b9b5b5;
+	    padding: 4px;
+	    min-height: 150px;
+	    position: relative;
+	    max-width: 150px;
+	    border-radius: 3px;
+	    margin-right: 10px;
+	    margin-bottom: 10px;
+	    float:left;
+}
+.dz-size{
+	display: none;
+}
+.dz-filename{
+	display: none;
+}
+#upload-area .dz-preview:hover .dz-remove{display: block}
+#upload-area .dz-preview:hover .dz-details{display: block}
+#upload-area .dz-preview img{
+	width: 100%;
+}
+#upload-area .intrucstion{
+	text-align: center;
+	font-size: 18px;
+	z-index: 0;
+	position: absolute;
+	bottom: 27%;
+	left: 0;
+	right: 0;
+}
+#upload-area .intrucstion i{
+	font-size:80px;
+}
+.form-control{
+	    border: 1px solid #ebedee;
+}
+.has-success .form-control-feedback{
+	display: none !important;
+}
+.dz-details{
+	display: block;
+	position: absolute;
+	background: rgba(0, 0, 0, 0.4);
+	color: #fff;
+	width: 100%;
+	top: 0;
+	height: 100%;
+	right:0;
+	display: none;
+}
+.dz-success-mark{
+	position: absolute;
+	z-index: 50;
+	right: 0;
+	bottom: 0;
+	display: none;
+	top: 50%;
+	left: 50%;
+	margin-left: -27px;
+	margin-top: -27px;
+}
+.dz-error-mark{
+	display: none;
+}
+.dz-remove{
+	position: absolute;
+	top: 40%;
+	right: 23%;
+	color: #fff;
+	display: none;
+
+}
+.dz-remove:hover{
+	color: #fff
+}
+#upload-area .add-image{
+	    font-size: 25px;
+    text-align: center;
+    display: none;
+    vertical-align: middle;
+    border:1px dashed #515151;
+}
+.dz-preview.add-image i{
+	    margin-top: 39%;
+}
