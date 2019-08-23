@@ -44,7 +44,7 @@ class CarRepository extends EloquentRepository implements CarRepositoryContract
             ->leftJoin('orders as o', 'dl.order_id', '=', 'o.id')
             ->leftJoin('cars as c', 'dl.car_id', '=', 'c.id')
             ->leftJoin('users as u', 'dr.user_id', '=', 'u.id')
-            ->select('o.code', 'o.id', 'dr.id as dId', 'u.name', 'u.phone', 'o.status', 'o.total_price',  'dl.created_at')
+            ->select('o.code','o.coupon_code','o.name as order_name', 'o.id', 'dr.id as dId', 'u.name', 'u.phone', 'o.status', 'o.total_price',  'dl.created_at')
             ->where(['c.id' => $id])
             ->get();
         return $result;

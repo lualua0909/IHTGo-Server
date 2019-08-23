@@ -28,7 +28,7 @@ class Customer extends BaseModel
      */
     public function order()
     {
-        return $this->hasMany(Order::class, 'user_id', 'id')->select('id', 'code', 'status', 'created_at', 'payment_type', 'total_price');
+        return $this->hasMany(Order::class, 'user_id', 'id')->select('id', 'code','coupon_code','name', 'status', 'created_at', 'payment_type', 'total_price');
     }
 
     public static function boot()

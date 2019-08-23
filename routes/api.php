@@ -127,6 +127,8 @@ Route::namespace('Api\v1')->group(function () {
 });
 
 Route::post('noti', 'Api\v1\DataController@noti')->name('api.data.noti');
+
 //raymond-load info sender & receive
-    Route::post('load-info-sender', 'Api\ApiController@loadInfoSender');
-    Route::post('load-info-receive', 'Api\ApiController@loadInfoReceive');
+Route::post('load-info-sender', 'Api\ApiController@loadInfoSender');
+Route::post('load-info-receive', 'Api\ApiController@loadInfoReceive');
+

@@ -118,15 +118,9 @@
         @endcan
         @can('view-order')
             <li class="{{ ($str == 'order') ? 'active' : '' }}">
-                <a href="{{ route('order.list') }}">
-                    <i class="fa fa-fw fa-shopping-cart"></i>
-                    <span>{{ __('label.order') }}</span>
-                </a>
-            </li>
-            <li class="{{ ($str == 'order') ? 'active' : '' }}">
                 <a href="{{ route('order.list.new') }}">
                     <i class="fa fa-fw fa-shopping-cart"></i>
-                    <span>Đơn hàng (very fastttt)</span>
+                    <span>Đơn hàng </span>
                 </a>
             </li>
         @endcan

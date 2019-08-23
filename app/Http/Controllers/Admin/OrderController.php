@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: thai
@@ -78,26 +79,48 @@ class OrderController extends Controller
             Business::PAYMENT_DEPT => 'label-primary',
         );
 
-        return view('admin.order.list', compact('orderType', 'title', 'orderStatus',
-            'orderStatusColor', 'orderPayment', 'orderPaymentColor'));
+        return view('admin.order.list', compact(
+            'orderType',
+            'title',
+            'orderStatus',
+            'orderStatusColor',
+            'orderPayment',
+            'orderPaymentColor'
+        ));
     }
 
     public function getListNew()
     {
         $orders = Order::getListNew();
+
         return view('admin.order.list2', compact('orders'));
     }
-
-    public function postListNew(Request $req)
+    //search theo trang thai & phuong thuc thanh toan
+    public function getOptionListNew(Request $req)
     {
-        $orders = Order::getListNewSearch($req);
+        $orders = Order::getOptionListNew($req->session()->get('search-status',''),$req->session()->get('search-payment_type',''));
+        return view('admin.order.list2', compact('orders'));
+    }
+    public function postOptionListNew(Request $req)
+    {
+        $orders = Order::postOptionListNew($req);
+        $req->session()->put('search-status', $req->status);
+        $req->session()->put('search-payment_type', $req->payment_type);
+        return view('admin.order.list2', compact('orders'));
+    }
+    //search theo ten kh, ten don hang, coupon_code, sdt
+    public function getSearchListNew(Request $req)
+    {
+        $orders = Order::getSearchListNew($req->session()->get('search-text', ''));
         return view('admin.order.list2', compact('orders'));
     }
     public function postSearchListNew(Request $req)
     {
         $orders = Order::postSearchListNew($req);
+        $req->session()->put('search-text', $req->search);
         return view('admin.order.list2', compact('orders'));
     }
+
     /**
      * @param $objectCar
      * @return array
@@ -127,12 +150,11 @@ class OrderController extends Controller
      */
     public function detail($id)
     {
-
         $item = $this->repository->find($id);
-
         if (!$item) {
             return abort(404);
         }
+
         try {
             $orderStatus = array(
                 Business::ORDER_STATUS_WAITING => __('label.waiting'),
@@ -206,18 +228,20 @@ class OrderController extends Controller
             $listWarehouse = Warehouse::all();
             $config = $this->setConfigMaps();
             $config['directionsStart'] = optional($item->detail)->sender_address . ', '
-            . optional(optional($item->detail)->districtSender)->name . ', '
-            . optional(optional($item->detail)->provinceSender)->name;
+                . optional(optional($item->detail)->districtSender)->name . ', '
+                . optional(optional($item->detail)->provinceSender)->name;
             $config['directionsEnd'] = optional($item->detail)->receive_address . ', '
-            . optional(optional($item->detail)->districtReceive)->name . ', '
-            . optional(optional($item->detail)->provinceReceive)->name;
+                . optional(optional($item->detail)->districtReceive)->name . ', '
+                . optional(optional($item->detail)->provinceReceive)->name;
             app('map')->initialize($config);
 
             $map = app('map')->create_map();
 
             $title = $item->name;
-            return view('admin.order.detail', compact('map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
-
+            $payment = Order::getOrderPaymentDetail($id);
+            $tax_vat = ($item->total_price) / 10;
+            $total_price = ($item->total_price) + $tax_vat + (($item->detail)->take_money);
+            return view('admin.order.detail', compact('payment', 'tax_vat', 'total_price', 'map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
         } catch (\Exception $e) {
             dd($e);
         }
@@ -348,8 +372,16 @@ class OrderController extends Controller
         $listProvince = Province::where(['publish' => 1])->get();
 
         $listCar = Other::where(['type' => Business::OTHER_TYPE_CAR])->get();
-        return view('admin.order.form', compact('title', 'item', 'orderMethod', 'orderPayment',
-            'listType', 'listCar', 'listProvince', 'listPayer'));
+        return view('admin.order.form', compact(
+            'title',
+            'item',
+            'orderMethod',
+            'orderPayment',
+            'listType',
+            'listCar',
+            'listProvince',
+            'listPayer'
+        ));
     }
 
     /**
@@ -359,15 +391,38 @@ class OrderController extends Controller
      */
     public function store(OrderRequest $request, OrderDetailRepositoryContract $detailRepositoryContract)
     {
-        $dataOrder = $request->only('name', 'type', 'payment_type', 'car_type', 'car_option', 'user_id',
-            'coupon_code', 'payer', 'is_speed');
+        $dataOrder = $request->only(
+            'name',
+            'type',
+            'payment_type',
+            'car_type',
+            'car_option',
+            'user_id',
+            'coupon_code',
+            'payer',
+            'is_speed'
+        );
         $dataOrder['total_price'] = str_replace(',', '', $request->total_price);
         $dataOrder['is_admin'] = 1;
         $orderId = $this->repository->store($dataOrder);
         if ($orderId) {
-            $dataOrderDetail = $request->only('sender_name', 'sender_phone', 'sender_address', 'receive_name',
-                'receive_phone', 'price_id', 'receive_address', 'km', 'weight', 'sender_province_id', 'sender_district_id',
-                'receive_province_id', 'receive_district_id', 'note', 'take_money');
+            $dataOrderDetail = $request->only(
+                'sender_name',
+                'sender_phone',
+                'sender_address',
+                'receive_name',
+                'receive_phone',
+                'price_id',
+                'receive_address',
+                'km',
+                'weight',
+                'sender_province_id',
+                'sender_district_id',
+                'receive_province_id',
+                'receive_district_id',
+                'note',
+                'take_money'
+            );
             if ($request->take_money) {
                 $dataOrderDetail['take_money'] = str_replace(',', '', $request->take_money);
             }
@@ -454,5 +509,15 @@ class OrderController extends Controller
             }
         }
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
+    }
+    //raymond
+    public function calculatePayment(Request $request)
+    {
+        try {
+            $res = Order::calculatePayment($request);
+            return back();
+        } catch (\Exception $ex) {
+            return $ex;
+        }
     }
 }

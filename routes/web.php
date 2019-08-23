@@ -27,6 +27,7 @@ Route::post('/image/upload', 'ImageController@storeWeb')->name('image.web.store'
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('language', 'LanguageController@changeLanguage')->name('language');
 
+
 // Manager
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function () {
     // Manager dashboard
@@ -164,8 +165,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
     Route::group(['prefix' => 'order'], function () {
         Route::get('', 'Admin\OrderController@getList')->name('order.list')->middleware(['can:view-order']);
         Route::get('list-new', 'Admin\OrderController@getListNew')->name('order.list.new')->middleware(['can:view-order']);
-        Route::post('list-new', 'Admin\OrderController@postListNew')->name('order.post.list.new');
+        Route::post('option-list-new', 'Admin\OrderController@postOptionListNew')->name('order.option.list.new');
+        Route::get('option-list-new', 'Admin\OrderController@getOptionListNew')->name('order.option.list.new');
         Route::post('search-list-new', 'Admin\OrderController@postSearchListNew')->name('order.post.search.list.new');
+        Route::get('search-list-new', 'Admin\OrderController@getSearchListNew')->name('order.post.search.list.new');
         Route::post('', 'Admin\OrderController@getListOrder')->name('order.post.list')->middleware(['can:view-order']);
         Route::get('add', 'Admin\OrderController@create')->name('order.add')->middleware(['can:create-order']);
         Route::post('add', 'Admin\OrderController@store')->name('order.store')->middleware(['can:create-order']);
@@ -179,6 +182,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
         Route::post('payment/{id?}', 'Admin\OrderController@payment')->name('order.payment')->middleware(['can:edit-order']);
         Route::post('coupon/{id?}', 'Admin\OrderController@couponCode')->name('order.coupon_code')->middleware(['can:edit-order']);
         Route::post('admin-note/{id?}', 'Admin\OrderController@adminNote')->name('order.admin_note')->middleware(['can:edit-order']);
+        Route::post('calculatePayment', 'Admin\OrderController@calculatePayment')->name('calculatePayment');
+
     });
 
     // Map

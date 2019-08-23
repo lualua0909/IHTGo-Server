@@ -29,7 +29,7 @@ class DeliveryRepository extends EloquentRepository implements DeliveryRepositor
         $condition = $this->setDataFilter($request);
 
         $result = DB::table('deliveries as d')
-            ->select('d.order_id', 'u.name as driver', 'd.driver_id', 'c.name as cName', 'o.status', 'o.code', 'uc.name as customer', 'd.created_at', 'd.id')
+            ->select('d.order_id', 'u.name as driver', 'd.driver_id', 'c.name as cName', 'o.status', 'o.code','o.coupon_code','o.name as order_name', 'uc.name as customer', 'd.created_at', 'd.id')
             ->leftJoin('drivers as dr', 'dr.id', '=', 'd.driver_id')
             ->leftJoin('users as u', 'u.id', '=', 'dr.user_id')
             ->leftJoin('cars as c', 'c.id', '=', 'd.car_id')

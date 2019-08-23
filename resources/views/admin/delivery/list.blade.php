@@ -36,7 +36,8 @@
                         <table id="tableItem" class="table table-bordered table-striped">
                             <thead>
                             <tr class="info">
-                                <th>{{ __('label.order_code') }}</th>
+                                <th>Mã bill</th>
+                                <th>Tên đơn hàng</th>
                                 <th>{{ __('label.customer') }}</th>
                                 <th>{{ __('label.driver') }}</th>
                                 <th>{{ __('label.car') }}</th>
@@ -111,7 +112,8 @@
                         }
                     },
                     "columns": [
-                        {"data": "code"},
+                        {"data": "coupon_code"},
+                        {"data": "order_name"},
                         {"data": "customer"},
                         {"data": "driver"},
                         {"data": 'cName'},
@@ -122,13 +124,20 @@
                     "columnDefs": [
                         {
                             "targets": 0,
-                            "data": "code",
+                            "data": "coupon_code",
                             "render": function ( data, type, full, meta ) {
                                 return '<a href="{{route('order.detail')}}/' + full.order_id +'">#'+data+'</a>';
                             }
                         },
                         {
                             "targets": 1,
+                            "data": "order_name",
+                            "render": function ( data, type, full, meta ) {
+                                return '<a href="{{route('order.detail')}}/' + full.order_id +'">'+data+'</a>';
+                            }
+                        },
+                        {
+                            "targets": 2,
                             "data": "customer",
                             "render": function ( data, type, full, meta ) {
                                 return '<a href="{{route('customer.detail')}}/' + full.uid +'">'+data+'</a>';

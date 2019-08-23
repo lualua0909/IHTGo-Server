@@ -11,7 +11,7 @@
                         <form method="POST" action="{{route('order.post.search.list.new')}}">
                             {{ csrf_field() }}
                             <div class="has-feedback">
-                                <input name="search" type="text" class="form-control" placeholder="{{__('label.customer_name')}}, {{__('label.order_name') . ',' . __('label.code') . ',' . __('label.phone')}}">
+                                <input name="search" type="text" class="form-control" placeholder="{{__('label.customer_name')}}, {{__('label.order_name') . ',' . __('label.coupon_code') . ',' . __('label.phone')}}">
                             </div>
                             <button type="submit" class="btn btn-info" style="position: absolute;top: 0; right: 0; z-index: 2;">Tìm</button>
 
@@ -19,7 +19,7 @@
 
                     </div>
                     <div class="col-md-8" style=" text-align: right;">
-                        <form method="POST" action="{{route('order.post.list.new')}}">
+                        <form method="POST" action="{{route('order.option.list.new')}}">
                             {{ csrf_field() }}
                             <div class="btn-group ">
                                 <select name="status" class="form-control">
@@ -47,10 +47,10 @@
                     <table id="tableItem" class="table table-bordered table-striped">
                         <thead>
                             <tr class="info">
-                                <th>Mã đơn hàng</th>
+                                <th>Mã bill</th>
                                 <th>Tên đơn hàng</th>
-                                <th>Loại xe</th>
                                 <th>Trạng thái</th>
+                                <th>Loại đơn hàng</th>
                                 <th>Tổng tiền</th>
                                 <th>Khách hàng</th>
                                 <th>Địa chỉ gửi</th>
@@ -61,17 +61,8 @@
                         <tbody>
                             @foreach ($orders as $order)
                             <tr>
-                                <td><a href={{"detail/" .$order->id }}>{{ $order->code }}</a></td>
-                                <td>{{ $order->name }} </td>
-                                <td>@switch($order->car_type)
-                                    @case(8)
-                                    <span>Xe máy</span>
-                                    @break
-                                    @case(7)
-                                    <span>Xe hơi</span>
-                                    @break
-                                    @default
-                                    <span>Không biết xe gì</span>@endswitch</td>
+                                <td><a href={{"detail/" .$order->id }}>{{ $order->coupon_code }}</a></td>
+                                <td><a href={{"detail/" .$order->id }}>{{ $order->name }} </a></td>
                                 <td>
                                     @switch($order->status)
                                     @case(1)
@@ -98,6 +89,22 @@
 
                                     @default
                                     <span>Không xác định</span>
+                                    @endswitch
+                                </td>
+                                <td>
+                                @switch($order->car_option)
+                                    @case(1)
+                                    <span style="border-radius: 5px; color: white; background-color: #f39c12; padding: 5px">Hàng hóa</span>
+                                    @break
+                                    @case(2)
+                                    <span style="border-radius: 5px; color: white; background-color: #3c8dbc; padding: 5px">Chứng từ</span>
+                                    @break
+                                    @case(3)
+                                    <span style="border-radius: 5px; color: white; background-color: #f39c12; padding: 5px">Hàng hóa</span>
+                                    @break
+
+                                    @default
+                                    <span style="border-radius: 5px; color: white; background-color: #00a65a; padding: 5px">Làm hàng</span>
                                     @endswitch
                                 </td>
                                 <td>{{ number_format($order->total_price) }} </td>

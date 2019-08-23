@@ -46,7 +46,8 @@
                         <table id="example1" class="table table-bordered table-striped">
                             <thead>
                             <tr>
-                                <th>{{ __('label.code') }}</th>
+                                <th>Mã bill</th>
+                                <th>Tên đơn hàng</th>
                                 <th>{{ __('label.driver') }}</th>
                                 <th>{{ __('label.status') }}</th>
                                 <th>{{ __('label.total_price') }}</th>
@@ -56,8 +57,8 @@
                             <tbody>
                             @foreach($listHistory as $i)
                                 <tr>
-                                    <td><a target="_blank" href="{{route('order.detail', $i->id)}}">{{ $i->code }}</a></td>
-
+                                    <td><a target="_blank" href="{{route('order.detail', $i->id)}}">{{ $i->coupon_code }}</a></td>
+                                    <td><a target="_blank" href="{{route('order.detail', $i->id)}}">{{ $i->order_name }}</a></td>
                                     <td><a target="_blank" href="{{route('driver.detail', $i->dId)}}">{{ $i->name . ' (' . $i->phone . ')' }}</a></td>
                                     <td><span style="display: block; padding: 5px;" class="label {{$orderStatusColor[$i->status]}}">{{ $orderStatus[$i->status] }}</span></td>
                                     <td class="price">{{ $i->total_price }}</td>

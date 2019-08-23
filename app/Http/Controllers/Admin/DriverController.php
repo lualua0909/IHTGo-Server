@@ -148,7 +148,7 @@ class DriverController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function detail($id, Request $request)
-    {
+    { 
         $item = $this->repository->findWithTrash($id);
         if ($item){
             //dd(int($item->rateDriver($item->id)));

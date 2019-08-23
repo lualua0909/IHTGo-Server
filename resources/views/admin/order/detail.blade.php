@@ -21,10 +21,6 @@
                                 <th>{{ __('label.phone') }}</th>
                                 <td>{{ optional($item->customer)->phone }}</td>
                             </tr>
-                            <tr>
-                                <th>{{ __('label.created') }}</th>
-                                <td>{{ optional($item->customer)->created_at }}</td>
-                            </tr>
                         </table>
                     </div>
                 </div>
@@ -46,11 +42,7 @@
                             </tr>
                             <tr>
                                 <th style="width: 40%">{{ __('label.sender_address') }}</th>
-                                <td>{{ optional($item->detail)->sender_address . ', ' . optional(optional($item->detail)->districtSender)->name . ', ' . optional(optional($item->detail)->provinceSender)->name }}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.created') }}</th>
-                                <td>{{ optional($item->customer)->created_at }}</td>
+                                <td id="sender_address">{{ optional($item->detail)->sender_address . ', ' . optional(optional($item->detail)->districtSender)->name . ', ' . optional(optional($item->detail)->provinceSender)->name }}</td>
                             </tr>
                         </table>
                     </div>
@@ -73,341 +65,329 @@
                             </tr>
                             <tr>
                                 <th style="width: 40%">{{ __('label.receive_address') }}</th>
-                                <td>{{ optional($item->detail)->receive_address . ', ' . optional(optional($item->detail)->districtReceive)->name . ', ' . optional(optional($item->detail)->provinceReceive)->name }}</td>
-                            </tr>
-                            <tr>
-                                <th style="width: 40%">{{ __('label.receive_date') }}</th>
-                                <td>{{ optional($item->detail)->receive_date }}</td>
+                                <td id="receive_address">{{ optional($item->detail)->receive_address . ', ' . optional(optional($item->detail)->districtReceive)->name . ', ' . optional(optional($item->detail)->provinceReceive)->name }}</td>
                             </tr>
                         </table>
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-clock-o"></i> {{__('label.content')}}</h3>
-                    </div>
-                    <div class="box-body">
-                        <table class="table table-detail">
-                            <tr>
-                                <th>{{ __('label.name') }}</th>
-                                <td>{{ $item->name }}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.code') }}</th>
-                                <td>{{ $item->code }}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.coupon_code') }}</th>
-                                <td>
-                                    @if($item->coupon_code)
-                                    {{ $item->coupon_code }}
-                                        @else
-                                        <form action="{{route('order.coupon_code', $item->id)}}" method="post">
-                                            @csrf
-                                            <div class="form-group">
-                                                <input type="text" required id="coupon_code" value="{{(old('coupon_code')) ? old('coupon_code') : (($item) ? $item->coupon_code : '') }}" name="coupon_code" class="form-control" placeholder="{{ __('label.coupon_code') }}">
-                                                <span class="has-error">{{$errors->first('coupon_code')}}</span>
-                                            </div>
-                                            <button class="btn pull-left btn-success">@lang('label.submit')</button>
-                                        </form>
-                                        @endif
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.created') }}</th>
-                                <td>{{ $item->created_at }}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.type_car') }}</th>
-                                <td>{{ $orderType[$item->car_type] }}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.payer') }}</th>
-                                <td>{{ $listPayer[$item->payer] }}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.speed') }}</th>
-                                <td>{{ $listSpeed[$item->is_speed] }}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.warehouse') }}</th>
-                                <td>
-                                    @if(optional($item->detail)->warehouse)
-                                        {{optional(optional($item->detail)->warehouse)->code}}
-                                        @else
-                                        <button class="btn pull-right btn-warning" id="create_warehouse">{{ __('label.warehouse') }}</button>
-                                    @endif
-                                </td>
-                            </tr>
-                            @if($item->car_option)
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-clock-o"></i> {{__('label.content')}}</h3>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-detail">
                                 <tr>
-                                    <th>{{ __('label.th') }}</th>
+                                    <th>{{ __('label.name') }}</th>
+                                    <td>{{ $item->name }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ __('label.coupon_code') }}</th>
                                     <td>
-                                        @if($item->car_option)
-                                            <button class="{{$listTypeColor[$item->car_option]}}">{{ $listType[$item->car_option] }}</button>
+                                        @if($item->coupon_code)
+                                        {{ $item->coupon_code }}
+                                            @else
+                                            <form action="{{route('order.coupon_code', $item->id)}}" method="post">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <input type="text" required id="coupon_code" value="{{(old('coupon_code')) ? old('coupon_code') : (($item) ? $item->coupon_code : '') }}" name="coupon_code" class="form-control" placeholder="{{ __('label.coupon_code') }}">
+                                                    <span class="has-error">{{$errors->first('coupon_code')}}</span>
+                                                </div>
+                                                <button class="btn pull-left btn-success">@lang('label.submit')</button>
+                                            </form>
+                                            @endif
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>{{ __('label.created') }}</th>
+                                    <td>{{ $item->created_at }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ __('label.payer') }}</th>
+                                    <td>{{ $listPayer[$item->payer] }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ __('label.payment_type') }}</th>
+                                    <td><button class="{{$orderMethodColor[$item->payment_type]}}">{{ $orderMethod[$item->payment_type] }}</button></td>
+                                </tr>
+                                <tr>
+                                <th>{{ __('label.note') }}</th>
+                                <td>{{optional($item->detail)->note}}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ __('label.admin_note') }}</th>
+                                    <td>
+                                        @if(optional($item->detail)->admin_note)
+                                            {{ optional($item->detail)->admin_note }}
+                                        @else
+                                            <form action="{{route('order.admin_note', $item->id)}}" method="post">
+                                                @csrf
+                                                <div class="form-group">
+                                                    <input type="text" required id="admin_note" value="{{(old('admin_note')) ? old('admin_note') : (($item) ? $item->admin_note : '') }}" name="admin_note" class="form-control" placeholder="{{ __('label.admin_note') }}">
+                                                    <span class="has-error">{{$errors->first('admin_note')}}</span>
+                                                </div>
+                                                <button class="btn pull-left btn-success">@lang('label.submit')</button>
+                                            </form>
                                         @endif
                                     </td>
                                 </tr>
-                            @endif
-                            <tr>
-                                <th>{{ __('label.total_price') }}</th>
-                                @if($item->total_price == '-1')
-                                    <td><input type="text" value="" class="price" id="editPrice" /> <button class="btn btn-success" id="buttonPrice">@lang('label.submit')</button></td>
-                                @else
-                                <td class="price">{{ $item->total_price }}</td>
-                                @endif
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.weight') }}</th>
-                                <td>{{optional($item->detail)->weight}}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.take_money') }}</th>
-                                <td>{{optional($item->detail)->take_money}}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.payment_type') }}</th>
-                                <td><button class="{{$orderMethodColor[$item->payment_type]}}">{{ $orderMethod[$item->payment_type] }}</button></td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.payment') }}</th>
-                                <td>
-                                    @if($item->is_payment)
-                                        <button class="{{$orderPaymentColor[$item->is_payment]}}">{{ $orderPayment[$item->is_payment] }}</button>
-                                        @else
-                                    <form action="{{route('order.payment', $item->id)}}" method="post">
-                                        @csrf
-                                    <div class="form-group">
-                                        <div class="radio">
-                                            <label>
-                                                <input type="radio" name="is_payment" value="{{\App\Helpers\Business::PAYMENT_DONE}}">
-                                                @lang('label.payment_done')
-                                            </label>
-                                        </div>
-                                        <div class="radio">
-                                            <label>
-                                                <input type="radio" name="is_payment" value="{{\App\Helpers\Business::PAYMENT_DEPT}}">
-                                                @lang('label.payment_dept')
-                                            </label>
-                                        </div>
-                                        <button class="btn pull-left btn-success">@lang('label.submit')</button>
-                                    </div>
-                                    </form>
-                                        @endif
-                                </td>
-
-                            </tr>
-                            <tr>
-                            <th>{{ __('label.note') }}</th>
-                            <td>{{optional($item->detail)->note}}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.driver_note') }}</th>
-                                <td>{{optional($item->detail)->driver_note}}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.admin_note') }}</th>
-                                <td>
-                                    @if(optional($item->detail)->admin_note)
-                                        {{ optional($item->detail)->admin_note }}
-                                    @else
-                                        <form action="{{route('order.admin_note', $item->id)}}" method="post">
-                                            @csrf
-                                            <div class="form-group">
-                                                <input type="text" required id="admin_note" value="{{(old('admin_note')) ? old('admin_note') : (($item) ? $item->admin_note : '') }}" name="admin_note" class="form-control" placeholder="{{ __('label.admin_note') }}">
-                                                <span class="has-error">{{$errors->first('admin_note')}}</span>
-                                            </div>
-                                            <button class="btn pull-left btn-success">@lang('label.submit')</button>
-                                        </form>
-                                    @endif
-                                </td>
-                            </tr>
-                        </table>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <form method="POST" action="{{ route('calculatePayment') }}">
+                            <input type="hidden" name="_token" value="{{csrf_token()}}">
+                            <input type="hidden" name="id" value="{{$item->id}}">
+                            <input type="hidden" name="sender_address" value="{{ optional($item->detail)->sender_address . ', ' . optional(optional($item->detail)->districtSender)->name . ', ' . optional(optional($item->detail)->provinceSender)->name }}">
+                            <input type="hidden" name="receive_address" value="{{ optional($item->detail)->receive_address . ', ' . optional(optional($item->detail)->districtReceive)->name . ', ' . optional(optional($item->detail)->provinceReceive)->name }}">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-clock-o"></i> Phương thức tính tiền</h3>
+                                <label class="radio-inline" style="margin-left: 2em;"><input type="radio" id="goods" name="car_option" value="1" {{$item->car_option == 1 ? 'checked' : ($item->car_option == 3?'checked':'') }}>Hàng hóa</label>
+                                <label class="radio-inline"><input type="radio" id="document" name="car_option" value="2" {{ $item->car_option == 2 ? 'checked' : ''}}>Chứng từ</label>
+                                <label class="radio-inline"><input type="radio" id="inventory" name="car_option" value="4" {{$item->car_option == 4 ? 'checked' : ''}}>Gửi hàng vào kho</label>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-detail">       
+                                    <tr id="form_distance">
+                                        <th>Quãng đường (km):</th>
+                                        <td><input type="doubleval"  id="distance" name="distance" class="form-control" placeholder="Quãng đường" value="{{$payment != null ? $payment->distance : ''}}" required></td>
+                                    </tr>
+                                    <tr id="form_size">
+                                        <th>Kích thước (cm):</th>
+                                        <td style="display: flex;">
+                                            <input type="doubleval" id="length" name="length"  class="form-control" placeholder="Dài" value="{{optional($item->detail)->length}}" required>
+                                            <input type="doubleval" id="width"  name="width"  class="form-control" placeholder="Rộng" value="{{optional($item->detail)->width}}" required>
+                                            <input type="doubleval" id="height" name="height"  class="form-control" placeholder="Cao" value="{{optional($item->detail)->height}}" required>
+                                        </td>
+                                    </tr>
+                                    <tr id="form_weight">
+                                        <th>Trọng lượng (kg)</th>
+                                        <td><input type="floatval" id="weight" name="weight" class="form-control" placeholder="Trọng lượng" value="{{optional($item->detail)->weight}}" required></td>
+                                    </tr>
+                                    <tr id="form_service">
+                                        <th>Phí dịch vụ gia tăng</th>
+                                        <td> 
+                                            <label class="checkbox-inline"><input type="checkbox" name="is_speed" value="1" {{$item->is_speed == 1? "checked":""}} >Hỏa tốc</label>
+                                            <label class="checkbox-inline"><input type="checkbox" name="hand_on" value="1" {{$payment != null ? ( $payment->hand_on == 1? "checked":""):""}}>Giao tận tay</label>
+                                            <label class="checkbox-inline" id="form_discharge"><input type="checkbox" name="discharge" value="1" {{$payment != null ? ($payment->discharge == 1? "checked":""):""}}>Bốc xếp hàng hóa</label>
+                                        </td>
+                                    </tr>
+                                    <tr id="time_inventory">
+                                        <th>Thời gian làm hàng</th>
+                                        <td style="display: flex;">  
+                                            <input type="datetime-local"  name="start_time_inventory" value="{{$payment != null ? (strftime('%Y-%m-%dT%H:%M:%S', strtotime($payment->start_time_inventory))):''}}">
+                                            <input type="datetime-local"  name="finish_time_inventory"  value="{{$payment != null ? (strftime('%Y-%m-%dT%H:%M:%S', strtotime($payment->finish_time_inventory))):''}}">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Phí giao hàng</th>
+                                        <td ><strong> <span > {{number_format( $item->total_price )}}</span> VND <strong></td>
+                                    </tr>
+                                    <tr>
+                                        <th>{{ __('label.take_money') }}</th>
+                                        <td>{{optional($item->detail)->take_money}} VND</td>
+                                    </tr>       
+                                    <tr>
+                                        <th>Thuế VAT(10%)</th>
+                                        <td >{{(number_format($tax_vat))}} VND</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tổng tiền</th>
+                                        <td><p><strong> {{number_format( $total_price )}} VND <strong> </p> <button type="submit" class="btn pull-left btn-success" id="btnCalculatePayment">Tính tiền</button></td>
+                                    </tr>
+                            </table>
+                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
-            @if($item->delivery)
-            <div class="col-md-6">
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-clock-o"></i> {{__('label.delivery_detail')}}</h3>
-                    </div>
-                    <div class="box-body">
-                        <table class="table table-detail">
-                            <tr>
-                                <th>{{ __('label.status') }}</th>
-                                <td><button data-status="{{$item->status}}" class="{{$orderStatusColor[$item->status]}} {{ ($item->status == \App\Helpers\Business::ORDER_STATUS_DONE_DELIVERY || $item->status == \App\Helpers\Business::ORDER_STATUS_CUSTOMER_CANCEL || $item->status == \App\Helpers\Business::ORDER_STATUS_IHT_CANCEL) ? '' : 'select-status' }}">{{ $orderStatus[$item->status] }}</button></td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.user_delivery') }}</th>
-                                <td><a href="{{route('user.detail', $item->delivery->user->id)}}">{{ $item->delivery->user->name }}</a></td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.driver') }}</th>
-                                <td><a href="{{route('driver.detail', $item->delivery->driver->id)}}">{{ $item->delivery->driver->user->name }}</a></td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.car') }}</th>
-                                <td><a href="{{route('car.detail', $item->delivery->car->id)}}">{{ $item->delivery->car->name . ' (' . $item->delivery->car->number . ')' }}</a></td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.driver_note') }}</th>
-                                <td>{{ optional($item->detail)->driver_note }}</td>
-                            </tr>
-                            <tr>
-                                <th>{{ __('label.delete') }}</th>
-                                <td><a onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('delivery.delete', $item->delivery->id)}}" class="btn btn-danger btn-sm">
-                                        <i class="fa fa-close"></i>
-                                    </a></td>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-                <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <h3 class="box-title"><i class="fa fa-clock-o"></i> Lịch sử giao hàng</h3>
-                    </div>
-                    <div class="box-body">
-                        <table class="table table-detail">
-                            @foreach($item->route as $route)
-                                @if($route->status == \App\Helpers\Business::ORDER_DELIVERY_GIAO)
-                                    <tr>
-                                        <th>Thời gian giao</th>
-                                        <td>{{$route->date}}</td>
-                                    </tr>
-                                    @elseif($route->status == \App\Helpers\Business::ORDER_DELIVERY_BEING)
-                                    <tr>
-                                        <th>Thời gian nhận</th>
-                                        <td>{{$route->date}}</td>
-                                    </tr>
-                                @elseif($route->status == \App\Helpers\Business::ORDER_DELIVERY_DONE)
-                                    <tr>
-                                        <th>Thời gian hoàn thành</th>
-                                        <td>{{$route->date}}</td>
-                                    </tr>
-                                @elseif($route->status == \App\Helpers\Business::ORDER_DELIVERY_FAIL)
-                                    <tr>
-                                        <th>Thời gian huỷ</th>
-                                        <td>{{$route->date}}</td>
-                                    </tr>
-                                    @endif
-
-                            @endforeach
-                        </table>
-                    </div>
-                </div>
-            </div>
-            @else
+            <div class="col-md-12">
+                @if($item->delivery)
                 <div class="col-md-6">
                     <div class="box box-primary">
                         <div class="box-header with-border">
                             <h3 class="box-title"><i class="fa fa-clock-o"></i> {{__('label.delivery_detail')}}</h3>
                         </div>
                         <div class="box-body">
-                            <button class="{{$orderStatusColor[$item->status]}}">{{ $orderStatus[$item->status] }}</button>
-                            <br>
-                            
-                            @if($item->status == \App\Helpers\Business::ORDER_STATUS_WAITING)
-                                <div class="pull-right">
-                                    <button class="btn pull-right btn-success" id="create_delivery">{{ __('label.create_delivery') }}</button>
-                                    --  OR --
-                                    <button class="btn pull-left btn-primary" id="create_driver">{{ __('label.create_delivery_driver') }}</button>
-                                </div>
-                                @can('delete-order')
-                                <a  onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('order.updateStatus', ['id' => $item->id, 'status' => \App\Helpers\Business::ORDER_STATUS_IHT_CANCEL])}}" class="btn btn-danger pull-left">{{ __('label.cancel_order') }}</a>
-                                @endcan
-                                @endif
-                           
+                            <table class="table table-detail">
+                                <tr>
+                                    <th>{{ __('label.status') }}</th>
+                                    <td><button data-status="{{$item->status}}" class="{{$orderStatusColor[$item->status]}} {{ ($item->status == \App\Helpers\Business::ORDER_STATUS_DONE_DELIVERY || $item->status == \App\Helpers\Business::ORDER_STATUS_CUSTOMER_CANCEL || $item->status == \App\Helpers\Business::ORDER_STATUS_IHT_CANCEL) ? '' : 'select-status' }}">{{ $orderStatus[$item->status] }}</button></td>
+                                </tr>
+                                <tr>
+                                    <th>{{ __('label.user_delivery') }}</th>
+                                    <td><a href="{{route('user.detail', $item->delivery->user->id)}}">{{ $item->delivery->user->name }}</a></td>
+                                </tr>
+                                <tr>
+                                    <th>{{ __('label.driver') }}</th>
+                                    <td><a href="{{route('driver.detail', $item->delivery->driver->id)}}">{{ $item->delivery->driver->user->name }}</a></td>
+                                </tr>
+                                <tr>
+                                    <th>{{ __('label.car') }}</th>
+                                    <td><a href="{{route('car.detail', $item->delivery->car->id)}}">{{ $item->delivery->car->name . ' (' . $item->delivery->car->number . ')' }}</a></td>
+                                </tr>
+                                <tr>
+                                    <th>{{ __('label.driver_note') }}</th>
+                                    <td>{{ optional($item->detail)->driver_note }}</td>
+                                </tr>
+                                <tr>
+                                    <th>{{ __('label.delete') }}</th>
+                                    <td><a onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('delivery.delete', $item->delivery->id)}}" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-close"></i>
+                                        </a></td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </div>
-                <div class="modal fade modal-success" id="myModal" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span></button>
-                                <h4 class="modal-title">{{ __('label.create_delivery') }}</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <form role="form" action="{{route('delivery.store')}}" method="post" id="fr_delivery">
-                                        {{csrf_field()}}
-                                        <input type="hidden" name="order_id" value="{{$item->id}}" />
-                                        <input type="hidden" name="user_id" value="{{\Illuminate\Support\Facades\Auth::user()->id}}" />
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label>{{ __('label.driver') }} (*)</label>
-                                                <select class="form-control select2 class_driver" id="id_driver" required name="driver_id"
-                                                        title="{{ __('label.driver') }}" style="width: 100%">
-                                                    <option value="0"
-                                                            selected>{{ __('label.please_choose_field') }}</option>
-                                                </select>
-                                                <span class="has-error">{{$errors->first('driver_id')}}</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label>{{ __('label.car') }} (*)</label>
-                                                <select class="form-control select2" id="id_car" required name="car_id"
-                                                        title="{{ __('label.car') }}" style="width: 100%">
-                                                    <option value="0"
-                                                            selected>{{ __('label.please_choose_field') }}</option>
-                                                </select>
-                                                <span class="has-error">{{$errors->first('car_id')}}</span>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">{{ __('label.cancel') }}</button>
-                                <button type="button" class="btn btn-outline" id="submit">{{ __('label.submit') }}</button>
-                            </div>
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-clock-o"></i> Lịch sử giao hàng</h3>
                         </div>
-                        <!-- /.modal-content -->
+                        <div class="box-body">
+                            <table class="table table-detail">
+                                @foreach($item->route as $route)
+                                    @if($route->status == \App\Helpers\Business::ORDER_DELIVERY_GIAO)
+                                        <tr>
+                                            <th>Thời gian giao</th>
+                                            <td>{{$route->date}}</td>
+                                        </tr>
+                                        @elseif($route->status == \App\Helpers\Business::ORDER_DELIVERY_BEING)
+                                        <tr>
+                                            <th>Thời gian nhận</th>
+                                            <td>{{$route->date}}</td>
+                                        </tr>
+                                    @elseif($route->status == \App\Helpers\Business::ORDER_DELIVERY_DONE)
+                                        <tr>
+                                            <th>Thời gian hoàn thành</th>
+                                            <td>{{$route->date}}</td>
+                                        </tr>
+                                    @elseif($route->status == \App\Helpers\Business::ORDER_DELIVERY_FAIL)
+                                        <tr>
+                                            <th>Thời gian huỷ</th>
+                                            <td>{{$route->date}}</td>
+                                        </tr>
+                                        @endif
+                                @endforeach
+                            </table>
+                        </div>
                     </div>
                 </div>
-                <div class="modal fade modal-primary" id="myModalDriver" role="dialog">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span></button>
-                                <h4 class="modal-title">{{ __('label.create_delivery') }}</h4>
+                @else
+                    <div class="col-md-6">
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title"><i class="fa fa-clock-o"></i> {{__('label.delivery_detail')}}</h3>
                             </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <form role="form" action="{{route('delivery.storeDriver')}}" method="post" id="fr_delivery_driver">
-                                        {{csrf_field()}}
-                                        <input type="hidden" name="order_id" value="{{$item->id}}" />
-                                        <input type="hidden" name="user_id" value="{{\Illuminate\Support\Facades\Auth::user()->id}}" />
-                                        <div class="col-md-12">
-                                            <div class="form-group">
-                                                <label>{{ __('label.driver') }} (*)</label>
-                                                <select class="form-control select2 class_driver" id="id_driver_only" required name="id_driver_only"
-                                                        title="{{ __('label.driver') }}" style="width: 100%">
-                                                    <option value="0"
-                                                            selected>{{ __('label.please_choose_field') }}</option>
-                                                </select>
-                                                <span class="has-error">{{$errors->first('id_driver_only')}}</span>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">{{ __('label.cancel') }}</button>
-                                <button type="button" class="btn btn-outline" id="submitDriver">{{ __('label.submit') }}</button>
+                            <div class="box-body">
+                                <button class="{{$orderStatusColor[$item->status]}}">{{ $orderStatus[$item->status] }}</button>
+                                <br>
+                                
+                                @if($item->status == \App\Helpers\Business::ORDER_STATUS_WAITING)
+                                    <div class="pull-right">
+                                        <button class="btn pull-right btn-success" id="create_delivery">{{ __('label.create_delivery') }}</button>
+                                        --  OR --
+                                        <button class="btn pull-left btn-primary" id="create_driver">{{ __('label.create_delivery_driver') }}</button>
+                                    </div>
+                                    @can('delete-order')
+                                    <a  onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('order.updateStatus', ['id' => $item->id, 'status' => \App\Helpers\Business::ORDER_STATUS_IHT_CANCEL])}}" class="btn btn-danger pull-left">{{ __('label.cancel_order') }}</a>
+                                    @endcan
+                                    @endif
                             </div>
                         </div>
-                        <!-- /.modal-content -->
                     </div>
-                </div>
-            @endif
+                    <div class="modal fade modal-success" id="myModal" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span></button>
+                                    <h4 class="modal-title">{{ __('label.create_delivery') }}</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <form role="form" action="{{route('delivery.store')}}" method="post" id="fr_delivery">
+                                            {{csrf_field()}}
+                                            <input type="hidden" name="order_id" value="{{$item->id}}" />
+                                            <input type="hidden" name="user_id" value="{{\Illuminate\Support\Facades\Auth::user()->id}}" />
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label>{{ __('label.driver') }} (*)</label>
+                                                    <select class="form-control select2 class_driver" id="id_driver" required name="driver_id"
+                                                            title="{{ __('label.driver') }}" style="width: 100%">
+                                                        <option value="0"
+                                                                selected>{{ __('label.please_choose_field') }}</option>
+                                                    </select>
+                                                    <span class="has-error">{{$errors->first('driver_id')}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label>{{ __('label.car') }} (*)</label>
+                                                    <select class="form-control select2" id="id_car" required name="car_id"
+                                                            title="{{ __('label.car') }}" style="width: 100%">
+                                                        <option value="0"
+                                                                selected>{{ __('label.please_choose_field') }}</option>
+                                                    </select>
+                                                    <span class="has-error">{{$errors->first('car_id')}}</span>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">{{ __('label.cancel') }}</button>
+                                    <button type="button" class="btn btn-outline" id="submit">{{ __('label.submit') }}</button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                    </div>
+                    <div class="modal fade modal-primary" id="myModalDriver" role="dialog">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span></button>
+                                    <h4 class="modal-title">{{ __('label.create_delivery') }}</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <form role="form" action="{{route('delivery.storeDriver')}}" method="post" id="fr_delivery_driver">
+                                            {{csrf_field()}}
+                                            <input type="hidden" name="order_id" value="{{$item->id}}" />
+                                            <input type="hidden" name="user_id" value="{{\Illuminate\Support\Facades\Auth::user()->id}}" />
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label>{{ __('label.driver') }} (*)</label>
+                                                    <select class="form-control select2 class_driver" id="id_driver_only" required name="id_driver_only"
+                                                            title="{{ __('label.driver') }}" style="width: 100%">
+                                                        <option value="0"
+                                                                selected>{{ __('label.please_choose_field') }}</option>
+                                                    </select>
+                                                    <span class="has-error">{{$errors->first('id_driver_only')}}</span>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">{{ __('label.cancel') }}</button>
+                                    <button type="button" class="btn btn-outline" id="submitDriver">{{ __('label.submit') }}</button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                    </div>
+                @endif
+            </div>
         </div>
+
         <div class="box box-danger">
             <div class="box-body">
                 <div class="row margin-bottom">
@@ -491,6 +471,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
     <script>
         $( document ).ready(function() {
+            //Date range picker with time picker
             $('.select2').select2();
             $('.price').number( true, 0 );
 
@@ -698,9 +679,68 @@
                             alert('co loi, vui long thu lai');
                         }
                     });
-            })
-
+            });
+                if ($('#goods').is(":checked")) {
+                    $('#form_size').css('display', 'table-row');
+                    $('#form_weight').css('display', 'table-row');
+                    $('#form_discharge').css('display', 'inline');
+                    $('#form_service').css('display', 'table-row');//dịch vụ gia tăng
+                    $('#time_inventory').css('display', 'none');//thời gian làm hàng
+                    $('#form_distance').css('display', 'table-row');//QUÃNG ĐƯỜNG
+                }
+                if ($('#document').is(":checked")) {
+                    $('#form_size').css('display', 'none');//form kích thước
+                    $('#form_weight').css('display', 'none');//form trọng lượng
+                    $('#form_distance').css('display', 'none');//QUÃNG ĐƯỜNG
+                    $('#form_discharge').css('display', 'none');//bốc xếp
+                    $('#time_inventory').css('display', 'none');//thời gian làm hàng
+                    $('#form_service').css('display', 'table-row');//dịch vụ gia tăng
+                }
+                if($('#inventory').is(":checked")) {
+                    $('#form_size').css('display', 'table-row');//form kích thước
+                    $('#form_weight').css('display', 'table-row');//form trọng lượng
+                    $('#form_distance').css('display', 'table-row');//làm hàng
+                    $('#time_inventory').css('display', 'table-row');//bốc xếp
+                    $('#form_service').css('display', 'none');//dịch vụ gia tăng
+                }
         });
-
+        $('#goods').change(function () {
+            if ($('#goods').is(":checked")) {
+                $('#form_size').css('display', 'table-row');
+                $('#form_weight').css('display', 'table-row');
+                $('#form_discharge').css('display', 'inline');
+                $('#form_service').css('display', 'table-row');//dịch vụ gia tăng
+                $('#time_inventory').css('display', 'none');//thời gian làm hàng
+                $('#form_distance').css('display', 'table-row');//QUÃNG ĐƯỜNG
+            }
+        });
+        $('#document').change(function () {
+            if ($(this).is(":checked")) {
+                $('#form_size').css('display', 'none');//form kích thước
+                $('#form_weight').css('display', 'none');//form trọng lượng
+                $('#form_distance').css('display', 'none');//QUÃNG ĐƯỜNG
+                $('#form_discharge').css('display', 'none');//bốc xếp
+                $('#time_inventory').css('display', 'none');//thời gian làm hàng
+                $('#form_service').css('display', 'table-row');//dịch vụ gia tăng
+            }
+        });
+        $('#inventory').change(function() {
+            if($(this).is(":checked")) {
+                $('#form_size').css('display', 'table-row');//form kích thước
+                $('#form_weight').css('display', 'table-row');//form trọng lượng
+                $('#form_distance').css('display', 'table-row');//làm hàng
+                $('#time_inventory').css('display', 'table-row');//bốc xếp
+                $('#form_service').css('display', 'none');//dịch vụ gia tăng
+            }
+        });
+        $('#btnCalculatePayment').click(function() {
+            if($('#document').is(":checked")) {
+                $('#length').val(1);
+                $('#width').val(1);
+                $('#height').val(1);
+                $('#weight').val(1);
+                $('#distance').val(1);
+            }
+        });
     </script>
 @endsection

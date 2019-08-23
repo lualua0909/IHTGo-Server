@@ -44,7 +44,7 @@ class ExcelService
                 ]);
                 $sheet->setOrientation('landscape');
             });
-        })->download('xls');
+        })->download('xlsx');
     }
 
     /**
@@ -64,7 +64,7 @@ class ExcelService
                 ]);
                 $sheet->setOrientation('landscape');
             });
-        })->download('xls');
+        })->download('xlsx');
     }
 
     /**
@@ -92,6 +92,6 @@ class ExcelService
                 ]);
                 $sheet->setOrientation('landscape');
             });
-        })->download('xls');
+        })->download('xlsx');
     }
 }
