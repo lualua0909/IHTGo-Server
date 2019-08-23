@@ -14,6 +14,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
     @yield('style')
     <link rel="stylesheet" href="{{ asset('public/admin') }}/dist/css/AdminLTE.min.css">
+    <link rel="stylesheet" href="{{ asset('public/admin') }}/dist/css/style.css">
     <link rel="stylesheet" href="{{ asset('public/admin/dist/css/skins/_all-skins.min.css') }}">
     <link rel="stylesheet" href="{{ asset('public/js/noty/lib/noty.css') }}">
     <link rel="stylesheet" href="{{ asset('public/js/noty/lib/themes/mint.css') }}">

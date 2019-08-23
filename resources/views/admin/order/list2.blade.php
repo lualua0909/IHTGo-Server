@@ -66,25 +66,25 @@
                                 <td>
                                     @switch($order->status)
                                     @case(1)
-                                    <span style="border-radius: 5px; color: white; background-color: #f39c12; padding: 5px">Đang chờ</span>
+                                    <span class="bage-warning">Đang chờ</span>
                                     @break
                                     @case(2)
-                                    <span style="border-radius: 5px; color: white; background-color: #3c8dbc; padding: 5px">Chưa giao</span>
+                                    <span class="bage-info">Chưa giao</span>
                                     @break
                                     @case(3)
-                                    <span style="border-radius: 5px; color: white; background-color: #dd4b39; padding: 5px">Đang giao</span>
+                                    <span class="bage-danger">Đang giao</span>
                                     @break
                                     @case(4)
-                                    <span style="border-radius: 5px; color: white; background-color: #00a65a; padding: 5px">Đã hoàn thành</span>
+                                    <span class="bage-success">Đã hoàn thành</span>
                                     @break
                                     @case(5)
-                                    <span style="border-radius: 5px; color: white; background-color: gray; padding: 5px">Khách hủy</span>
+                                    <span class="bage-basic">Khách hủy</span>
                                     @break
                                     @case(6)
-                                    <span style="border-radius: 5px; color: white; background-color: gray; padding: 5px">IHT hủy</span>
+                                    <span class="bage-basic">IHT hủy</span>
                                     @break
                                     @case(7)
-                                    <span style="border-radius: 5px; color: white; background-color: gray; padding: 5px">Không thành công</span>
+                                    <span class="bage-basic">Không thành công</span>
                                     @break
 
                                     @default
@@ -94,17 +94,17 @@
                                 <td>
                                 @switch($order->car_option)
                                     @case(1)
-                                    <span style="border-radius: 5px; color: white; background-color: #f39c12; padding: 5px">Hàng hóa</span>
+                                    <span class="bage-success">Hàng hóa</span>
                                     @break
                                     @case(2)
-                                    <span style="border-radius: 5px; color: white; background-color: #3c8dbc; padding: 5px">Chứng từ</span>
+                                    <span class="bage-warning">Chứng từ</span>
                                     @break
                                     @case(3)
-                                    <span style="border-radius: 5px; color: white; background-color: #f39c12; padding: 5px">Hàng hóa</span>
+                                    <span class="bage-success">Hàng hóa</span>
                                     @break
 
                                     @default
-                                    <span style="border-radius: 5px; color: white; background-color: #00a65a; padding: 5px">Làm hàng</span>
+                                    <span class="bage-info">Làm hàng</span>
                                     @endswitch
                                 </td>
                                 <td>{{ number_format($order->total_price) }} </td>

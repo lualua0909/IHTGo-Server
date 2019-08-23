@@ -146,9 +146,11 @@
                             <input type="hidden" name="receive_address" value="{{ optional($item->detail)->receive_address . ', ' . optional(optional($item->detail)->districtReceive)->name . ', ' . optional(optional($item->detail)->provinceReceive)->name }}">
                         <div class="box-header with-border">
                             <h3 class="box-title"><i class="fa fa-clock-o"></i> Phương thức tính tiền</h3>
-                                <label class="radio-inline" style="margin-left: 2em;"><input type="radio" id="goods" name="car_option" value="1" {{$item->car_option == 1 ? 'checked' : ($item->car_option == 3?'checked':'') }}>Hàng hóa</label>
+                            <div class="text-center car_option">
+                                <label class="radio-inline"><input type="radio" id="goods" name="car_option" value="1" {{$item->car_option == 1 ? 'checked' : ($item->car_option == 3?'checked':'') }}>Hàng hóa</label>
                                 <label class="radio-inline"><input type="radio" id="document" name="car_option" value="2" {{ $item->car_option == 2 ? 'checked' : ''}}>Chứng từ</label>
                                 <label class="radio-inline"><input type="radio" id="inventory" name="car_option" value="4" {{$item->car_option == 4 ? 'checked' : ''}}>Gửi hàng vào kho</label>
+                            </div>                        
                         </div>
                         <div class="box-body">
                             <table class="table table-detail">       
@@ -189,7 +191,7 @@
                                     </tr>
                                     <tr>
                                         <th>{{ __('label.take_money') }}</th>
-                                        <td>{{optional($item->detail)->take_money}} VND</td>
+                                        <td>{{number_format(optional($item->detail)->take_money)}} VND</td>
                                     </tr>       
                                     <tr>
                                         <th>Thuế VAT(10%)</th>

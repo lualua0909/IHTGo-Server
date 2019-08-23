@@ -1,0 +1,52 @@
+/* raymond */
+.bage-basic {
+    background: #ddd;
+    text-align: center;
+    padding: 5px 5px;
+    font-size: 9px;
+    font-weight: 500;
+  }
+  .bage-primary {
+    background: #337ab7;
+    text-align: center;
+    padding: 5px 5px;
+    font-size: 9px;
+    font-weight: 500;
+  }
+  .bage-success {
+    background: #5cb85c;
+    text-align: center;
+    padding: 5px 5px;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 500;
+  }
+  .bage-info {
+    background: #5bc0de;
+    text-align: center;
+    padding: 5px 5px;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 500;
+  }
+  .bage-warning {
+    background: #f0ad4e;
+    text-align: center;
+    padding: 5px 5px;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 500;
+  }
+  .bage-danger {
+    background: #e50303;
+    text-align: center;
+    padding: 5px 5px;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 500;
+  }
+
+  .car_option label{
+    color: #e50303;
+    font-weight: bold;
+  }
