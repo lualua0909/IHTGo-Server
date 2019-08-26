@@ -165,10 +165,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
     Route::group(['prefix' => 'order'], function () {
         Route::get('', 'Admin\OrderController@getList')->name('order.list')->middleware(['can:view-order']);
         Route::get('list-new', 'Admin\OrderController@getListNew')->name('order.list.new')->middleware(['can:view-order']);
+        //search
         Route::post('option-list-new', 'Admin\OrderController@postOptionListNew')->name('order.option.list.new');
         Route::get('option-list-new', 'Admin\OrderController@getOptionListNew')->name('order.option.list.new');
         Route::post('search-list-new', 'Admin\OrderController@postSearchListNew')->name('order.post.search.list.new');
         Route::get('search-list-new', 'Admin\OrderController@getSearchListNew')->name('order.post.search.list.new');
+        Route::post('search-date', 'Admin\OrderController@postSearchDate')->name('order.post.search.date');
+        Route::get('search-date', 'Admin\OrderController@getSearchDate')->name('order.post.search.date');
+
         Route::post('', 'Admin\OrderController@getListOrder')->name('order.post.list')->middleware(['can:view-order']);
         Route::get('add', 'Admin\OrderController@create')->name('order.add')->middleware(['can:create-order']);
         Route::post('add', 'Admin\OrderController@store')->name('order.store')->middleware(['can:create-order']);

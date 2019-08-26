@@ -98,12 +98,12 @@ class OrderController extends Controller
     //search theo trang thai & phuong thuc thanh toan
     public function getOptionListNew(Request $req)
     {
-        $orders = Order::getOptionListNew($req->session()->get('search-status',''),$req->session()->get('search-payment_type',''));
+        $orders = Order::postOptionListNew($req->session()->get('search-status',''),$req->session()->get('search-payment_type',''));
         return view('admin.order.list2', compact('orders'));
     }
     public function postOptionListNew(Request $req)
     {
-        $orders = Order::postOptionListNew($req);
+        $orders = Order::postOptionListNew($req->status,$req->payment_type);
         $req->session()->put('search-status', $req->status);
         $req->session()->put('search-payment_type', $req->payment_type);
         return view('admin.order.list2', compact('orders'));
@@ -111,16 +111,28 @@ class OrderController extends Controller
     //search theo ten kh, ten don hang, coupon_code, sdt
     public function getSearchListNew(Request $req)
     {
-        $orders = Order::getSearchListNew($req->session()->get('search-text', ''));
+        $orders = Order::postSearchListNew($req->session()->get('search-text', ''));
         return view('admin.order.list2', compact('orders'));
     }
     public function postSearchListNew(Request $req)
     {
-        $orders = Order::postSearchListNew($req);
+        $orders = Order::postSearchListNew($req->search);
         $req->session()->put('search-text', $req->search);
         return view('admin.order.list2', compact('orders'));
     }
-
+    //search theo ngay
+    public function getSearchDate(Request $req)
+    {
+        $orders = Order::postSearchDate($req->session()->get('search-start_date',''),$req->session()->get('search-end_date',''));
+        return view('admin.order.list2', compact('orders'));
+    }
+    public function postSearchDate(Request $req)
+    {
+        $orders = Order::postSearchDate($req->start_date,$req->end_date);
+        $req->session()->put('search-start_date', $req->start_date);
+        $req->session()->put('search-end_date', $req->end_date);
+        return view('admin.order.list2', compact('orders'));
+    }
     /**
      * @param $objectCar
      * @return array

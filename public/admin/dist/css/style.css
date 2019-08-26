@@ -51,3 +51,6 @@
     color: #e50303;
     font-weight: bold;
   }
+  .table-striped>tbody>tr:nth-of-type(odd) {
+    background-color: #efefef!important;
+}

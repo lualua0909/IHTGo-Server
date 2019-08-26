@@ -32,7 +32,7 @@ class Order extends BaseModel
         return $orders;
     }
     //search theo trang thai & phuong thuc thanh toan
-    public static function getOptionListNew($status, $payment_type)
+    public static function postOptionListNew($status, $payment_type)
     {
         $orders = DB::table('orders as o')
             ->select(
@@ -57,33 +57,8 @@ class Order extends BaseModel
 
         return $orders->orderBy('o.id', 'desc')->paginate(20);
     }
-    public static function postOptionListNew($data)
-    {
-        $orders = DB::table('orders as o')
-            ->select(
-                "o.*",
-                "u.name as user_name",
-                "c.id as customer_id",
-                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
-                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
-            )
-            ->join('order_details as od', 'od.order_id', '=', 'o.id')
-            ->join('users as u', 'u.id', '=', 'o.user_id')
-            ->join('customers as c', 'c.user_id', '=', 'u.id')->orderBy('o.id', 'DESC');
-
-        if ($data->status != 0) {
-            $orders = $orders->where('o.status', $data->status);
-        }
-        if ($data->payment_type != 0) {
-            $orders = $orders->where('o.payment_type', $data->payment_type);
-        }
-
-        return $orders->orderBy('o.id', 'desc')->paginate(20);
-    }
     //search theo ten kh, ten don hang, coupon_code, sdt
-    public static function postSearchListNew($data)
+    public static function postSearchListNew($search)
     {
         $orders = DB::table('orders as o')
             ->select(
@@ -98,18 +73,23 @@ class Order extends BaseModel
             ->join('order_details as od', 'od.order_id', '=', 'o.id')
             ->join('users as u', 'u.id', '=', 'o.user_id')
             ->join('customers as c', 'c.user_id', '=', 'u.id')
-            ->where('o.coupon_code', 'LIKE', '%' .  $data->search . '%')
-            ->orWhere('o.name', 'LIKE', '%' .  $data->search . '%')
-            ->orWhere('od.sender_name', 'LIKE', '%' .  $data->search . '%')
-            ->orWhere('od.sender_phone', 'LIKE', '%' .  $data->search . '%')
-            ->orWhere('od.receive_name', 'LIKE', '%' .  $data->search . '%')
-            ->orWhere('od.receive_phone', 'LIKE', '%' .  $data->search . '%')
+            ->where('o.coupon_code', 'LIKE', '%' .  $search . '%')
+            ->orWhere('o.name', 'LIKE', '%' .  $search . '%')
+            ->orWhere('od.sender_name', 'LIKE', '%' .  $search . '%')
+            ->orWhere('od.sender_phone', 'LIKE', '%' .  $search . '%')
+            ->orWhere('od.receive_name', 'LIKE', '%' .  $search . '%')
+            ->orWhere('od.receive_phone', 'LIKE', '%' .  $search . '%')
             ->orderBy('o.id', 'desc')->paginate(20);
         return $orders;
     }
 
-    public static function getSearchListNew($data)
+    //search theo ngay
+    public static function postSearchDate($start_date, $end_date)
     {
+
+        $start = ($start_date) ? Carbon::createFromFormat('d/m/Y', $start_date)->format('Y-m-d') : Carbon::now()->subMonth()->startOfMonth();
+
+        $end = ($end_date) ? Carbon::createFromFormat('d/m/Y', $end_date)->format('Y-m-d') : Carbon::now()->subMonth()->endOfMonth()->addDay();
         $orders = DB::table('orders as o')
             ->select(
                 "o.*",
@@ -123,12 +103,7 @@ class Order extends BaseModel
             ->join('order_details as od', 'od.order_id', '=', 'o.id')
             ->join('users as u', 'u.id', '=', 'o.user_id')
             ->join('customers as c', 'c.user_id', '=', 'u.id')
-            ->where('o.coupon_code', 'LIKE', '%' .  $data . '%')
-            ->orWhere('o.name', 'LIKE', '%' .  $data . '%')
-            ->orWhere('od.sender_name', 'LIKE', '%' .  $data . '%')
-            ->orWhere('od.sender_phone', 'LIKE', '%' .  $data . '%')
-            ->orWhere('od.receive_name', 'LIKE', '%' .  $data . '%')
-            ->orWhere('od.receive_phone', 'LIKE', '%' .  $data . '%')
+            ->whereBetween('o.created_at', [$start . ' 00:00:00',$end . ' 23:59:59'])
             ->orderBy('o.id', 'desc')->paginate(20);
         return $orders;
     }
@@ -293,7 +268,7 @@ class Order extends BaseModel
             ->update([
                 'total_price' => $total_price,
                 'is_speed' => $request->is_speed != null ? $request->is_speed : 0,
-                'car_option'=>$request->car_option,
+                'car_option' => $request->car_option,
             ]);
         $order_detail_ext = DB::table('order_detail_ext')
             ->where('order_id', $request->id)
