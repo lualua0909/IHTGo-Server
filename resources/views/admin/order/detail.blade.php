@@ -181,8 +181,8 @@
                                     <tr id="time_inventory">
                                         <th>Thời gian làm hàng</th>
                                         <td style="display: flex;">  
-                                            <input type="datetime-local"  name="start_time_inventory" value="{{$payment != null ? (strftime('%Y-%m-%dT%H:%M:%S', strtotime($payment->start_time_inventory))):''}}">
-                                            <input type="datetime-local"  name="finish_time_inventory"  value="{{$payment != null ? (strftime('%Y-%m-%dT%H:%M:%S', strtotime($payment->finish_time_inventory))):''}}">
+                                            <input type="datetime-local"  class="selector" name="start_time_inventory" value="{{$payment != null ? (strftime('%Y-%m-%dT%H:%M:%S', strtotime($payment->start_time_inventory))):''}}">
+                                            <input type="datetime-local"  class="selector" name="finish_time_inventory"  value="{{$payment != null ? (strftime('%Y-%m-%dT%H:%M:%S', strtotime($payment->finish_time_inventory))):''}}">
                                         </td>
                                     </tr>
                                     <tr>
@@ -471,9 +471,10 @@
     <script src="{!! asset('public/js/sweetalert2.js') !!}"></script>
     <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
+    <script src="{{asset('public/admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
     <script>
         $( document ).ready(function() {
-            //Date range picker with time picker
+            
             $('.select2').select2();
             $('.price').number( true, 0 );
 

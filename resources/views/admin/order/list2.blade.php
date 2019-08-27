@@ -140,8 +140,20 @@
                                 </td>
                                 <td>{{ number_format($order->total_price) }} </td>
                                 <td><a href="{{url('admin/customer/detail/'.$order->customer_id.'')}}"> {{ $order->user_name }}</a></td>
-                                <td>{{ $order->sender_district_name }} {{ $order->sender_province_name }}</td>
-                                <td>{{ $order->receive_district_name }} {{ $order->receive_province_name }}</td>
+                                <td>
+                                    @if($order->sender_district_name ==null && $order->sender_province_name ==null)
+                                    {{ $order->sender_address }}
+                                    @else
+                                    {{ $order->sender_district_name }} {{ $order->sender_province_name }}
+                                    @endif
+                                </td>
+                                <td>
+                                    @if($order->receive_district_name ==null && $order->receive_province_name ==null)
+                                    {{ $order->receive_address }}
+                                    @else
+                                    {{ $order->receive_district_name }} {{ $order->receive_province_name }}
+                                    @endif
+                                </td>
                                 <td>{{ $order->created_at }} </td>
                             </tr>
                             @endforeach

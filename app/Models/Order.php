@@ -19,6 +19,8 @@ class Order extends BaseModel
                 "o.*",
                 "u.name as user_name",
                 "c.id as customer_id",
+                'od.sender_address',
+                'od.receive_address',
                 DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
                 DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
                 DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
@@ -103,7 +105,7 @@ class Order extends BaseModel
             ->join('order_details as od', 'od.order_id', '=', 'o.id')
             ->join('users as u', 'u.id', '=', 'o.user_id')
             ->join('customers as c', 'c.user_id', '=', 'u.id')
-            ->whereBetween('o.created_at', [$start . ' 00:00:00',$end . ' 23:59:59'])
+            ->whereBetween('o.created_at', [$start . ' 00:00:00', $end . ' 23:59:59'])
             ->orderBy('o.id', 'desc')->paginate(20);
         return $orders;
     }
@@ -250,6 +252,7 @@ class Order extends BaseModel
     }
     public static function calculatePayment($request)
     {
+        dd($request->start_time_inventory, $request->finish_time_inventory);
         $total_price = self::payment($request);
 
 
