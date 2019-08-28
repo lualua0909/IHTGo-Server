@@ -33,6 +33,15 @@ class Order extends BaseModel
             ->paginate(20);
         return $orders;
     }
+    public static function getListHistoryChangePayment($order_id)
+    {
+        $res = DB::table('change_payment as cp')
+            ->join('users as u','u.id','=','cp.user_id')
+            ->where('cp.order_id',$order_id)
+            ->select('cp.*','u.name')
+            ->get();
+        return $res;
+    }
     //search theo trang thai & phuong thuc thanh toan
     public static function postOptionListNew($status, $payment_type)
     {
@@ -388,7 +397,7 @@ class Order extends BaseModel
             $receive_DH2 = strpos($receive_address, $char_DH2);
             $receive_BP2 = strpos($receive_address, $char_BP2);
             $receive_TN2 = strpos($receive_address, $char_TN2);
-            if ((($sender_BD != false || $sender_HCM != false) && ($receive_DB != false || $receive_HCM != false))|| (($sender_BD2 != false || $sender_HCM2 != false) && ($receive_DB2 != false || $receive_HCM2 != false))) {
+            if ((($sender_BD != false || $sender_HCM != false) && ($receive_DB != false || $receive_HCM != false)) || (($sender_BD2 != false || $sender_HCM2 != false) && ($receive_DB2 != false || $receive_HCM2 != false))) {
                 $payment = 70000;
             } else {
                 $payment = 140000;
@@ -486,19 +495,22 @@ class Order extends BaseModel
     public static function changePayment($request)
     {
         date_default_timezone_set('Asia/Ho_Chi_Minh');
-        $user_id=Auth::user()->id;
-        DB::table('orders')
-        ->where('id',$request->id)
-        ->update([
-            'total_price'=>$request->total_price,
-        ]);
-        DB::table('order_detail_ext')
-        ->where('order_id',$request->id)
-        ->update([
-            'reason_change_payment'=>$request->reason_change_payment,
-            'user_id_change_payment'=>$user_id,
-            'change_paymented_at'=>date('Y-m-d H:i:s'),
-        ]);
+        $user_id = Auth::user()->id;
+        DB::table('orders as o')
+            ->where('o.id', $request->id)
+            ->update([
+                'o.total_price' => $request->total_price,
+            ]);
+
+        DB::table('change_payment')
+            ->insert([
+                'order_id' => (int) $request->id,
+                'reason' => $request->reason,
+                'user_id' => $user_id,
+                'price' => $request->total_price,
+                'created_at' => date('Y-m-d H:i:s'),
+            ]);
+
         return 200;
     }
 }

@@ -204,6 +204,37 @@
                         </form>
                     </div>
                 </div>
+                @if(count($history_change_payment) !=0)
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-clock-o"></i> Lịch sử thay đổi phí giao hàng</h3>
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Tên nhân viên</th>
+                                        <th>Lý do</th>
+                                        <th>Số tiền</th>
+                                        <th>Ngày</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($history_change_payment as $h)
+                                        <tr>
+                                            <td>{{$h->name}}</td>
+                                            <td>{{$h->reason}}</td>
+                                            <td>{{number_format($h->price)}} VND</td>
+                                            <td>{{$h->created_at}}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                @endif
             </div>
             <div class="col-md-12">
                 @if($item->delivery)
@@ -464,7 +495,7 @@
                         </div>
                         <div class="form-group">
                             <label for="pwd">Lý do (*):</label>
-                            <textarea rows="5" class="form-control" name='reason_change_payment' required>
+                            <textarea  rows="5" class="form-control" name='reason' required="required" >
                             </textarea>    
                         </div>
                     </div>

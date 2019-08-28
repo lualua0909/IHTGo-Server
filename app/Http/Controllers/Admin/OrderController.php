@@ -250,8 +250,9 @@ class OrderController extends Controller
             $map = app('map')->create_map();
 
             $title = $item->name;
-            $payment = Order::getOrderPaymentDetail($id);
-            return view('admin.order.detail', compact('payment', 'tax_vat', 'total_price', 'map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
+            $payment = Order::getOrderPaymentDetail($id); 
+            $history_change_payment=Order::getListHistoryChangePayment($id);
+            return view('admin.order.detail', compact('payment', 'history_change_payment', 'map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
         } catch (\Exception $e) {
             dd($e);
         }
