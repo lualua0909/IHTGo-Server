@@ -495,8 +495,7 @@
                         </div>
                         <div class="form-group">
                             <label for="pwd">Lý do (*):</label>
-                            <textarea  rows="5" class="form-control" name='reason' required="required" >
-                            </textarea>    
+                            <textarea  rows="5" class="form-control" name='reason' required></textarea>    
                         </div>
                     </div>
                     <div class="modal-footer">
