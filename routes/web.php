@@ -187,6 +187,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
         Route::post('coupon/{id?}', 'Admin\OrderController@couponCode')->name('order.coupon_code')->middleware(['can:edit-order']);
         Route::post('admin-note/{id?}', 'Admin\OrderController@adminNote')->name('order.admin_note')->middleware(['can:edit-order']);
         Route::post('calculatePayment', 'Admin\OrderController@calculatePayment')->name('calculatePayment');
+        Route::post('order-change-payment', 'Admin\OrderController@changePayment')->name('order-change-payment');
 
     });
 

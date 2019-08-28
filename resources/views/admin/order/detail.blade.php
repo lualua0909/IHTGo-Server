@@ -186,21 +186,19 @@
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th>Phí giao hàng</th>
-                                        <td ><strong> <span > {{number_format( $item->total_price )}}</span> VND <strong></td>
-                                    </tr>
-                                    <tr>
                                         <th>{{ __('label.take_money') }}</th>
                                         <td>{{number_format(optional($item->detail)->take_money)}} VND</td>
-                                    </tr>       
+                                    </tr>    
                                     <tr>
-                                        <th>Thuế VAT(10%)</th>
-                                        <td >{{(number_format($tax_vat))}} VND</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Tổng tiền</th>
-                                        <td><p><strong> {{number_format( $total_price )}} VND <strong> </p> <button type="submit" class="btn pull-left btn-success" id="btnCalculatePayment">Tính tiền</button></td>
-                                    </tr>
+                                        <th>Phí giao hàng</th>
+                                        <td >
+                                            <strong> <span > {{number_format( $item->total_price )}}</span> VND <strong>
+                                            <div class="text-right">
+                                                <button type="submit" class="btn  btn-success" id="btnCalculatePayment">Tính tiền</button>--OR--
+                                                <button type="button" class="btn  btn-warning" data-toggle="modal" data-target="#changePayment">Thay đổi phí giao hàng</button>
+                                            </div>
+                                        </td>
+                                    </tr>   
                             </table>
                         </div>
                         </form>
@@ -389,7 +387,6 @@
                 @endif
             </div>
         </div>
-
         <div class="box box-danger">
             <div class="box-body">
                 <div class="row margin-bottom">
@@ -449,7 +446,35 @@
             <!-- /.modal-content -->
         </div>
     </div>
-
+<!-- Modal change payment-->
+    <div class="modal fade" id="changePayment" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <form method="POST" action="{{ route('order-change-payment') }}">
+                    <input type="hidden" name="_token" value="{{csrf_token()}}">
+                    <input type="hidden" name="id" value="{{$item->id}}">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Thay đổi phí giao hàng</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="pwd">Nhập số tiền (VND) (*):</label>
+                            <input type="number" class="form-control" name='total_price' required>
+                        </div>
+                        <div class="form-group">
+                            <label for="pwd">Lý do (*):</label>
+                            <textarea rows="5" class="form-control" name='reason_change_payment' required>
+                            </textarea>    
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" >Lưu</button>
+                    </div>
+                </form>    
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('style')

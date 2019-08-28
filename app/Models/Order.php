@@ -258,10 +258,7 @@ class Order extends BaseModel
     }
     public static function calculatePayment($request)
     {
-        dd($request->start_time_inventory, $request->finish_time_inventory);
         $total_price = self::payment($request);
-
-
         DB::table('order_details')
             ->where('order_id', $request->id)
             ->update(
@@ -342,17 +339,63 @@ class Order extends BaseModel
             //kiểm tra khu vực đơn hàng & quảng đường đơn hàng
             $sender_address = $request->sender_address;
             $receive_address = $request->receive_address;
+
             $char_BD = "Bình Dương";
             $char_HCM = "Hồ Chí Minh";
+            $char_BH = "Biên Hòa";
+            $char_NT = "Nhơn Trạch";
+            $char_DH = "Đức Hòa";
+            $char_BP = "Bình Phước";
+            $char_TN = "Tây Ninh";
+
+
+            $char_BD2 = "Binh Duong";
+            $char_HCM2 = "Ho Chi Minh";
+            $char_BH2 = "Bien Hoa";
+            $char_NT2 = "Nhon Trach";
+            $char_DH2 = "Duc Hoa";
+            $char_BP2 = "Binh Phuoc";
+            $char_TN2 = "Tay Ninh";
+
             $sender_BD = strpos($sender_address, $char_BD);
             $sender_HCM = strpos($sender_address, $char_HCM);
+            $sender_BH = strpos($sender_address, $char_BH);
+            $sender_NT = strpos($sender_address, $char_NT);
+            $sender_DH = strpos($sender_address, $char_DH);
+            $sender_BP = strpos($sender_address, $char_BP);
+            $sender_TN = strpos($sender_address, $char_TN);
+
             $receive_DB = strpos($receive_address, $char_BD);
             $receive_HCM = strpos($receive_address, $char_HCM);
-            if (($sender_BD != false || $sender_HCM != false) && ($receive_DB != false || $receive_HCM != false)) {
+            $receive_BH = strpos($receive_address, $char_BH);
+            $receive_NT = strpos($receive_address, $char_NT);
+            $receive_DH = strpos($receive_address, $char_DH);
+            $receive_BP = strpos($receive_address, $char_BP);
+            $receive_TN = strpos($receive_address, $char_TN);
+
+            $sender_BD2 = strpos($sender_address, $char_BD2);
+            $sender_HCM2 = strpos($sender_address, $char_HCM2);
+            $sender_BH2 = strpos($sender_address, $char_BH2);
+            $sender_NT2 = strpos($sender_address, $char_NT2);
+            $sender_DH2 = strpos($sender_address, $char_DH2);
+            $sender_BP2 = strpos($sender_address, $char_BP2);
+            $sender_TN2 = strpos($sender_address, $char_TN2);
+
+            $receive_DB2 = strpos($receive_address, $char_BD2);
+            $receive_HCM2 = strpos($receive_address, $char_HCM2);
+            $receive_BH2 = strpos($receive_address, $char_BH2);
+            $receive_NT2 = strpos($receive_address, $char_NT2);
+            $receive_DH2 = strpos($receive_address, $char_DH2);
+            $receive_BP2 = strpos($receive_address, $char_BP2);
+            $receive_TN2 = strpos($receive_address, $char_TN2);
+            if ((($sender_BD != false || $sender_HCM != false) && ($receive_DB != false || $receive_HCM != false))|| (($sender_BD2 != false || $sender_HCM2 != false) && ($receive_DB2 != false || $receive_HCM2 != false))) {
                 $payment = 70000;
             } else {
                 $payment = 140000;
             }
+
+
+
             if ($request->is_speed == 1) {
                 $payment = $payment * 2;
             }
@@ -439,5 +482,23 @@ class Order extends BaseModel
             }
         }
         return $payment;
+    }
+    public static function changePayment($request)
+    {
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $user_id=Auth::user()->id;
+        DB::table('orders')
+        ->where('id',$request->id)
+        ->update([
+            'total_price'=>$request->total_price,
+        ]);
+        DB::table('order_detail_ext')
+        ->where('order_id',$request->id)
+        ->update([
+            'reason_change_payment'=>$request->reason_change_payment,
+            'user_id_change_payment'=>$user_id,
+            'change_paymented_at'=>date('Y-m-d H:i:s'),
+        ]);
+        return 200;
     }
 }

@@ -251,8 +251,6 @@ class OrderController extends Controller
 
             $title = $item->name;
             $payment = Order::getOrderPaymentDetail($id);
-            $tax_vat = ($item->total_price) / 10;
-            $total_price = ($item->total_price) + $tax_vat + (($item->detail)->take_money);
             return view('admin.order.detail', compact('payment', 'tax_vat', 'total_price', 'map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
         } catch (\Exception $e) {
             dd($e);
@@ -527,6 +525,15 @@ class OrderController extends Controller
     {
         try {
             $res = Order::calculatePayment($request);
+            return back();
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+    public function changePayment(Request $request)
+    {
+        try {
+            $res = Order::changePayment($request);
             return back();
         } catch (\Exception $ex) {
             return $ex;
