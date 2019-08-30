@@ -468,7 +468,6 @@ class Order extends BaseModel
             } else {
                 //bình thường
                 if ($distance > 35 && $value < 30) {
-                    $payment = 7000 * ($distance - 35) + 250000;
                     if ($value > 30 && $distance < 35) {
                         if ($value <= 50) {
                             $payment = 3000 * $value + 250000;
@@ -477,6 +476,8 @@ class Order extends BaseModel
                         } elseif ($value > 100) {
                             $payment = 1000 * $value + 250000;
                         }
+                    }else{
+                        $payment = 7000 * ($distance - 35) + 250000;
                     }
                 }
                 //quá tải
