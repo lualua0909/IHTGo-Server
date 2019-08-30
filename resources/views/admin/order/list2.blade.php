@@ -158,11 +158,7 @@
                                     @endif
                                 </td>
                                 <td>{{ $order->created_at }} </td>
-                                @if(Auth::user()->level==1)
-                                <td>
-                                <a type="button" class="btn btn-danger" href="order-delete/{{$order->id}}">Xóa</a>
-                                </td>
-                                @endif
+                               
                             </tr>
                             @endforeach
                         </tbody>

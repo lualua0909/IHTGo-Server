@@ -64,6 +64,7 @@
                             <th>{{ __('label.status') }}</th>
                             <th>{{ __('label.total_price') }}</th>
                             <th>{{ __('label.created') }}</th>
+                            <th></th>
                         </tr>
                         </thead>
                         @if(optional($item->user)->multiOrder)
@@ -76,6 +77,11 @@
                                 <td><span style="display: block; padding: 5px;" class="label {{$orderStatusColor[$i->status]}}">{{ $orderStatus[$i->status] }}</span></td>
                                 <td class="price">{{ $i->total_price }}</td>
                                 <td>{!! \App\Helpers\Util::showCreatedAt($i->created_at) !!}</td>
+                                @if(Auth::user()->level==1)
+                                <td>
+                                    <a type="button" class="btn btn-danger" href="../../order/order-delete/{{$i->id}}">Xóa</a>
+                                </td>
+                                @endif
                             </tr>
                         @endforeach
                         </tbody>
