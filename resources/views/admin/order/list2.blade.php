@@ -187,7 +187,7 @@
 <script>
     function orderDetail(id)
         {
-            window.location.href = 'detail/'+id;
+            window.open('detail/'+id, '_blank');
         }
     $(function() {
         $('#start_date, #end_date').datepicker({
