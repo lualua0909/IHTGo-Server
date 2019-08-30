@@ -476,7 +476,7 @@ class Order extends BaseModel
                         } elseif ($value > 100) {
                             $payment = 1000 * $value + 250000;
                         }
-                    }else{
+                    } else {
                         $payment = 7000 * ($distance - 35) + 250000;
                     }
                 }
@@ -519,10 +519,14 @@ class Order extends BaseModel
     {
         $user_id = Auth::user()->id;
         if ($user_id == 1) {
-            DB::table('orders')->where('id', $id)->where('updated_at', null)->delete();
-            DB::table('order_details')->where('order_id', $id)->delete();
-            DB::table('order_detail_ext')->where('order_id', $id)->delete();
-            return 200;
+            $order =  DB::table('orders')->where('id', $id)->where('updated_at', null)->delete();
+            if ($order == 0) {
+                return 201;
+            } else {
+                DB::table('order_details')->where('order_id', $id)->delete();
+                DB::table('order_detail_ext')->where('order_id', $id)->delete();
+                return 200;
+            }
         } else {
             return 201;
         }
