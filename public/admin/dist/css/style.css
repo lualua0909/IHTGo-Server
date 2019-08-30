@@ -54,3 +54,8 @@
   .table-striped>tbody>tr:nth-of-type(odd) {
     background-color: #efefef!important;
 }
+
+#tableItem tbody tr:hover{
+  background-color: #b7b4b4!important;
+  cursor: pointer;
+}

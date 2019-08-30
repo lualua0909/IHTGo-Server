@@ -91,9 +91,9 @@
                         </thead>
                         <tbody>
                             @foreach ($orders as $order)
-                            <tr>
-                                <td><a href={{"detail/" .$order->id }}>{{ $order->coupon_code }}</a></td>
-                                <td><a href={{"detail/" .$order->id }}>{{ $order->name }} </a></td>
+                            <tr onclick="orderDetail({{$order->id}})">
+                                <td>{{ $order->coupon_code }}</td>
+                                <td>{{ $order->name }}</td>
                                 <td>
                                     @switch($order->status)
                                     @case(1)
@@ -177,6 +177,10 @@
 <script src="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script src="{{asset('public/admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
 <script>
+    function orderDetail(id)
+        {
+            window.location.href = 'detail/'+id;
+        }
     $(function() {
         $('#start_date, #end_date').datepicker({
             autoclose: true,

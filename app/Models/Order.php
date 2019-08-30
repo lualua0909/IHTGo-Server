@@ -36,9 +36,9 @@ class Order extends BaseModel
     public static function getListHistoryChangePayment($order_id)
     {
         $res = DB::table('change_payment as cp')
-            ->join('users as u','u.id','=','cp.user_id')
-            ->where('cp.order_id',$order_id)
-            ->select('cp.*','u.name')
+            ->join('users as u', 'u.id', '=', 'cp.user_id')
+            ->where('cp.order_id', $order_id)
+            ->select('cp.*', 'u.name')
             ->get();
         return $res;
     }
@@ -469,17 +469,18 @@ class Order extends BaseModel
                 //bình thường
                 if ($distance > 35 && $value < 30) {
                     $payment = 7000 * ($distance - 35) + 250000;
-                } else if ($value > 30 && $distance < 35) {
-                    if ($value <= 50) {
-                        $payment = 3000 * $value + 250000;
-                    } elseif ($value > 50 && $value < 100) {
-                        $payment = 2000 * $value + 250000;
-                    } elseif ($value > 100) {
-                        $payment = 1000 * $value + 250000;
+                    if ($value > 30 && $distance < 35) {
+                        if ($value <= 50) {
+                            $payment = 3000 * $value + 250000;
+                        } elseif ($value > 50 && $value < 100) {
+                            $payment = 2000 * $value + 250000;
+                        } elseif ($value > 100) {
+                            $payment = 1000 * $value + 250000;
+                        }
                     }
                 }
                 //quá tải
-                if ($distance > 35 && $value > 30) {
+                else if ($distance > 35 && $value > 30) {
                     if ($value <= 50) {
                         $payment = 3000 * $value + (7000 * ($distance - 35)) + 250000;
                     } elseif ($value > 50 && $value < 100) {
