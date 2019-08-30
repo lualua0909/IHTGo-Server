@@ -98,12 +98,12 @@ class OrderController extends Controller
     //search theo trang thai & phuong thuc thanh toan
     public function getOptionListNew(Request $req)
     {
-        $orders = Order::postOptionListNew($req->session()->get('search-status',''),$req->session()->get('search-payment_type',''));
+        $orders = Order::postOptionListNew($req->session()->get('search-status', ''), $req->session()->get('search-payment_type', ''));
         return view('admin.order.list2', compact('orders'));
     }
     public function postOptionListNew(Request $req)
     {
-        $orders = Order::postOptionListNew($req->status,$req->payment_type);
+        $orders = Order::postOptionListNew($req->status, $req->payment_type);
         $req->session()->put('search-status', $req->status);
         $req->session()->put('search-payment_type', $req->payment_type);
         return view('admin.order.list2', compact('orders'));
@@ -123,12 +123,12 @@ class OrderController extends Controller
     //search theo ngay
     public function getSearchDate(Request $req)
     {
-        $orders = Order::postSearchDate($req->session()->get('search-start_date',''),$req->session()->get('search-end_date',''));
+        $orders = Order::postSearchDate($req->session()->get('search-start_date', ''), $req->session()->get('search-end_date', ''));
         return view('admin.order.list2', compact('orders'));
     }
     public function postSearchDate(Request $req)
     {
-        $orders = Order::postSearchDate($req->start_date,$req->end_date);
+        $orders = Order::postSearchDate($req->start_date, $req->end_date);
         $req->session()->put('search-start_date', $req->start_date);
         $req->session()->put('search-end_date', $req->end_date);
         return view('admin.order.list2', compact('orders'));
@@ -250,8 +250,8 @@ class OrderController extends Controller
             $map = app('map')->create_map();
 
             $title = $item->name;
-            $payment = Order::getOrderPaymentDetail($id); 
-            $history_change_payment=Order::getListHistoryChangePayment($id);
+            $payment = Order::getOrderPaymentDetail($id);
+            $history_change_payment = Order::getListHistoryChangePayment($id);
             return view('admin.order.detail', compact('payment', 'history_change_payment', 'map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
         } catch (\Exception $e) {
             dd($e);
@@ -536,6 +536,17 @@ class OrderController extends Controller
         try {
             $res = Order::changePayment($request);
             return back();
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+    public function deleteOrder($id)
+    {
+        try {
+            $order = Order::deleteOrder($id);
+            if ($order = 200) {
+                return back();
+            }
         } catch (\Exception $ex) {
             return $ex;
         }

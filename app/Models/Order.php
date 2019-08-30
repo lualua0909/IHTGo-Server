@@ -514,4 +514,16 @@ class Order extends BaseModel
 
         return 200;
     }
+    public static function deleteOrder($id)
+    {
+        $user_id = Auth::user()->id;
+        if ($user_id == 1) {
+            DB::table('orders')->where('id', $id)->where('updated_at', null)->delete();
+            DB::table('order_details')->where('updated_at', null)->where('order_id', $id)->delete();
+            DB::table('order_detail_ext')->where('updated_at', null)->where('order_id', $id)->delete();
+            return 200;
+        } else {
+            return 201;
+        }
+    }
 }
