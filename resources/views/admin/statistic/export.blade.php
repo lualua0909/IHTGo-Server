@@ -15,18 +15,13 @@
     <thead>
     <tr style="background-color: #0B90C4">
         <th>STT</th>
+        <th>Mã bill</th>
+        <th>Tên Đơn Hàng</th>
+        <th>Loại Đơn Hàng</th>
         <th>Loại Khách Hàng</th>
         <th>Tên Khách Hàng</th>
         <th>Địa Chỉ Khách Hàng</th>
         <th>Tên NVGH</th>
-        <th>Người Trả Phí</th>
-        <th>Loại Đơn Hàng</th>
-        <!-- <th>Mã NPP</th> -->
-        <!-- <th>Tên NPP</th> -->
-        <!-- <th>Mã NVGH</th> -->
-        <!-- <th>Mã Khách Hàng</th> -->
-        <th>Mã bill</th>
-        <th>Tên Đơn Hàng</th>
         <th>Tên Người Gửi</th>
         <th>Địa Chỉ Gửi</th>
         <th>Tên Người Nhận</th>
@@ -46,11 +41,8 @@
     @foreach($listResult as $k => $value)
         <tr>
             <td>{{ $k + 1 }}</td> 
-            <td>{{ ($value->company_id) ? $value->coName : 'Ca Nhan' }}</td>
-            <td>{{ $value->customer_name }}</td>
-            <td>{{ $value->address }}</td>
-            <td>{{ $value->nvgh_name }}</td>
-            <td>{{ $listPayer[$value->payer] }}</td>
+            <td>{{ $value->coupon_code }}</td>
+            <td>{{ $value->order_name }}</td>
             @if($value->car_option==1 || $value->car_option==3)
             <td>Hàng hóa</td>
             @elseif($value->car_option==2)
@@ -58,12 +50,10 @@
             @elseif($value->car_option==4)
             <td>Gửi hàng vào kho</td>
             @endif
-            <!-- <td>{{ $value->npp_code }}</td> -->
-            <!-- <td>{{ $value->npp_name }}</td> -->
-            <!-- <td>{{ $value->nvgh_code }}</td> -->
-            <!-- <td>{{ $value->customer_code }}</td> -->
-            <td>{{ $value->coupon_code }}</td>
-            <td>{{ $value->order_name }}</td>
+            <td>{{ ($value->company_id) ? $value->coName : 'Ca Nhan' }}</td>
+            <td>{{ $value->customer_name }}</td>
+            <td>{{ $value->address }}</td>
+            <td>{{ $value->nvgh_name }}</td>
             <td>{{ $value->sender_name }}</td> 
             <td>{{ $value->sender_address . ' - ' . $value->sender_district . ' - ' . $value->sender_province }}</td>
             <td>{{ $value->receive_name }}</td> 
