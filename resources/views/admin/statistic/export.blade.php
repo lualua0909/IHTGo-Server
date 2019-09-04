@@ -16,29 +16,30 @@
     <tr style="background-color: #0B90C4">
         <th>STT</th>
         <th>Loại Khách Hàng</th>
-        <th>Mã bill</th>
-        <th>Người Trả Phí</th>
-        <!-- <th>Mã NPP</th> -->
-        <th>Tên NPP</th>
-        <!-- <th>Mã NVGH</th> -->
-        <th>Tên NVGH</th>
-        <th>Mã Khách Hàng</th>
         <th>Tên Khách Hàng</th>
         <th>Địa Chỉ Khách Hàng</th>
+        <th>Tên NVGH</th>
+        <th>Người Trả Phí</th>
+        <th>Loại Đơn Hàng</th>
+        <!-- <th>Mã NPP</th> -->
+        <!-- <th>Tên NPP</th> -->
+        <!-- <th>Mã NVGH</th> -->
+        <!-- <th>Mã Khách Hàng</th> -->
+        <th>Mã bill</th>
         <th>Tên Đơn Hàng</th>
         <th>Tên Người Gửi</th>
         <th>Địa Chỉ Gửi</th>
+        <th>Tên Người Nhận</th>
         <th>Địa Chỉ Nhận</th>
         <th>Trạng Thái</th>
         <th>Ngày Đặt Hàng</th>
         <th>Ngày Phân Bổ</th>
-        <th>Loại Đơn Hàng</th>
         <th>Phí Vận Chuyển</th>
         <th>Phí VC đã thanh toán / Ghi nợ</th>
         <th>Số Tiền Đã Thu</th>
         <th>Thu Hộ</th>
         <th>Ghi Chú</th>
-        <th>IHTGo ghi chú</th>
+        <th>IHTGo Ghi Chú</th>
     </tr>
     </thead>
     <tbody>
@@ -46,22 +47,10 @@
         <tr>
             <td>{{ $k + 1 }}</td> 
             <td>{{ ($value->company_id) ? $value->coName : 'Ca Nhan' }}</td>
-            <td>{{ $value->coupon_code }}</td>
-            <td>{{ $listPayer[$value->payer] }}</td>
-            <td>{{ $value->npp_code }}</td>
-            <td>{{ $value->npp_name }}</td>
-            <!-- <td>{{ $value->nvgh_code }}</td> -->
-            <td>{{ $value->nvgh_name }}</td>
-            <!-- <td>{{ $value->customer_code }}</td> -->
             <td>{{ $value->customer_name }}</td>
             <td>{{ $value->address }}</td>
-            <td>{{ $value->order_name }}</td>
-            <td>{{ $value->sender_name }}</td> 
-            <td>{{ $value->sender_address . ' - ' . $value->sender_district . ' - ' . $value->sender_province }}</td>
-            <td>{{ $value->receive_address . ' - ' . $value->receive_district . ' - ' . $value->receive_province }}</td>
-            <td>{{ $orderStatus[$value->status] }}</td>
-            <td>{{ $value->sender_date }}</td>
-            <td>{{ $value->delivery_date }}</td>
+            <td>{{ $value->nvgh_name }}</td>
+            <td>{{ $listPayer[$value->payer] }}</td>
             @if($value->car_option==1 || $value->car_option==3)
             <td>Hàng hóa</td>
             @elseif($value->car_option==2)
@@ -69,6 +58,19 @@
             @elseif($value->car_option==4)
             <td>Gửi hàng vào kho</td>
             @endif
+            <!-- <td>{{ $value->npp_code }}</td> -->
+            <!-- <td>{{ $value->npp_name }}</td> -->
+            <!-- <td>{{ $value->nvgh_code }}</td> -->
+            <!-- <td>{{ $value->customer_code }}</td> -->
+            <td>{{ $value->coupon_code }}</td>
+            <td>{{ $value->order_name }}</td>
+            <td>{{ $value->sender_name }}</td> 
+            <td>{{ $value->sender_address . ' - ' . $value->sender_district . ' - ' . $value->sender_province }}</td>
+            <td>{{ $value->receive_name }}</td> 
+            <td>{{ $value->receive_address . ' - ' . $value->receive_district . ' - ' . $value->receive_province }}</td>
+            <td>{{ $orderStatus[$value->status] }}</td>
+            <td>{{ $value->sender_date }}</td>
+            <td>{{ $value->delivery_date }}</td>
             <td>{{ $value->total_price }}</td>
             <td>{{ $value->is_payment ? $orderPayment[$value->is_payment] : null }}</td>
             <td>{{ $value->take_money }}</td>

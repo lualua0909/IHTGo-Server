@@ -79,6 +79,7 @@ class ExcelService
      */
     public function exportStatistic($listResult, $start, $end, $listPayer, $orderStatus, $orderType, $orderPayment)
     {
+
         return Excel::create($start . '-'  . $end . ') '. '(' . date('dmY') . ')', function($excel) use ($listResult, $start, $end, $listPayer, $orderStatus, $orderType, $orderPayment) {
             $excel->sheet('thong ke', function($sheet) use ($listResult, $start, $end, $listPayer, $orderStatus, $orderType, $orderPayment) {
                 $sheet->loadView('admin.statistic.export', [
