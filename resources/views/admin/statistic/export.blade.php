@@ -18,11 +18,11 @@
         <th>Loại Khách Hàng</th>
         <th>Mã bill</th>
         <th>Người Trả Phí</th>
-        <th>Mã NPP</th>
+        <!-- <th>Mã NPP</th> -->
         <th>Tên NPP</th>
         <!-- <th>Mã NVGH</th> -->
         <th>Tên NVGH</th>
-        <!-- <th>Mã Khách Hàng</th> -->
+        <th>Mã Khách Hàng</th>
         <th>Tên Khách Hàng</th>
         <th>Địa Chỉ Khách Hàng</th>
         <th>Tên Đơn Hàng</th>
@@ -43,56 +43,37 @@
     </thead>
     <tbody>
     @foreach($listResult as $k => $value)
-    {{dd(($value->payer)}}
         <tr>
-            <td>{{$k+1}}</td>
-            <td>{{($value->company_id) ? $value->coName : 'Ca Nhan' }}</td>
-            <td>{{$value->coupon_code }}</td>
-            <td>{{$listPayer[$value->payer] }}</td>
-            <td>{{$value->npp_code }}</td>
-            <td>{{$value->npp_name }}</td>
-            <td>{{$value->nvgh_code }}</td>
-            <td>{{$value->nvgh_name }}</td>
-            <td>{{$value->customer_code }}</td>
-            <td>{{$value->customer_name }}</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <!-- <td>{{ $value->address }}</td>
+            <td>{{ $k + 1 }}</td> 
+            <td>{{ ($value->company_id) ? $value->coName : 'Ca Nhan' }}</td>
+            <td>{{ $value->coupon_code }}</td>
+            <td>{{ $listPayer[$value->payer] }}</td>
+            <td>{{ $value->npp_code }}</td>
+            <td>{{ $value->npp_name }}</td>
+            <!-- <td>{{ $value->nvgh_code }}</td> -->
+            <td>{{ $value->nvgh_name }}</td>
+            <!-- <td>{{ $value->customer_code }}</td> -->
+            <td>{{ $value->customer_name }}</td>
+            <td>{{ $value->address }}</td>
             <td>{{ $value->order_name }}</td>
-            <td>{{ $value->sender_name }}</td> -->
-            <!-- <td>{{ $value->sender_address . ' - ' . $value->sender_district . ' - ' . $value->sender_province }}</td>
+            <td>{{ $value->sender_name }}</td> 
+            <td>{{ $value->sender_address . ' - ' . $value->sender_district . ' - ' . $value->sender_province }}</td>
             <td>{{ $value->receive_address . ' - ' . $value->receive_district . ' - ' . $value->receive_province }}</td>
             <td>{{ $orderStatus[$value->status] }}</td>
             <td>{{ $value->sender_date }}</td>
             <td>{{ $value->delivery_date }}</td>
-            <td>{{ $orderType[$value->car_option] }}</td>
+            @if($value->car_option==1 || $value->car_option==3)
+            <td>Hàng hóa</td>
+            @elseif($value->car_option==2)
+            <td>Chứng từ</td>
+            @elseif($value->car_option==4)
+            <td>Gửi hàng vào kho</td>
+            @endif
             <td>{{ $value->total_price }}</td>
-            <td>{{ $value->is_payment ? $orderPayment[$value->is_payment] : null }}</td> -->
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <td>0</td>
-            <!-- <td>{{ $value->take_money }}</td>
+            <td>{{ $value->is_payment ? $orderPayment[$value->is_payment] : null }}</td>
+            <td>{{ $value->take_money }}</td>
             <td>{{ $value->note }}</td>
-            <td>{{ $value->admin_note }}</td> -->
+            <td>{{ $value->admin_note }}</td>
         </tr>
     @endforeach
     </tbody>
