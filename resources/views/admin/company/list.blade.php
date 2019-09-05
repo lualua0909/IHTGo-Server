@@ -93,11 +93,20 @@
                         {"data": "id"}
                     ],
                     "columnDefs": [
+
                         {
                             "targets": 0,
                             "data": "code",
                             "render": function ( data, type, full, meta ) {
                                 return '<a href="{{route('company.detail')}}/' + full.id +'">#'+data+'</a>';
+                            }
+                        },
+                        { 
+                            "targets": 5,
+                            "render": function (data) {
+                                var date = new Date(data);
+                                var month = date.getMonth() + 1;
+                                return  date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear() + " " +date.getHours()+ ":" + date.getMinutes()+ ":" +date.getSeconds();
                             }
                         },
                         {

@@ -267,7 +267,8 @@ class Order extends BaseModel
     }
     public static function calculatePayment($request)
     {
-        $total_price = self::payment($request);
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $total_price = self::type_payment($request);
         DB::table('order_details')
             ->where('order_id', $request->id)
             ->update(
@@ -297,8 +298,8 @@ class Order extends BaseModel
                         'distance' => ($request->distance == null || $request->distance == 0) ? 1 : $request->distance,
                         'hand_on' => ($request->hand_on == null || $request->hand_on == '') ? 0 : $request->hand_on,
                         'discharge' => ($request->discharge == null || $request->discharge == '') ? 0 : $request->discharge,
-                        'start_time_inventory' => $request->start_time_inventory == '' ? null : $request->start_time_inventory,
-                        'finish_time_inventory' => $request->finish_time_inventory == '' ? null : $request->finish_time_inventory,
+                        'start_time_inventory' => $request->start_time_inventory == '' ? null : strtotime($request->start_time_inventory),
+                        'finish_time_inventory' => $request->finish_time_inventory == '' ? null : strtotime($request->finish_time_inventory),
                         'created_at' => \Carbon\Carbon::now(),
                     ]
                 );
@@ -311,8 +312,8 @@ class Order extends BaseModel
                         'distance' => ($request->distance == null || $request->distance == 0) ? 1 : $request->distance,
                         'hand_on' => ($request->hand_on == null || $request->hand_on == '') ? 0 : $request->hand_on,
                         'discharge' => ($request->discharge == null || $request->discharge == '') ? 0 : $request->discharge,
-                        'start_time_inventory' => $request->start_time_inventory == '' ? null : $request->start_time_inventory,
-                        'finish_time_inventory' => $request->finish_time_inventory == '' ? null : $request->finish_time_inventory,
+                        'start_time_inventory' => $request->start_time_inventory == '' ? null : strtotime($request->start_time_inventory),
+                        'finish_time_inventory' => $request->finish_time_inventory == '' ? null : strtotime($request->finish_time_inventory),
                         'updated_at' => \Carbon\Carbon::now(),
                     ]
                 );
@@ -320,29 +321,19 @@ class Order extends BaseModel
 
         return 200;
     }
-    public static function payment($request)
+    //tính tiền theo loại đơn hàng
+    public static function type_payment($request)
     {
-
         $payment = 0;
-        $weight = ((float) $request->weight != 0 || (float) $request->weight != null) ? (float) $request->weight : 1;
-
         //kiểm tra loại đơn hàng
-        if ($request->car_option == 1) { //hàng hóa
-            $payment = self::calculate($request);
+        if ($request->car_option == 1 || $request->car_option == 3) { //hàng hóa
+            $payment = self::type_car($request);
+            //phí dịch vụ gia tăng
             if ($request->is_speed == 1) {
                 $payment = $payment * 2;
             }
             if ($request->hand_on == 1) {
                 $payment = $payment + 10000;
-            }
-            if ($request->discharge == 1) {
-                if ($weight > 51 && $weight <= 150) {
-                    $payment = $payment + 50000;
-                } elseif ($weight >= 151 && $weight <= 300) {
-                    $payment = $payment + 100000;
-                } elseif ($weight > 300) {
-                    $payment = $payment + 100000 + (1000 * ($weight - 300));
-                }
             }
         } elseif ($request->car_option == 2) { //chứng từ
             //kiểm tra khu vực đơn hàng & quảng đường đơn hàng
@@ -351,60 +342,59 @@ class Order extends BaseModel
 
             $char_BD = "Bình Dương";
             $char_HCM = "Hồ Chí Minh";
+            $char_DN = "Đồng Nai";
             $char_BH = "Biên Hòa";
             $char_NT = "Nhơn Trạch";
             $char_DH = "Đức Hòa";
-            $char_BP = "Bình Phước";
-            $char_TN = "Tây Ninh";
 
 
             $char_BD2 = "Binh Duong";
             $char_HCM2 = "Ho Chi Minh";
+            $char_DN2 = "Dong Nai";
             $char_BH2 = "Bien Hoa";
             $char_NT2 = "Nhon Trach";
             $char_DH2 = "Duc Hoa";
-            $char_BP2 = "Binh Phuoc";
-            $char_TN2 = "Tay Ninh";
-
+            //có dấu
             $sender_BD = strpos($sender_address, $char_BD);
             $sender_HCM = strpos($sender_address, $char_HCM);
+            $sender_DN = strpos($sender_address, $char_DN);
             $sender_BH = strpos($sender_address, $char_BH);
             $sender_NT = strpos($sender_address, $char_NT);
             $sender_DH = strpos($sender_address, $char_DH);
-            $sender_BP = strpos($sender_address, $char_BP);
-            $sender_TN = strpos($sender_address, $char_TN);
 
-            $receive_DB = strpos($receive_address, $char_BD);
+            $receive_BD = strpos($receive_address, $char_BD);
             $receive_HCM = strpos($receive_address, $char_HCM);
+            $receive_DN = strpos($receive_address, $char_DN);
             $receive_BH = strpos($receive_address, $char_BH);
             $receive_NT = strpos($receive_address, $char_NT);
             $receive_DH = strpos($receive_address, $char_DH);
-            $receive_BP = strpos($receive_address, $char_BP);
-            $receive_TN = strpos($receive_address, $char_TN);
-
+            //không dấu
             $sender_BD2 = strpos($sender_address, $char_BD2);
             $sender_HCM2 = strpos($sender_address, $char_HCM2);
+            $sender_DN2 = strpos($sender_address, $char_DN2);
             $sender_BH2 = strpos($sender_address, $char_BH2);
             $sender_NT2 = strpos($sender_address, $char_NT2);
             $sender_DH2 = strpos($sender_address, $char_DH2);
-            $sender_BP2 = strpos($sender_address, $char_BP2);
-            $sender_TN2 = strpos($sender_address, $char_TN2);
 
-            $receive_DB2 = strpos($receive_address, $char_BD2);
+            $receive_BD2 = strpos($receive_address, $char_BD2);
             $receive_HCM2 = strpos($receive_address, $char_HCM2);
+            $receive_DN2 = strpos($receive_address, $char_DN2);
             $receive_BH2 = strpos($receive_address, $char_BH2);
             $receive_NT2 = strpos($receive_address, $char_NT2);
             $receive_DH2 = strpos($receive_address, $char_DH2);
-            $receive_BP2 = strpos($receive_address, $char_BP2);
-            $receive_TN2 = strpos($receive_address, $char_TN2);
-            if ((($sender_BD != false || $sender_HCM != false) && ($receive_DB != false || $receive_HCM != false)) || (($sender_BD2 != false || $sender_HCM2 != false) && ($receive_DB2 != false || $receive_HCM2 != false))) {
+            //nội tỉnh bình dương, nội tỉnh tp.hcm
+            if ((($sender_BD || $sender_BD2) == ($receive_BD || $receive_BD2)) || ($sender_HCM || $sender_HCM2) == ($receive_HCM || $receive_HCM2)) {
+                $payment = 70000;
+            }
+            //ngoại tỉnh bình dương,tphcm
+            elseif (($sender_BD || $sender_BD2 || $sender_HCM || $sender_HCM2) == ($receive_BD || $receive_BD2 || $receive_DN || $receive_DN2 || $receive_BH || $receive_BH2 || $receive_NT || $receive_NT2 || $receive_DH || $receive_DH2)) {
+                $payment = 70000;
+            } elseif (($receive_BD || $receive_BD2 || $receive_HCM2 || $receive_HCM2) == ($sender_BD || $sender_BD2 || $sender_DN || $sender_DN2 || $sender_BH || $sender_BH2 || $sender_NT || $sender_NT2 || $sender_DH || $sender_DH2)) {
                 $payment = 70000;
             } else {
                 $payment = 140000;
             }
-
-
-
+            //phí dịch vụ gia tăng
             if ($request->is_speed == 1) {
                 $payment = $payment * 2;
             }
@@ -413,36 +403,28 @@ class Order extends BaseModel
             }
         } elseif ($request->car_option == 4) //gửi hàng vào kho
         {
-            $payment = self::calculate($request);
+            $payment = self::type_car($request);
 
-            $start_time_inventory = $request->start_time_inventory;
-            $finish_time_inventory = $request->finish_time_inventory;
-
-            $time_inventory = abs(strtotime($finish_time_inventory) - strtotime($start_time_inventory));
-            $y = 365 * 60 * 60 * 24;
-            $m = 30 * 60 * 60 * 24;
-            $d = 60 * 60 * 24;
-            $h = 60 * 60;
-            $ms = 60;
-
-            $years = floor($time_inventory / $y);
-            $months = floor(($time_inventory - $years * $y) / $m);
-            $days = floor(($time_inventory - $years * $y - $months * $m) / $d);
-            $hours = floor(($time_inventory - $years * $y - $months * $m - $days * $d) / $h);
-            $minutes = floor(($time_inventory - $years * $y - $months * $m - $days * $d - $hours * $h) / $ms);
-            if ($minutes <= 30) {
-                $payment = $payment + 50000;
-            } elseif ($minutes > 30) {
-                $payment = $payment + 70000;
-            }
-            if ($hours >= 1) {
-                $a = 70000;
-                $payment = $payment + ($a * ($hours - 1));
+            $start_time_inventory = strtotime($request->start_time_inventory);
+            $finish_time_inventory = strtotime($request->finish_time_inventory);
+            $minutes = ($finish_time_inventory - $start_time_inventory) / 60;
+            $time = ($minutes - 60);
+            if ((int) ($minutes / 60) < 1) {
+                $payment = $payment;
+            } else {
+                if ($time%60 <= 30) {
+                    $payment = $payment + 50000;
+                } elseif ($time%60 > 30) {
+                    $payment = $payment + 70000;
+                }
+                if ((int) ($minutes / 60) >= 1) {
+                    $payment = $payment + (70000 * (int)($minutes/60 -1));
+                }
             }
         }
         return $payment;
     }
-    public static function calculate($request)
+    public static function type_car($request)
     {
         $payment = 0;
         $distance = (float) $request->distance != 0 ? (float) $request->distance : 1;
@@ -459,10 +441,10 @@ class Order extends BaseModel
                 $payment = 3500 * $distance;
             }
         } else {
-            //kiem tra hang hoa co qua tai khong
+            //xe tai
             $value = ($size < $weight) ? $weight : $size;
             $value = $value - 30;
-            //xe tai
+            //kiem tra hang hoa co qua tai khong
             if ($distance <= 35 && $value <= 30) {
                 $payment = 250000;
             } else {
@@ -489,6 +471,14 @@ class Order extends BaseModel
                     } elseif ($value > 100) {
                         $payment = 1000 * $value + (7000 * ($distance - 35)) + 250000;
                     }
+                }
+                //tính thêm phí bốc xếp hàng
+                if ($weight >= 51 && $weight <= 150) {
+                    $payment = $payment + 50000;
+                } elseif ($weight >= 151 && $weight <= 300) {
+                    $payment = $payment + 100000;
+                } elseif ($weight > 300) {
+                    $payment = $payment + 100000 + (1000 * ($weight - 300));
                 }
             }
         }

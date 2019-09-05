@@ -87,6 +87,14 @@
                                     '       <li>Link: ' + result.screen + '</li>' +
                                     '   </ul>';
                             }
+                        },
+                        { 
+                            "targets": 1,
+                            "render": function (data) {
+                                var date = new Date(data);
+                                var month = date.getMonth() + 1;
+                                return  date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear() + " " +date.getHours()+ ":" + date.getMinutes()+ ":" +date.getSeconds();
+                            }
                         }
                     ],
                     "language": {

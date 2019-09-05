@@ -48,7 +48,7 @@
                                     <span class="label label-success">{{ __('label.un_baned') }}</span>
                                 @endif
                             </td>
-                            <td>{!! \App\Helpers\Util::showCreatedAt($item->created_at) !!}</td>
+                            <td>{{date_format($item->created_at,"d/m/Y H:i:s")}}</td>
                             <td >
                                 @can('edit-user')
                                     <a href="{{route('user.edit', $item->id)}}" class="btn btn-primary btn-sm">

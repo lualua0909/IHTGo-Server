@@ -99,6 +99,14 @@
                                     return '<a href="{{route('evaluate.detail')}}/' + full.id +'">#'+data+'</a>';
                                 }
                             },
+                            { 
+                            "targets": 4,
+                            "render": function (data) {
+                                var date = new Date(data);
+                                var month = date.getMonth() + 1;
+                                return  date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear() + " " +date.getHours()+ ":" + date.getMinutes()+ ":" +date.getSeconds();
+                            }
+                        },
                             {
                                 "targets": 3,
                                 class: 'text-center',

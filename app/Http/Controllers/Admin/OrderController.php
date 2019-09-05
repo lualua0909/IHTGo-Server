@@ -44,7 +44,8 @@ class OrderController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function getList()
-    {
+    { 
+        return redirect('admin/order/list-new');
         $title = __('label.order');
         $orderStatus = array(
             Business::ORDER_STATUS_WAITING => __('label.waiting'),
@@ -92,7 +93,6 @@ class OrderController extends Controller
     public function getListNew()
     {
         $orders = Order::getListNew();
-
         return view('admin.order.list2', compact('orders'));
     }
     //search theo trang thai & phuong thuc thanh toan

@@ -102,7 +102,7 @@
                                 </tr>
                                 <tr>
                                     <th>{{ __('label.created') }}</th>
-                                    <td>{{ $item->created_at }}</td>
+                                    <td>{{date('d/m/Y H:i:s', strtotime($item->created_at))}}</td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('label.payer') }}</th>
@@ -175,14 +175,14 @@
                                         <td> 
                                             <label class="checkbox-inline"><input type="checkbox" name="is_speed" value="1" {{$item->is_speed == 1? "checked":""}} >Hỏa tốc</label>
                                             <label class="checkbox-inline"><input type="checkbox" name="hand_on" value="1" {{$payment != null ? ( $payment->hand_on == 1? "checked":""):""}}>Giao tận tay</label>
-                                            <label class="checkbox-inline" id="form_discharge"><input type="checkbox" name="discharge" value="1" {{$payment != null ? ($payment->discharge == 1? "checked":""):""}}>Bốc xếp hàng hóa</label>
                                         </td>
                                     </tr>
                                     <tr id="time_inventory">
+
                                         <th>Thời gian làm hàng</th>
                                         <td style="display: flex;">  
-                                            <input type="datetime-local"  class="selector" name="start_time_inventory" value="{{$payment != null ? (strftime('%Y-%m-%dT%H:%M:%S', strtotime($payment->start_time_inventory))):''}}">
-                                            <input type="datetime-local"  class="selector" name="finish_time_inventory"  value="{{$payment != null ? (strftime('%Y-%m-%dT%H:%M:%S', strtotime($payment->finish_time_inventory))):''}}">
+                                            <input type="text"  class="selector" name="start_time_inventory" value="{{$payment==null ? '' : date('m/d/Y H:i:s',$payment->start_time_inventory)}}">
+                                            <input type="text"  class="selector" name="finish_time_inventory"  value="{{$payment ==null ? '' : date('m/d/Y H:i:s',$payment->finish_time_inventory )}}">
                                         </td>
                                     </tr>
                                     <tr>
@@ -750,7 +750,6 @@
                     $('#form_size').css('display', 'none');//form kích thước
                     $('#form_weight').css('display', 'none');//form trọng lượng
                     $('#form_distance').css('display', 'none');//QUÃNG ĐƯỜNG
-                    $('#form_discharge').css('display', 'none');//bốc xếp
                     $('#time_inventory').css('display', 'none');//thời gian làm hàng
                     $('#form_service').css('display', 'table-row');//dịch vụ gia tăng
                 }
@@ -758,7 +757,6 @@
                     $('#form_size').css('display', 'table-row');//form kích thước
                     $('#form_weight').css('display', 'table-row');//form trọng lượng
                     $('#form_distance').css('display', 'table-row');//làm hàng
-                    $('#time_inventory').css('display', 'table-row');//bốc xếp
                     $('#form_service').css('display', 'none');//dịch vụ gia tăng
                 }
         });

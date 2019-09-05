@@ -157,8 +157,7 @@
                                     {{ $order->receive_district_name }} {{ $order->receive_province_name }}
                                     @endif
                                 </td>
-                                <td>{{ $order->created_at }} </td>
-                               
+                                <td>{{date('d/m/Y H:i:s', strtotime($order->created_at))}}</td>
                             </tr>
                             @endforeach
                         </tbody>

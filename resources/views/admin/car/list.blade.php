@@ -19,7 +19,7 @@
                 <table id="example1" class="table table-bordered table-striped">
                     <thead>
                     <tr>
-                        <th>{{ __('label.number_car') }}</th>
+                        <th>{{ __('label.number_car') }}3</th>
                         <th>{{ __('label.type') }}</th>
                         <th>{{ __('label.weight') }}</th>
                         <th>{{ __('label.type_car') }}</th>
@@ -36,7 +36,7 @@
                             <td>{{ $item->weight }}</td>
                             <td>{{ $carTypeOther[$item->type_car] }}</td>
                             <td>{{ ($item->owner) ? optional($item->owner->user)->name : __('label.company') }}</td>
-                            <td>{!! \App\Helpers\Util::showCreatedAt($item->created_at) !!}</td>
+                            <td>{{date_format($item->created_at,"d/m/Y H:i:s")}}</td>
                             <td class="text-center">
                                 @can('edit-car')
                                     <a href="{{route('car.edit', $item->id)}}" class="btn btn-primary btn-sm">
@@ -44,9 +44,9 @@
                                     </a>
                                 @endcan
                                 @can('delete-car')
-                                     <a onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('car.delete', $item->id)}}" class="btn btn-danger btn-sm">
-                                          <i class="fa fa-close"></i>
-                                     </a>
+                                    <a onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('car.delete', $item->id)}}" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-close"></i>
+                                    </a>
                                 @endcan
                             </td>
                         </tr>

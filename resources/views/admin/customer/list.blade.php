@@ -219,6 +219,14 @@
                                     return '<span style="display: block; padding: 5px;" class="label '+userStatusColor[data]+'">'+userStatus[data]+'</span>';
                                 }
                             },
+                            { 
+                                "targets": 5,
+                                "render": function (data) {
+                                    var date = new Date(data);
+                                    var month = date.getMonth() + 1;
+                                    return  date.getDate() + "/" + (month.toString().length > 1 ? month : "0" + month) + "/" + date.getFullYear() + " " +date.getHours()+ ":" + date.getMinutes()+ ":" +date.getSeconds();
+                                }
+                            },
                             {
                                 "targets": 6,
                                 class: 'text-center',

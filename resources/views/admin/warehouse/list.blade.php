@@ -36,7 +36,7 @@
                             <td>{{ $item->distribution }}</td>
                             <td>{{ $item->acreage }}</td>
                             <td>{{ $item->address }}</td>
-                            <td>{!! \App\Helpers\Util::showCreatedAt($item->created_at) !!}</td>
+                            <td>{{date_format($item->created_at,"d/m/Y H:i:s")}}</td>
                             <td class="text-center">
                                 @can('edit-warehouse')
                                     <a href="{{route('warehouse.edit', $item->id)}}" class="btn btn-primary btn-sm">

@@ -15,6 +15,7 @@ use App\Repositories\EloquentRepository;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use SebastianBergmann\Environment\Console;
 
 class CompanyRepository extends EloquentRepository implements CompanyRepositoryContract
 {
@@ -96,6 +97,7 @@ class CompanyRepository extends EloquentRepository implements CompanyRepositoryC
             $result = $result->offset($condition['start'])->limit($condition['limit'])->get()->toArray();
         }
         $data['data'] = $result;
+        
         return $data;
     }
 
