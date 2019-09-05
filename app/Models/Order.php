@@ -300,7 +300,7 @@ class Order extends BaseModel
                         'discharge' => ($request->discharge == null || $request->discharge == '') ? 0 : $request->discharge,
                         'start_time_inventory' => $request->start_time_inventory == '' ? null : strtotime($request->start_time_inventory),
                         'finish_time_inventory' => $request->finish_time_inventory == '' ? null : strtotime($request->finish_time_inventory),
-                        'created_at' => \Carbon\Carbon::now(),
+                        'created_at' => date('Y-m-d H:i:s'),
                     ]
                 );
         } else {
@@ -314,7 +314,7 @@ class Order extends BaseModel
                         'discharge' => ($request->discharge == null || $request->discharge == '') ? 0 : $request->discharge,
                         'start_time_inventory' => $request->start_time_inventory == '' ? null : strtotime($request->start_time_inventory),
                         'finish_time_inventory' => $request->finish_time_inventory == '' ? null : strtotime($request->finish_time_inventory),
-                        'updated_at' => \Carbon\Carbon::now(),
+                        'updated_at' => date('Y-m-d H:i:s'),
                     ]
                 );
         }
