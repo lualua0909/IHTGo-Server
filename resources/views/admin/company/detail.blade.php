@@ -40,7 +40,7 @@
                             @foreach($item->customer as $i)
                                 <tr>
                                     <td><a target="_blank" href="{{route('customer.detail', $i->id)}}">{{ optional($i->user)->name }}</a></td>
-                                    <td>{!! \App\Helpers\Util::showCreatedAt($i->created_at) !!}</td>
+                                    <td>{{date_format($item->created_at,"d/m/Y H:i:s")}}</td>
                                 </tr>
                             @endforeach
                             </tbody>

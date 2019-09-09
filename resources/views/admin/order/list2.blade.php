@@ -10,7 +10,7 @@
                     <form method="POST" action="{{route('order.post.search.list.new')}}">
                         {{ csrf_field() }}
                         <div class="has-feedback">
-                            <input name="search" type="text" class="form-control" placeholder="{{__('label.customer_name')}}, {{__('label.order_name') . ',' . __('label.coupon_code') . ',' . __('label.phone')}}">
+                            <input name="search" type="text" value="{{$search}}" class="form-control" placeholder="{{__('label.customer_name')}}, {{__('label.order_name') . ',' . __('label.coupon_code') . ',' . __('label.phone')}}">
                         </div>
                         <button type="submit" class="btn btn-info" style="position: absolute;top: 0; right: 0; z-index: 2;">Tìm</button>
 
@@ -23,22 +23,22 @@
                         <div class="form-group ">
                             <label>Trạng thái:</label>
                             <select name="status" class="form-control">
-                                <option value="0" selected>All</option>
-                                <option value="1">Đang chờ</option>
-                                <option value="2">Chưa giao</option>
-                                <option value="3">Đang giao</option>
-                                <option value="4">Đã hoàn thành</option>
-                                <option value="5">Khách hủy</option>
-                                <option value="6">IHT hủy</option>
-                                <option value="7">Không thành công</option>
+                                <option value="0" @if($status == "0") selected @endif>All</option>
+                                <option value="1" @if($status == "1") selected @endif>Đang chờ</option>
+                                <option value="2" @if($status == "2") selected @endif>Chưa giao</option>
+                                <option value="3" @if($status == "3") selected @endif>Đang giao</option>
+                                <option value="4" @if($status == "4") selected @endif>Đã hoàn thành</option>
+                                <option value="5" @if($status == "5") selected @endif>Khách hủy</option>
+                                <option value="6" @if($status == "6") selected @endif>IHT hủy</option>
+                                <option value="7" @if($status == "7") selected @endif>Không thành công</option>
                             </select>
                         </div>
                         <div class="form-group ">
                             <label>Phương thức thanh toán:</label>
                             <select name="payment_type" class="form-control">
-                                <option value="0" selected>All</option>
-                                <option value="1">Tiền mặt</option>
-                                <option value="2">Theo tháng</option>
+                                <option value="0" @if($payment_type == "0") selected @endif>All</option>
+                                <option value="1" @if($payment_type == "1") selected @endif>Tiền mặt</option>
+                                <option value="2" @if($payment_type == "2") selected @endif>Theo tháng</option>
                             </select>
                         </div>
                         <div class="btn-group"> <button type="submit" class="btn btn-info">Tìm</button></div>
@@ -48,27 +48,21 @@
             <br>
             <div class="row">
                 <div class="col-md-12">
+                    <!-- Date range -->
                     <form class="form-inline" method="POST" action="{{route('order.post.search.date')}}">
-                        {{ csrf_field() }}
-                        <div class="form-group">
-                            <label>{{__('label.start_date')}}:</label>
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
+                            {{ csrf_field() }}
+                            <div class="form-group">
+                                <label>{{__('label.end_date')}}:</label>
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    <input type="text" name="date" value="" class="form-control pull-right" id="reservation">
                                 </div>
-                                <input type="text" name="start_date" class="form-control pull-right" id="start_date" required />
+                                <!-- /.input group -->
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label>{{__('label.end_date')}}:</label>
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input type="text" name="end_date" class="form-control pull-right" id="end_date" required />
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-info">Tìm</button>
+                            <button type="submit" class="btn btn-info">Tìm</button>
+                            <!-- /.form group -->
                     </form>
                 </div>
             </div>
@@ -174,17 +168,28 @@
 @section('style')
 <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.css">
 <link rel="stylesheet" href="{{asset('public/admin')}}/plugins/datepicker/datepicker3.css">
+<link rel="stylesheet" href="{{asset('public/admin')}}/plugins/daterangepicker/daterangepicker.css">
+
 @endsection
 @section('script')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+<script src="{{asset('public/admin')}}/plugins/daterangepicker/daterangepicker.js"></script>
+
 <script src="{{asset('public/admin')}}/plugins/datatables/jquery.dataTables.min.js"></script>
 <script src="{{asset('public/admin')}}/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script src="{{asset('public/admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
+
 <script>
     function orderDetail(id)
         {
             window.open('detail/'+id, '_blank');
         }
     $(function() {
+        $('#reservation').daterangepicker({
+                locale: {
+                    format: 'DD/MM/YYYY'
+                }
+            });
         $('#start_date, #end_date').datepicker({
             autoclose: true,
             format: 'dd/mm/yyyy'

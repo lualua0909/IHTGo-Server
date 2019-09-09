@@ -99,12 +99,12 @@ class Order extends BaseModel
     }
 
     //search theo ngay
-    public static function postSearchDate($start_date, $end_date)
+    public static function postSearchDate($date)
     {
 
-        $start = ($start_date) ? Carbon::createFromFormat('d/m/Y', $start_date)->format('Y-m-d') : Carbon::now()->subMonth()->startOfMonth();
-
-        $end = ($end_date) ? Carbon::createFromFormat('d/m/Y', $end_date)->format('Y-m-d') : Carbon::now()->subMonth()->endOfMonth()->addDay();
+        $arrDate = explode(' - ', $date);
+        $start = Carbon::createFromFormat('d/m/Y', $arrDate[0])->startOfDay()->format('Y-m-d');
+        $end = Carbon::createFromFormat('d/m/Y', $arrDate[1])->endOfDay()->format('Y-m-d');
         $orders = DB::table('orders as o')
             ->select(
                 "o.*",

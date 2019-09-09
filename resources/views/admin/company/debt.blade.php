@@ -17,7 +17,7 @@
 <table>
     <thead>
     <tr>
-        <td colspan="13" style="text-align: center"><h1 style="color: yellow">BÁO CÁO THEO DÕI THU TIỀN NỢ TỪ {{strtoupper($item->name)}}</h1></td>
+        <td colspan="13" style="text-align: center"><h1 style="color: yellow">BẢNG KÊ CÔNG TY {{strtoupper($item->name)}}</h1></td>
     </tr>
     </thead>
 </table>
@@ -35,15 +35,7 @@
     <thead>
     <tr style="background-color: #0B90C4">
         <th>STT</th>
-        <th>Số Đơn Hàng</th>
-        <th>Người Trả Phí</th>
-        <th>Mã NPP</th>
-        <th>Tên NPP</th>
-        <th>Mã NVGH</th>
-        <th>Tên NVGH</th>
-        <th>Mã Khách Hàng</th>
-        <th>Tên Khách Hàng</th>
-        <th>Địa Chỉ Khách Hàng</th>
+        <th>Mã bill</th>
         <th>Tên Đơn Hàng</th>
         <th>Tên Người Gửi</th>
         <th>Địa Chỉ Gửi</th>
@@ -57,21 +49,14 @@
         <th>Số Tiền Đã Thu</th>
         <th>Thu Hộ</th>
         <th>Ghi Chú</th>
+        <th>Admin Ghi Chú</th>
     </tr>
     </thead>
     <tbody>
     @foreach($listResult as $k => $value)
         <tr>
             <td>{{ $k + 1 }}</td>
-            <td>{{ $value->code }}</td>
-            <td>{{ $listPayer[$value->payer] }}</td>
-            <td>{{ $value->npp_code }}</td>
-            <td>{{ $value->npp_name }}</td>
-            <td>{{ $value->nvgh_code }}</td>
-            <td>{{ $value->nvgh_name }}</td>
-            <td>{{ $value->customer_code }}</td>
-            <td>{{ $value->customer_name }}</td>
-            <td>{{ $value->address }}</td>
+            <td>{{ $value->coupon_code }}</td>
             <td>{{ $value->order_name }}</td>
             <td>{{ $value->sender_name }}</td>
             <td>{{ $value->sender_address . ' - ' . $value->sender_district . ' - ' . $value->sender_province }}</td>
@@ -85,6 +70,7 @@
             <td>0</td>
             <td>{{ $value->take_money }}</td>
             <td>{{ $value->note }}</td>
+            <td>{{ $value->admin_note }}</td>
         </tr>
     @endforeach
     </tbody>

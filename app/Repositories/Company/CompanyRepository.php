@@ -147,7 +147,7 @@ class CompanyRepository extends EloquentRepository implements CompanyRepositoryC
             ->leftJoin('provinces as pr', 'pr.province_id', '=', 'od.receive_province_id')
             ->leftJoin('districts as ds', 'ds.id', '=', 'od.sender_district_id')
             ->leftJoin('districts as drr', 'drr.id', '=', 'od.receive_province_id')
-            ->select('w.code as npp_code', 'wu.name as npp_name', 'du.code as nvgh_code', 'du.name as nvgh_name', 'c.code as customer_code', 'cu.name as customer_name', 'c.address', 'o.status', 'o.code', 'o.total_price', 'o.created_at as sender_date', 'o.car_option', 'o.payer', 'd.created_at as delivery_date', 'ps.name as sender_province', 'ds.name as sender_district', 'pr.name as receive_province', 'drr.name as receive_district', 'od.sender_address', 'od.receive_address', 'od.note', 'od.take_money', 'o.is_payment', 'od.sender_name', 'o.name as order_name')
+            ->select('w.code as npp_code', 'wu.name as npp_name', 'du.code as nvgh_code', 'du.name as nvgh_name', 'c.code as customer_code', 'cu.name as customer_name', 'c.address', 'o.status', 'o.code','o.coupon_code', 'o.total_price', 'o.created_at as sender_date', 'o.car_option', 'o.payer', 'd.created_at as delivery_date', 'ps.name as sender_province', 'ds.name as sender_district', 'pr.name as receive_province', 'drr.name as receive_district', 'od.sender_address', 'od.receive_address', 'od.note', 'od.admin_note', 'od.take_money', 'o.is_payment', 'od.sender_name', 'o.name as order_name')
             ->whereBetween('o.created_at', [$start, $end])
             ->where(['c.company_id' => $id])
             ->get();

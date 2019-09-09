@@ -527,7 +527,8 @@
     <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
     <script src="{{asset('public/admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
-    <script>
+
+  <script>
         $( document ).ready(function() {
             
             $('.select2').select2();

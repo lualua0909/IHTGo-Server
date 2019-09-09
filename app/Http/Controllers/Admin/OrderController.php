@@ -92,46 +92,71 @@ class OrderController extends Controller
 
     public function getListNew()
     {
+        $date=date("d/m/YY").' - '.date("d/m/YY");
+        $search='';
+        $status='';
+        $payment_type='';
         $orders = Order::getListNew();
-        return view('admin.order.list2', compact('orders'));
+        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
     }
     //search theo trang thai & phuong thuc thanh toan
     public function getOptionListNew(Request $req)
     {
+        $date=date("d/m/YY").' - '.date("d/m/YY");
+        $search='';
+        $status=$req->session()->get('search-status', '');
+        $payment_type=$req->session()->get('search-payment_type', '');
         $orders = Order::postOptionListNew($req->session()->get('search-status', ''), $req->session()->get('search-payment_type', ''));
-        return view('admin.order.list2', compact('orders'));
+        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
     }
     public function postOptionListNew(Request $req)
     {
+        $date=date("d/m/YY").' - '.date("d/m/YY");
+        $search='';
+        $status=$req->status;
+        $payment_type=$req->payment_type;
         $orders = Order::postOptionListNew($req->status, $req->payment_type);
         $req->session()->put('search-status', $req->status);
         $req->session()->put('search-payment_type', $req->payment_type);
-        return view('admin.order.list2', compact('orders'));
+        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
     }
     //search theo ten kh, ten don hang, coupon_code, sdt
     public function getSearchListNew(Request $req)
     {
+        $date=date("d/m/YY").' - '.date("d/m/YY");
+        $search=$req->session()->get('search-text', '');
+        $status='';
+        $payment_type='';
         $orders = Order::postSearchListNew($req->session()->get('search-text', ''));
-        return view('admin.order.list2', compact('orders'));
+        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
     }
     public function postSearchListNew(Request $req)
     {
+        $date=date("d/m/YY").' - '.date("d/m/YY");
+        $search=$req->search;
+        $status='';
+        $payment_type='';
         $orders = Order::postSearchListNew($req->search);
         $req->session()->put('search-text', $req->search);
-        return view('admin.order.list2', compact('orders'));
+        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
     }
     //search theo ngay
     public function getSearchDate(Request $req)
     {
-        $orders = Order::postSearchDate($req->session()->get('search-start_date', ''), $req->session()->get('search-end_date', ''));
-        return view('admin.order.list2', compact('orders'));
+        $date=$req->session()->get('search-date', '');
+        dd($date);
+        $search='';
+        $status='';
+        $payment_type='';
+        $orders = Order::postSearchDate($req->session()->get('search-date', ''));
+        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
     }
     public function postSearchDate(Request $req)
     {
-        $orders = Order::postSearchDate($req->start_date, $req->end_date);
-        $req->session()->put('search-start_date', $req->start_date);
-        $req->session()->put('search-end_date', $req->end_date);
-        return view('admin.order.list2', compact('orders'));
+        $date=$req->date;
+        $orders = Order::postSearchDate($req->date);
+        $req->session()->put('search-date', $req->date);
+        return view('admin.order.list2', compact('orders','date'));
     }
     /**
      * @param $objectCar

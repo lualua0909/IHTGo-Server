@@ -63,6 +63,7 @@
             <td>{{ $value->delivery_date }}</td>
             <td>{{ $value->total_price }}</td>
             <td>{{ $value->is_payment ? $orderPayment[$value->is_payment] : null }}</td>
+            <td>0</td>
             <td>{{ $value->take_money }}</td>
             <td>{{ $value->note }}</td>
             <td>{{ $value->admin_note }}</td>
