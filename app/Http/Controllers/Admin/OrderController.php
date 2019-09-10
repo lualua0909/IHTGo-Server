@@ -92,7 +92,7 @@ class OrderController extends Controller
 
     public function getListNew()
     {
-        $date=date("d/m/YY").' - '.date("d/m/YY");
+        $date='';
         $search='';
         $status='';
         $payment_type='';
@@ -102,7 +102,7 @@ class OrderController extends Controller
     //search theo trang thai & phuong thuc thanh toan
     public function getOptionListNew(Request $req)
     {
-        $date=date("d/m/YY").' - '.date("d/m/YY");
+        $date='';
         $search='';
         $status=$req->session()->get('search-status', '');
         $payment_type=$req->session()->get('search-payment_type', '');
@@ -111,7 +111,7 @@ class OrderController extends Controller
     }
     public function postOptionListNew(Request $req)
     {
-        $date=date("d/m/YY").' - '.date("d/m/YY");
+        $date='';
         $search='';
         $status=$req->status;
         $payment_type=$req->payment_type;
@@ -123,7 +123,7 @@ class OrderController extends Controller
     //search theo ten kh, ten don hang, coupon_code, sdt
     public function getSearchListNew(Request $req)
     {
-        $date=date("d/m/YY").' - '.date("d/m/YY");
+        $date='';
         $search=$req->session()->get('search-text', '');
         $status='';
         $payment_type='';
@@ -132,7 +132,7 @@ class OrderController extends Controller
     }
     public function postSearchListNew(Request $req)
     {
-        $date=date("d/m/YY").' - '.date("d/m/YY");
+        $date='';
         $search=$req->search;
         $status='';
         $payment_type='';
@@ -144,7 +144,6 @@ class OrderController extends Controller
     public function getSearchDate(Request $req)
     {
         $date=$req->session()->get('search-date', '');
-        dd($date);
         $search='';
         $status='';
         $payment_type='';
@@ -154,9 +153,12 @@ class OrderController extends Controller
     public function postSearchDate(Request $req)
     {
         $date=$req->date;
+        $search='';
+        $status='';
+        $payment_type='';
         $orders = Order::postSearchDate($req->date);
         $req->session()->put('search-date', $req->date);
-        return view('admin.order.list2', compact('orders','date'));
+        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
     }
     /**
      * @param $objectCar
