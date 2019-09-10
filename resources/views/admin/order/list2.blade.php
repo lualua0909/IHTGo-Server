@@ -94,25 +94,25 @@
                                 <td>
                                     @switch($order->status)
                                     @case(1)
-                                    <span class="bage-warning">Đang chờ</span>
+                                    <span class="label label-warning">Đang chờ</span>
                                     @break
                                     @case(2)
-                                    <span class="bage-info">Chưa giao</span>
+                                    <span class="label label-info">Chưa giao</span>
                                     @break
                                     @case(3)
-                                    <span class="bage-danger">Đang giao</span>
+                                    <span class="label label-danger">Đang giao</span>
                                     @break
                                     @case(4)
-                                    <span class="bage-success">Đã hoàn thành</span>
+                                    <span class="label label-success">Đã hoàn thành</span>
                                     @break
                                     @case(5)
-                                    <span class="bage-basic">Khách hủy</span>
+                                    <span class="label label-default">Khách hủy</span>
                                     @break
                                     @case(6)
-                                    <span class="bage-basic">IHT hủy</span>
+                                    <span class="label label-default">IHT hủy</span>
                                     @break
                                     @case(7)
-                                    <span class="bage-basic">Không thành công</span>
+                                    <span class=" label label-default">Không thành công</span>
                                     @break
 
                                     @default
@@ -122,17 +122,17 @@
                                 <td>
                                     @switch($order->car_option)
                                     @case(1)
-                                    <span class="bage-success">Hàng hóa</span>
+                                    <span class="label label-success">Hàng hóa</span>
                                     @break
                                     @case(2)
-                                    <span class="bage-warning">Chứng từ</span>
+                                    <span class="label label-warning">Chứng từ</span>
                                     @break
                                     @case(3)
-                                    <span class="bage-success">Hàng hóa</span>
+                                    <span class="label label-success">Hàng hóa</span>
                                     @break
 
                                     @default
-                                    <span class="bage-info">Làm hàng</span>
+                                    <span class="label label-info">Làm hàng</span>
                                     @endswitch
                                 </td>
                                 <td>{{ number_format($order->total_price) }} </td>
