@@ -119,7 +119,6 @@ class ChatController extends Controller
      */
     private function getMessage($roomID)
     {
-        dd(route('api.chat.getMessage'));
         try{
             $param = array(
                 'room_id' => $roomID
@@ -130,7 +129,6 @@ class ChatController extends Controller
             curl_setopt($ch, CURLOPT_POSTFIELDS, $param);
             $result = curl_exec($ch);
             curl_close($ch);
-            dd($result);
             echo $result;
         }catch (\Exception $exception){
             logger(['service' => 'chatkit get msg', 'content' => $exception->getMessage()]);

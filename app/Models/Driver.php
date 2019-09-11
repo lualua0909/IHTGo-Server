@@ -55,24 +55,4 @@ class Driver extends BaseModel
     {
         return $this->hasOne(Car::class, 'owner_id', 'id');
     }
-    //phân công tài xế giao hàng
-    public static function storeDriver($data)
-    {
-        try {
-            date_default_timezone_set('Asia/Ho_Chi_Minh');
-            DB::table('deliveries')
-                ->insertGetId(
-                    [
-                        'order_id' => (int)$data['order_id'],
-                        'user_id' => (int) $data['user_id'],
-                        'driver_id' => (int) $data['driver_id'],
-                        'car_id' => (int) $data['car_id'],
-                        'created_at' => date('Y-m-d H:i:s'),
-                    ]
-                );
-            return 200;
-        } catch (\Exception $e) {
-            dd($e);
-        }
-    }
 }

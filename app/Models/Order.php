@@ -11,120 +11,6 @@ use PhpParser\Node\Expr\Cast\Double;
 
 class Order extends BaseModel
 {
-
-    public static function getListNew()
-    {
-        $orders = DB::table('orders as o')
-            ->select(
-                "o.*",
-                "u.name as user_name",
-                "c.id as customer_id",
-                'od.sender_address',
-                'od.receive_address',
-                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
-                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
-            )
-            ->join('order_details as od', 'od.order_id', '=', 'o.id')
-            ->join('users as u', 'u.id', '=', 'o.user_id')
-            ->join('customers as c', 'c.user_id', '=', 'u.id')
-            ->orderBy('o.id', 'DESC')
-            ->paginate(20);
-        return $orders;
-    }
-    public static function getListHistoryChangePayment($order_id)
-    {
-        $res = DB::table('change_payment as cp')
-            ->join('users as u', 'u.id', '=', 'cp.user_id')
-            ->where('cp.order_id', $order_id)
-            ->select('cp.*', 'u.name')
-            ->get();
-        return $res;
-    }
-    //search theo trang thai & phuong thuc thanh toan
-    public static function postOptionListNew($status, $payment_type)
-    {
-        $orders = DB::table('orders as o')
-            ->select(
-                "o.*",
-                "u.name as user_name",
-                "c.id as customer_id",
-                'od.sender_address',
-                'od.receive_address',
-                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
-                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
-            )
-            ->join('order_details as od', 'od.order_id', '=', 'o.id')
-            ->join('users as u', 'u.id', '=', 'o.user_id')
-            ->join('customers as c', 'c.user_id', '=', 'u.id')->orderBy('o.id', 'DESC');
-
-        if ($status != 0) {
-            $orders = $orders->where('o.status', $status);
-        }
-        if ($payment_type != 0) {
-            $orders = $orders->where('o.payment_type', $payment_type);
-        }
-
-        return $orders->orderBy('o.id', 'desc')->paginate(20);
-    }
-    //search theo ten kh, ten don hang, coupon_code, sdt
-    public static function postSearchListNew($search)
-    {
-        $orders = DB::table('orders as o')
-            ->select(
-                "o.*",
-                "u.name as user_name",
-                "c.id as customer_id",
-                'od.sender_address',
-                'od.receive_address',
-                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
-                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
-            )
-            ->join('order_details as od', 'od.order_id', '=', 'o.id')
-            ->join('users as u', 'u.id', '=', 'o.user_id')
-            ->join('customers as c', 'c.user_id', '=', 'u.id')
-            ->where('o.coupon_code', 'LIKE', '%' .  $search . '%')
-            ->orWhere('o.name', 'LIKE', '%' .  $search . '%')
-            ->orWhere('od.sender_name', 'LIKE', '%' .  $search . '%')
-            ->orWhere('od.sender_phone', 'LIKE', '%' .  $search . '%')
-            ->orWhere('od.receive_name', 'LIKE', '%' .  $search . '%')
-            ->orWhere('od.receive_phone', 'LIKE', '%' .  $search . '%')
-            ->orderBy('o.id', 'desc')->paginate(20);
-        return $orders;
-    }
-
-    //search theo ngay
-    public static function postSearchDate($date)
-    {
-
-        $arrDate = explode(' - ', $date);
-        $start = Carbon::createFromFormat('d/m/Y', $arrDate[0])->startOfDay()->format('Y-m-d');
-        $end = Carbon::createFromFormat('d/m/Y', $arrDate[1])->endOfDay()->format('Y-m-d');
-        $orders = DB::table('orders as o')
-            ->select(
-                "o.*",
-                "u.name as user_name",
-                "c.id as customer_id",
-                'od.sender_address',
-                'od.receive_address',
-                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
-                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
-            )
-            ->join('order_details as od', 'od.order_id', '=', 'o.id')
-            ->join('users as u', 'u.id', '=', 'o.user_id')
-            ->join('customers as c', 'c.user_id', '=', 'u.id')
-            ->whereBetween('o.created_at', [$start . ' 00:00:00', $end . ' 23:59:59'])
-            ->orderBy('o.id', 'desc')->paginate(20);
-        return $orders;
-    }
-
     protected $fillable = [
         'code', 'name', 'car_type', 'total_price', 'payment_type', 'user_id', 'status', 'is_payment', 'car_option',
         'is_admin', 'coupon_code', 'payer', 'is_speed',
@@ -143,7 +29,6 @@ class Order extends BaseModel
             $order->code = static::generateOrderCode();
         });
     }
-
     /**
      * @return string
      */
@@ -229,6 +114,125 @@ class Order extends BaseModel
     {
         return $this->hasMany(OrderReceive::class);
     }
+    public static function getListNew()
+    {
+        $orders = DB::table('orders as o')
+            ->select(
+                "o.*",
+                "u.name as user_name",
+                "c.id as customer_id",
+                'od.sender_address',
+                'od.receive_address',
+                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
+                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
+                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
+                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
+            )
+            ->join('order_details as od', 'od.order_id', '=', 'o.id')
+            ->join('users as u', 'u.id', '=', 'o.user_id')
+            ->join('customers as c', 'c.user_id', '=', 'u.id')
+            ->orderBy('o.id', 'DESC')
+            ->paginate(20);
+        return $orders;
+    }
+    public static function getListHistoryChangePayment($order_id)
+    {
+        $res = DB::table('change_payment as cp')
+            ->join('users as u', 'u.id', '=', 'cp.user_id')
+            ->where('cp.order_id', $order_id)
+            ->select('cp.*', 'u.name')
+            ->get();
+        return $res;
+    }
+    //search theo trang thai & phuong thuc thanh toan
+    public static function postOptionListNew($status, $car_option)
+    {
+        $orders = DB::table('orders as o')
+            ->select(
+                "o.*",
+                "u.name as user_name",
+                "c.id as customer_id",
+                'od.sender_address',
+                'od.receive_address',
+                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
+                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
+                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
+                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
+            )
+            ->join('order_details as od', 'od.order_id', '=', 'o.id')
+            ->join('users as u', 'u.id', '=', 'o.user_id')
+            ->join('customers as c', 'c.user_id', '=', 'u.id')->orderBy('o.id', 'DESC');
+
+        if ($status != 0) {
+            $orders = $orders->where('o.status', $status);
+        }
+        if ($car_option != 0) {
+            if ($car_option == 1) {
+                $orders = $orders->where(function ($query) {
+                    $query->where('o.car_option', 1)
+                        ->orWhere('o.car_option', 3);
+                });
+            } else {
+                $orders = $orders->where('o.car_option', $car_option);
+            }
+        }
+
+        return $orders->orderBy('o.id', 'desc')->paginate(20);
+    }
+    //search theo ten kh, ten don hang, coupon_code, sdt
+    public static function postSearchListNew($search)
+    {
+        $orders = DB::table('orders as o')
+            ->select(
+                "o.*",
+                "u.name as user_name",
+                "c.id as customer_id",
+                'od.sender_address',
+                'od.receive_address',
+                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
+                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
+                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
+                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
+            )
+            ->join('order_details as od', 'od.order_id', '=', 'o.id')
+            ->join('users as u', 'u.id', '=', 'o.user_id')
+            ->join('customers as c', 'c.user_id', '=', 'u.id')
+            ->where('o.coupon_code', 'LIKE', '%' .  $search . '%')
+            ->orWhere('o.name', 'LIKE', '%' .  $search . '%')
+            ->orWhere('od.sender_name', 'LIKE', '%' .  $search . '%')
+            ->orWhere('od.sender_phone', 'LIKE', '%' .  $search . '%')
+            ->orWhere('od.receive_name', 'LIKE', '%' .  $search . '%')
+            ->orWhere('od.receive_phone', 'LIKE', '%' .  $search . '%')
+            ->orderBy('o.id', 'desc')->paginate(20);
+        return $orders;
+    }
+
+    //search theo ngay
+    public static function postSearchDate($date)
+    {
+
+        $arrDate = explode(' - ', $date);
+        $start = Carbon::createFromFormat('d/m/Y', $arrDate[0])->startOfDay()->format('Y-m-d');
+        $end = Carbon::createFromFormat('d/m/Y', $arrDate[1])->endOfDay()->format('Y-m-d');
+        $orders = DB::table('orders as o')
+            ->select(
+                "o.*",
+                "u.name as user_name",
+                "c.id as customer_id",
+                'od.sender_address',
+                'od.receive_address',
+                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
+                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
+                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
+                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
+            )
+            ->join('order_details as od', 'od.order_id', '=', 'o.id')
+            ->join('users as u', 'u.id', '=', 'o.user_id')
+            ->join('customers as c', 'c.user_id', '=', 'u.id')
+            ->whereBetween('o.created_at', [$start . ' 00:00:00', $end . ' 23:59:59'])
+            ->orderBy('o.id', 'desc')->paginate(20);
+        return $orders;
+    }
     //raymond---lịch sử thông tin người gửi/nhận
     public static function loadInfoSender($request)
     {
@@ -255,7 +259,6 @@ class Order extends BaseModel
             ->where('orders.user_id', $user_id)->orderBy('orders.id', 'desc')->distinct()->get();
         return response()->json($res);
     }
-    //raymond
     public static function getOrderPaymentDetail($id)
     {
         $res = DB::table('orders as o')
@@ -412,13 +415,13 @@ class Order extends BaseModel
             if ((int) ($minutes / 60) < 1) {
                 $payment = $payment;
             } else {
-                if ($time%60 <= 30) {
+                if ($time % 60 <= 30) {
                     $payment = $payment + 50000;
-                } elseif ($time%60 > 30) {
+                } elseif ($time % 60 > 30) {
                     $payment = $payment + 70000;
                 }
                 if ((int) ($minutes / 60) >= 1) {
-                    $payment = $payment + (70000 * (int)($minutes/60 -1));
+                    $payment = $payment + (70000 * (int) ($minutes / 60 - 1));
                 }
             }
         }

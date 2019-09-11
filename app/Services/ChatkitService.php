@@ -22,7 +22,7 @@ class ChatkitService
             Chatkit::createRoom(['creator_id' => "$id", 'name' => 'LeThai' . time()]);
             Chatkit::sendMessage(['sender_id' => "$id", 'room_id' => 'r001', 'text' => 'Hi, everyone!' ]);
         }catch (\Exception $exception){
-            dd($exception->getMessage());
+            // dd($exception->getMessage());
         }
 
     }

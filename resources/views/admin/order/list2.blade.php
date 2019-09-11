@@ -6,6 +6,7 @@
     <div class="box">
         <div class="box-body">
             <div class="row">
+                
                 <div class="col-md-4">
                     <form method="POST" action="{{route('order.post.search.list.new')}}">
                         {{ csrf_field() }}
@@ -13,41 +14,13 @@
                             <input name="search" type="text" value="{{$search}}" class="form-control" placeholder="{{__('label.customer_name')}}, {{__('label.order_name') . ',' . __('label.coupon_code') . ',' . __('label.phone')}}">
                         </div>
                         <button type="submit" class="btn btn-info" style="position: absolute;top: 0; right: 0; z-index: 2;">Tìm</button>
-
-                    </form>
-
-                </div>
-                <div class="col-md-8 text-right">
-                    <form class="form-inline" method="POST" action="{{route('order.option.list.new')}}">
-                        {{ csrf_field() }}
-                        <div class="form-group ">
-                            <label>Trạng thái:</label>
-                            <select name="status" class="form-control">
-                                <option value="0" @if($status == "0") selected @endif>All</option>
-                                <option value="1" @if($status == "1") selected @endif>Đang chờ</option>
-                                <option value="2" @if($status == "2") selected @endif>Chưa giao</option>
-                                <option value="3" @if($status == "3") selected @endif>Đang giao</option>
-                                <option value="4" @if($status == "4") selected @endif>Đã hoàn thành</option>
-                                <option value="5" @if($status == "5") selected @endif>Khách hủy</option>
-                                <option value="6" @if($status == "6") selected @endif>IHT hủy</option>
-                                <option value="7" @if($status == "7") selected @endif>Không thành công</option>
-                            </select>
-                        </div>
-                        <div class="form-group ">
-                            <label>Phương thức thanh toán:</label>
-                            <select name="payment_type" class="form-control">
-                                <option value="0" @if($payment_type == "0") selected @endif>All</option>
-                                <option value="1" @if($payment_type == "1") selected @endif>Tiền mặt</option>
-                                <option value="2" @if($payment_type == "2") selected @endif>Theo tháng</option>
-                            </select>
-                        </div>
-                        <div class="btn-group"> <button type="submit" class="btn btn-info">Tìm</button></div>
                     </form>
                 </div>
+                
             </div>
             <br>
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-4">
                     <!-- Date range -->
                     <form class="form-inline" method="POST" action="{{route('order.post.search.date')}}">
                             {{ csrf_field() }}
@@ -64,6 +37,40 @@
                             <button type="submit" class="btn btn-info">Tìm</button>
                             <!-- /.form group -->
                     </form>
+                </div>
+                <div class="col-md-4 text-right">                
+                    <form class="form-inline" method="POST" action="{{route('order.option.list.new')}}">
+                        {{ csrf_field() }}
+                        <div class="form-group ">
+                            <label>Trạng thái:</label>
+                            <select name="status" class="form-control">
+                                <option value="0" @if($status == "0") selected @endif>All</option>
+                                <option value="1" @if($status == "1") selected @endif>Đang chờ</option>
+                                <option value="2" @if($status == "2") selected @endif>Chưa giao</option>
+                                <option value="3" @if($status == "3") selected @endif>Đang giao</option>
+                                <option value="4" @if($status == "4") selected @endif>Đã hoàn thành</option>
+                                <option value="5" @if($status == "5") selected @endif>Khách hủy</option>
+                                <option value="6" @if($status == "6") selected @endif>IHT hủy</option>
+                                <option value="7" @if($status == "7") selected @endif>Không thành công</option>
+                            </select>
+                        </div>
+                        <div class="form-group ">
+                            <label>Loại đơn:</label>
+                            <select name="car_option" class="form-control">
+                                <option value="0" @if($car_option == "0") selected @endif>All</option>
+                                <option value="1" @if($car_option == "1") selected @endif>Hàng hóa</option>
+                                <option value="2" @if($car_option == "2") selected @endif>Chứng từ</option>
+                                <option value="4" @if($car_option == "4") selected @endif>Làm hàng</option>
+                            </select>
+                        </div>
+                        <div class="btn-group"> <button type="submit" class="btn btn-info">Tìm</button></div>
+                    </form>
+                </div>
+                <div class="col-md-4">
+                    <div class="box-tools pull-right">
+                            <a href="{{route('order.add')}}" class="btn btn-success btn-sm">
+                                <i class="fa fa-plus"></i> {{ __('label.add_new') }}</a>
+                    </div>
                 </div>
             </div>
             <br>

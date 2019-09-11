@@ -24,7 +24,7 @@ Route::get('privacy-policy', function () {
 Route::get('/activated/{user}', 'HomeController@activated')->name('activated')->middleware('signed');
 Route::post('/image/upload', 'ImageController@storeWeb')->name('image.web.store');
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('home');
 Route::post('language', 'LanguageController@changeLanguage')->name('language');
 
 

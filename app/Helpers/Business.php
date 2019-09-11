@@ -108,6 +108,7 @@ class Business
     const PRICE_BY_TH1 = 1;
     const PRICE_BY_TH2 = 2;
     const PRICE_BY_TH3 = 3;
+    const PRICE_BY_TH4 = 4;
     const SETTING_PRICE = 'price';
     const SETTING_SURTAX = 'surtax';
 

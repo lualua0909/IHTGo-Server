@@ -25,12 +25,10 @@ class ChatkitController extends ApiController
     public function createUser(Request $request, ChatkitManager $chatkitManager)
     {
         $user = $request->user();
-        dd($user);
         $userData = ['id' => '"' . $user->id . '"', 'name' => $user->name];
         $chatkitManager->createUser($userData);
 
         $roomData = ['creator_id' => '"' . $user->id . '"', 'name' => $user->name];
-        dd($chatkitManager->createRoom($roomData));
     }
 
     public function getContact($id=null, Request $request)
@@ -148,7 +146,6 @@ class ChatkitController extends ApiController
                 return response()->json(MessageApi::success(['success']));
             }
         }catch (\Exception $exception){
-            //dd($exception->getMessage());
             logger($exception->getMessage());
             return response()->json(MessageApi::error([$exception->getMessage()]), HttpCode::SUCCESS);
         }
@@ -167,7 +164,6 @@ class ChatkitController extends ApiController
                 return response()->json($message['body']);
             }
         }catch (\Exception $exception){
-            //dd($exception->getMessage());
             logger($exception->getMessage());
             return response()->json(MessageApi::error([$exception->getMessage()]), HttpCode::SUCCESS);
         }

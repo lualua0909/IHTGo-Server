@@ -151,7 +151,6 @@ class DriverController extends Controller
     { 
         $item = $this->repository->findWithTrash($id);
         if ($item){
-            //dd(int($item->rateDriver($item->id)));
             $title = __('label.driver_detail');
             $listHistory = $this->repository->getHistoryDelivery($request, $id);
             $userStatus = array(

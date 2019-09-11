@@ -95,9 +95,9 @@ class OrderController extends Controller
         $date='';
         $search='';
         $status='';
-        $payment_type='';
+        $car_option='';
         $orders = Order::getListNew();
-        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
+        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
     }
     //search theo trang thai & phuong thuc thanh toan
     public function getOptionListNew(Request $req)
@@ -105,20 +105,20 @@ class OrderController extends Controller
         $date='';
         $search='';
         $status=$req->session()->get('search-status', '');
-        $payment_type=$req->session()->get('search-payment_type', '');
-        $orders = Order::postOptionListNew($req->session()->get('search-status', ''), $req->session()->get('search-payment_type', ''));
-        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
+        $car_option=$req->session()->get('search-car_option', '');
+        $orders = Order::postOptionListNew($req->session()->get('search-status', ''), $req->session()->get('search-car_option', ''));
+        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
     }
     public function postOptionListNew(Request $req)
     {
         $date='';
         $search='';
         $status=$req->status;
-        $payment_type=$req->payment_type;
-        $orders = Order::postOptionListNew($req->status, $req->payment_type);
+        $car_option=$req->car_option;
+        $orders = Order::postOptionListNew($req->status, $req->car_option);
         $req->session()->put('search-status', $req->status);
-        $req->session()->put('search-payment_type', $req->payment_type);
-        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
+        $req->session()->put('search-car_option', $req->car_option);
+        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
     }
     //search theo ten kh, ten don hang, coupon_code, sdt
     public function getSearchListNew(Request $req)
@@ -126,19 +126,19 @@ class OrderController extends Controller
         $date='';
         $search=$req->session()->get('search-text', '');
         $status='';
-        $payment_type='';
+        $car_option='';
         $orders = Order::postSearchListNew($req->session()->get('search-text', ''));
-        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
+        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
     }
     public function postSearchListNew(Request $req)
     {
         $date='';
         $search=$req->search;
         $status='';
-        $payment_type='';
+        $car_option='';
         $orders = Order::postSearchListNew($req->search);
         $req->session()->put('search-text', $req->search);
-        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
+        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
     }
     //search theo ngay
     public function getSearchDate(Request $req)
@@ -146,19 +146,19 @@ class OrderController extends Controller
         $date=$req->session()->get('search-date', '');
         $search='';
         $status='';
-        $payment_type='';
+        $car_option='';
         $orders = Order::postSearchDate($req->session()->get('search-date', ''));
-        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
+        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
     }
     public function postSearchDate(Request $req)
     {
         $date=$req->date;
         $search='';
         $status='';
-        $payment_type='';
+        $car_option='';
         $orders = Order::postSearchDate($req->date);
         $req->session()->put('search-date', $req->date);
-        return view('admin.order.list2', compact('orders','date','search','status','payment_type'));
+        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
     }
     /**
      * @param $objectCar
@@ -388,7 +388,6 @@ class OrderController extends Controller
         $orderMethod = array(
             Business::PAYMENT_METHOD_CASH => __('label.method_cash'),
             Business::PAYMENT_METHOD_MONTH => __('label.method_month'),
-            Business::PAYMENT_METHOD_OTHER => __('label.method_other'),
         );
         $orderPayment = array(
             Business::ORDER_STATUS_PAYMENT => __('label.payment_yes'),
@@ -397,27 +396,21 @@ class OrderController extends Controller
         );
 
         $listType = [
-            Business::PRICE_BY_TH1 => __('label.th1'),
-            Business::PRICE_BY_TH2 => __('label.th2'),
-            Business::PRICE_BY_TH3 => __('label.th3'),
-        ];
+            Business::PRICE_BY_TH1 => 'Hàng hóa',
+            Business::PRICE_BY_TH2 => 'Chứng từ',
+            Business::PRICE_BY_TH4 => 'Làm hàng siêu thị',
 
+        ];
         $listPayer = [
             Business::PAYER_RECEIVE => __('label.payer_receive'),
             Business::PAYER_SENDER => __('label.payer_sender'),
         ];
-
-        $listProvince = Province::where(['publish' => 1])->get();
-
-        $listCar = Other::where(['type' => Business::OTHER_TYPE_CAR])->get();
         return view('admin.order.form', compact(
             'title',
             'item',
             'orderMethod',
             'orderPayment',
             'listType',
-            'listCar',
-            'listProvince',
             'listPayer'
         ));
     }
@@ -427,11 +420,11 @@ class OrderController extends Controller
      * @param OrderDetailRepositoryContract $detailRepositoryContract
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(OrderRequest $request, OrderDetailRepositoryContract $detailRepositoryContract)
+
+    public function store(Request $request, OrderDetailRepositoryContract $detailRepositoryContract)
     {
         $dataOrder = $request->only(
             'name',
-            'type',
             'payment_type',
             'car_type',
             'car_option',
@@ -442,6 +435,8 @@ class OrderController extends Controller
         );
         $dataOrder['total_price'] = str_replace(',', '', $request->total_price);
         $dataOrder['is_admin'] = 1;
+        $dataOrder['car_type']=0;
+        $dataOrder['is_speed']=0;
         $orderId = $this->repository->store($dataOrder);
         if ($orderId) {
             $dataOrderDetail = $request->only(
@@ -450,14 +445,8 @@ class OrderController extends Controller
                 'sender_address',
                 'receive_name',
                 'receive_phone',
-                'price_id',
                 'receive_address',
-                'km',
                 'weight',
-                'sender_province_id',
-                'sender_district_id',
-                'receive_province_id',
-                'receive_district_id',
                 'note',
                 'take_money'
             );
@@ -465,11 +454,6 @@ class OrderController extends Controller
                 $dataOrderDetail['take_money'] = str_replace(',', '', $request->take_money);
             }
             $dataOrderDetail['order_id'] = $orderId;
-            $dataOrderDetail['sender_date'] = ($request->sender_date) ? Carbon::createFromFormat('d/m/Y', $request->sender_date)
-                ->format('Y-m-d') : date('Y-m-d');
-            $dataOrderDetail['receive_date'] = ($request->receive_date) ? Carbon::createFromFormat('d/m/Y', $request->receive_date)
-                ->format('Y-m-d') : null;
-
             if ($detailRepositoryContract->store($dataOrderDetail)) {
                 return redirect(route('order.list'))->with($this->messageResponse());
             } else {
