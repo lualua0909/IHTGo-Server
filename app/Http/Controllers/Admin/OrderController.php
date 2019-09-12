@@ -266,12 +266,8 @@ class OrderController extends Controller
 
             $listWarehouse = Warehouse::all();
             $config = $this->setConfigMaps();
-            $config['directionsStart'] = optional($item->detail)->sender_address . ', '
-                . optional(optional($item->detail)->districtSender)->name . ', '
-                . optional(optional($item->detail)->provinceSender)->name;
-            $config['directionsEnd'] = optional($item->detail)->receive_address . ', '
-                . optional(optional($item->detail)->districtReceive)->name . ', '
-                . optional(optional($item->detail)->provinceReceive)->name;
+            $config['directionsStart'] = optional($item->detail)->sender_address ;
+            $config['directionsEnd'] = optional($item->detail)->receive_address;
             app('map')->initialize($config);
 
             $map = app('map')->create_map();
