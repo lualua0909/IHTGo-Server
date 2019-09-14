@@ -6,26 +6,11 @@
     <div class="box">
         <div class="box-body">
             <div class="row">
-                
-                <div class="col-md-4">
-                    <form method="POST" action="{{route('order.post.search.list.new')}}">
+                <div class="col-md-7">                
+                    <form class="form-inline" method="POST" action="{{route('order.option.list.new')}}">
                         {{ csrf_field() }}
-                        <div class="has-feedback">
-                            <input name="search" type="text" value="{{$search}}" class="form-control" placeholder="{{__('label.customer_name')}}, {{__('label.order_name') . ',' . __('label.coupon_code') . ',' . __('label.phone')}}">
-                        </div>
-                        <button type="submit" class="btn btn-info" style="position: absolute;top: 0; right: 0; z-index: 2;">Tìm</button>
-                    </form>
-                </div>
-                
-            </div>
-            <br>
-            <div class="row">
-                <div class="col-md-4">
-                    <!-- Date range -->
-                    <form class="form-inline" method="POST" action="{{route('order.post.search.date')}}">
-                            {{ csrf_field() }}
-                            <div class="form-group">
-                                <label>{{__('label.end_date')}}:</label>
+                        <div class="form-group">
+                                <label>Ngày:</label>
                                 <div class="input-group">
                                     <div class="input-group-addon">
                                         <i class="fa fa-calendar"></i>
@@ -34,13 +19,6 @@
                                 </div>
                                 <!-- /.input group -->
                             </div>
-                            <button type="submit" class="btn btn-info">Tìm</button>
-                            <!-- /.form group -->
-                    </form>
-                </div>
-                <div class="col-md-4 text-right">                
-                    <form class="form-inline" method="POST" action="{{route('order.option.list.new')}}">
-                        {{ csrf_field() }}
                         <div class="form-group ">
                             <label>Trạng thái:</label>
                             <select name="status" class="form-control">
@@ -66,7 +44,16 @@
                         <div class="btn-group"> <button type="submit" class="btn btn-info">Tìm</button></div>
                     </form>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-3">
+                    <form method="POST" action="{{route('order.post.search.list.new')}}">
+                        {{ csrf_field() }}
+                        <div class="has-feedback">
+                            <input name="search" type="text" value="{{$search}}" class="form-control" placeholder="{{__('label.customer_name')}}, {{__('label.order_name') . ',' . __('label.coupon_code') . ',' . __('label.phone')}}">
+                        </div>
+                        <button type="submit" class="btn btn-info" style="position: absolute;top: 0; right: 0; z-index: 2;">Tìm</button>
+                    </form>
+                </div>
+                <div class="col-md-2">
                     <div class="box-tools pull-right">
                             <a href="{{route('order.add')}}" class="btn btn-success btn-sm">
                                 <i class="fa fa-plus"></i> {{ __('label.add_new') }}</a>

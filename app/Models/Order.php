@@ -144,9 +144,12 @@ class Order extends BaseModel
             ->get();
         return $res;
     }
-    //search theo trang thai & phuong thuc thanh toan
-    public static function postOptionListNew($status, $car_option)
+    //search theo trang thai & phuong thuc thanh toan,ngay
+    public static function postOptionListNew($status, $car_option,$date)
     {
+        $arrDate = explode(' - ', $date);
+        $start = Carbon::createFromFormat('d/m/Y', $arrDate[0])->startOfDay()->format('Y-m-d');
+        $end = Carbon::createFromFormat('d/m/Y', $arrDate[1])->endOfDay()->format('Y-m-d');
         $orders = DB::table('orders as o')
             ->select(
                 "o.*",
@@ -176,7 +179,9 @@ class Order extends BaseModel
                 $orders = $orders->where('o.car_option', $car_option);
             }
         }
-
+        if($date!=null){
+            $orders=$orders->whereBetween('o.created_at', [$start . ' 00:00:00', $end . ' 23:59:59']);
+        }
         return $orders->orderBy('o.id', 'desc')->paginate(20);
     }
     //search theo ten kh, ten don hang, coupon_code, sdt
@@ -197,39 +202,14 @@ class Order extends BaseModel
             ->join('order_details as od', 'od.order_id', '=', 'o.id')
             ->join('users as u', 'u.id', '=', 'o.user_id')
             ->join('customers as c', 'c.user_id', '=', 'u.id')
-            ->where('o.coupon_code', 'LIKE', '%' .  $search . '%')
-            ->orWhere('o.name', 'LIKE', '%' .  $search . '%')
-            ->orWhere('od.sender_name', 'LIKE', '%' .  $search . '%')
-            ->orWhere('od.sender_phone', 'LIKE', '%' .  $search . '%')
-            ->orWhere('od.receive_name', 'LIKE', '%' .  $search . '%')
-            ->orWhere('od.receive_phone', 'LIKE', '%' .  $search . '%')
-            ->orderBy('o.id', 'desc')->paginate(20);
-        return $orders;
-    }
-
-    //search theo ngay
-    public static function postSearchDate($date)
-    {
-
-        $arrDate = explode(' - ', $date);
-        $start = Carbon::createFromFormat('d/m/Y', $arrDate[0])->startOfDay()->format('Y-m-d');
-        $end = Carbon::createFromFormat('d/m/Y', $arrDate[1])->endOfDay()->format('Y-m-d');
-        $orders = DB::table('orders as o')
-            ->select(
-                "o.*",
-                "u.name as user_name",
-                "c.id as customer_id",
-                'od.sender_address',
-                'od.receive_address',
-                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
-                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
-            )
-            ->join('order_details as od', 'od.order_id', '=', 'o.id')
-            ->join('users as u', 'u.id', '=', 'o.user_id')
-            ->join('customers as c', 'c.user_id', '=', 'u.id')
-            ->whereBetween('o.created_at', [$start . ' 00:00:00', $end . ' 23:59:59'])
+            ->where(function ($query) use ($search) {
+                $query->where('o.coupon_code', 'LIKE', '%' .  $search . '%')
+                    ->orWhere('o.name', 'LIKE', '%' .  $search . '%')
+                    ->orWhere('od.sender_name', 'LIKE', '%' .  $search . '%')
+                    ->orWhere('od.sender_phone', 'LIKE', '%' .  $search . '%')
+                    ->orWhere('od.receive_name', 'LIKE', '%' .  $search . '%')
+                    ->orWhere('od.receive_phone', 'LIKE', '%' .  $search . '%');
+            })
             ->orderBy('o.id', 'desc')->paginate(20);
         return $orders;
     }

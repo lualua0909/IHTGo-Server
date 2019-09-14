@@ -170,8 +170,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
         Route::get('option-list-new', 'Admin\OrderController@getOptionListNew')->name('order.option.list.new');
         Route::post('search-list-new', 'Admin\OrderController@postSearchListNew')->name('order.post.search.list.new');
         Route::get('search-list-new', 'Admin\OrderController@getSearchListNew')->name('order.post.search.list.new');
-        Route::post('search-date', 'Admin\OrderController@postSearchDate')->name('order.post.search.date');
-        Route::get('search-date', 'Admin\OrderController@getSearchDate')->name('order.post.search.date');
 
         Route::post('', 'Admin\OrderController@getListOrder')->name('order.post.list')->middleware(['can:view-order']);
         Route::get('add', 'Admin\OrderController@create')->name('order.add')->middleware(['can:create-order']);

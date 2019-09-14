@@ -99,23 +99,23 @@ class OrderController extends Controller
         $orders = Order::getListNew();
         return view('admin.order.list2', compact('orders','date','search','status','car_option'));
     }
-    //search theo trang thai & phuong thuc thanh toan
+    //search theo trang thai & phuong thuc thanh toan, ngay
     public function getOptionListNew(Request $req)
     {
-        $date='';
+        $date=$req->session()->get('search-date', '');
         $search='';
         $status=$req->session()->get('search-status', '');
         $car_option=$req->session()->get('search-car_option', '');
-        $orders = Order::postOptionListNew($req->session()->get('search-status', ''), $req->session()->get('search-car_option', ''));
+        $orders = Order::postOptionListNew($status,$car_option,$date);
         return view('admin.order.list2', compact('orders','date','search','status','car_option'));
     }
     public function postOptionListNew(Request $req)
     {
-        $date='';
+        $date=$req->date;
         $search='';
         $status=$req->status;
         $car_option=$req->car_option;
-        $orders = Order::postOptionListNew($req->status, $req->car_option);
+        $orders = Order::postOptionListNew($req->status, $req->car_option,$req->date);
         $req->session()->put('search-status', $req->status);
         $req->session()->put('search-car_option', $req->car_option);
         return view('admin.order.list2', compact('orders','date','search','status','car_option'));
@@ -138,26 +138,6 @@ class OrderController extends Controller
         $car_option='';
         $orders = Order::postSearchListNew($req->search);
         $req->session()->put('search-text', $req->search);
-        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
-    }
-    //search theo ngay
-    public function getSearchDate(Request $req)
-    {
-        $date=$req->session()->get('search-date', '');
-        $search='';
-        $status='';
-        $car_option='';
-        $orders = Order::postSearchDate($req->session()->get('search-date', ''));
-        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
-    }
-    public function postSearchDate(Request $req)
-    {
-        $date=$req->date;
-        $search='';
-        $status='';
-        $car_option='';
-        $orders = Order::postSearchDate($req->date);
-        $req->session()->put('search-date', $req->date);
         return view('admin.order.list2', compact('orders','date','search','status','car_option'));
     }
     /**
