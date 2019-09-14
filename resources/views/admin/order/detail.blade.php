@@ -42,7 +42,7 @@
                             </tr>
                             <tr>
                                 <th style="width: 40%">{{ __('label.sender_address') }}</th>
-                                <td id="sender_address">{{ optional($item->detail)->sender_address . ', ' . optional(optional($item->detail)->districtSender)->name . ', ' . optional(optional($item->detail)->provinceSender)->name }}</td>
+                                <td id="sender_address">{{ optional($item->detail)->sender_address }}</td>
                             </tr>
                         </table>
                     </div>
@@ -65,7 +65,7 @@
                             </tr>
                             <tr>
                                 <th style="width: 40%">{{ __('label.receive_address') }}</th>
-                                <td id="receive_address">{{ optional($item->detail)->receive_address . ', ' . optional(optional($item->detail)->districtReceive)->name . ', ' . optional(optional($item->detail)->provinceReceive)->name }}</td>
+                                <td id="receive_address">{{ optional($item->detail)->receive_address }}</td>
                             </tr>
                         </table>
                     </div>

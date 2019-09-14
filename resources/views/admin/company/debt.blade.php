@@ -17,7 +17,7 @@
 <table>
     <thead>
     <tr>
-        <td colspan="13" style="text-align: center"><h1 style="color: yellow">BẢNG KÊ CÔNG TY {{strtoupper($item->name)}}</h1></td>
+        <td colspan="13" style="text-align: center"><h1 style="color: yellow">BẢNG KÊ CÔNG NỢ {{strtoupper($item->name)}}</h1></td>
     </tr>
     </thead>
 </table>
