@@ -118,6 +118,7 @@ class OrderController extends Controller
         $orders = Order::postOptionListNew($req->status, $req->car_option,$req->date);
         $req->session()->put('search-status', $req->status);
         $req->session()->put('search-car_option', $req->car_option);
+        $req->session()->put('search-date', $req->date);
         return view('admin.order.list2', compact('orders','date','search','status','car_option'));
     }
     //search theo ten kh, ten don hang, coupon_code, sdt
