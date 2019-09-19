@@ -33,7 +33,6 @@ class DownstreamMessageToDevice
             $notification = $notificationBuilder->build();
             $data = $dataBuilder->build();
             $downstreamResponse = FCM::sendTo($token, $option, $notification, $data);
-
             $downstreamResponse->numberSuccess();
             $downstreamResponse->numberFailure();
             $downstreamResponse->numberModification();

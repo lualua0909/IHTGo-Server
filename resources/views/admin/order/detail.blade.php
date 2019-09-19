@@ -310,6 +310,7 @@
                     </div>
                 </div>
                 @else
+                    <!-- chi tiết vận chuyển -->
                     <div class="col-md-6">
                         <div class="box box-primary">
                             <div class="box-header with-border">
@@ -332,6 +333,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- Tạo giao hàng (chọn tài xế & xe) -->
                     <div class="modal fade modal-success" id="myModal" role="dialog">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -379,6 +381,7 @@
                             <!-- /.modal-content -->
                         </div>
                     </div>
+                    <!-- Phân công tài xế -->
                     <div class="modal fade modal-primary" id="myModalDriver" role="dialog">
                         <div class="modal-dialog">
                             <div class="modal-content">
@@ -430,6 +433,7 @@
                 </div>
             </div>
         </div>
+        <!-- hiển thị bản đồ -->
         <div class="box box-success">
             <div class="box-body">
                 {!! $map['html'] !!}
@@ -437,7 +441,7 @@
             </div>
         </div>
     </section>
-
+    <!-- chọn nhà kho -->
     <div class="modal fade modal-warning" id="myWarehouse" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">

@@ -75,9 +75,6 @@
                                 <th>Địa chỉ gửi</th>
                                 <th>Địa chỉ nhận</th>
                                 <th>Ngày tạo</th>
-                                @if(Auth::user()->level==1)
-                                <th></th>
-                                @endif
                             </tr>
                         </thead>
                         <tbody>

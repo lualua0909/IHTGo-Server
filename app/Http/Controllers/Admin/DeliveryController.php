@@ -146,8 +146,10 @@ class DeliveryController extends Controller
     public function delete($id)
     {
         $fcm = Order::findFCMByDelivery($id);
+        $customer_fcm = Order::findFCMByDelivery_Customer($id);
         if ($this->repository->delete($id)) {
             $this->streamMessageToDevice->sendMsgToDevice($fcm->fcm, 'Thông báo hủy đơn hàng', 'Có 1 đơn hàng vừa bị hủy', $fcm->order_id, 1);
+            $this->streamMessageToDevice->sendMsgToDevice($customer_fcm, 'Thông báo hủy đơn hàng', 'Có 1 đơn hàng vừa bị hủy', $fcm->order_id, 1);
             return redirect()->back()->with($this->messageResponse());
         }
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));

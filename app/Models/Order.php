@@ -98,7 +98,15 @@ class Order extends BaseModel
             ->first();
         return $token;
     }
-
+    public static function findFCMByDelivery_Customer($deliveryID)
+    {
+        $token = DB::table('deliveries as d')
+            ->join('orders as o', 'o.id', '=', 'd.order_id')
+            ->join('devices as de', 'de.user_id', '=', 'o.user_id')
+            ->where(['d.id' => $deliveryID])
+            ->first();
+        return $token;
+    }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
