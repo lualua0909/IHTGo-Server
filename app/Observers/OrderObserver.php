@@ -57,11 +57,11 @@ class OrderObserver
             if ($order->status != Business::ORDER_STATUS_WAITING
                 || $order->status != Business::ORDER_STATUS_CUSTOMER_CANCEL) {
                 $msg = $this->handleMsgToDevice($order->status);
-                $bodyMsg = sprintf(Business::FCM_CUSTOMER_STATUS, $order->code, $msg);
+                $bodyMsg = sprintf(Business::FCM_CUSTOMER_STATUS, $order->coupon_code, $msg);
                 $this->streamMessageToDevice->sendMsgToDevice(optional(optional($order->customer)->device)->fcm, Business::FCM_ORDER_TITLE, $bodyMsg, $order->id, 0);
                 if ($order->status == Business::ORDER_STATUS_NO_DELIVERY) {
 
-                    $bodyMsg = sprintf(Business::FCM_DRIVER_ORDER, $order->code);
+                    $bodyMsg = sprintf(Business::FCM_DRIVER_ORDER, $order->coupon_code);
                     $fcm = Order::driverDevice($order->id);
                     $this->streamMessageToDevice->sendMsgToDevice($fcm, Business::FCM_ORDER_TITLE, $bodyMsg, $order->id, 0);
                 }
