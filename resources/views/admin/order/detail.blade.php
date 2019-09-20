@@ -327,7 +327,7 @@
                                         <button class="btn pull-left btn-primary" id="create_driver">{{ __('label.create_delivery_driver') }}</button>
                                     </div>
                                     @can('delete-order')
-                                        @if(Auth::user()->level ==1 && Auth::user()->level ==27)
+                                        @if(Auth::user()->level ==1 || Auth::user()->level ==27)
                                             <a  onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('order.updateStatus', ['id' => $item->id, 'status' => \App\Helpers\Business::ORDER_STATUS_IHT_CANCEL])}}" class="btn btn-danger pull-left">{{ __('label.cancel_order') }}</a>
                                         @endif
                                     @endcan
