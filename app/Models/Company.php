@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Data\District;
 use App\Models\Data\Province;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Company extends Model
 {
@@ -43,5 +44,9 @@ class Company extends Model
     public function province()
     {
         return $this->belongsTo(Province::class);
+    }
+    public static function getList(){
+        $data=DB::table('companies')->where('publish',1)->select('id','name')->get();
+        return $data;
     }
 }

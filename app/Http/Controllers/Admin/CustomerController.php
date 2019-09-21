@@ -15,6 +15,8 @@ use App\Repositories\Customer\CustomerRepositoryContract;
 use App\Repositories\User\UserRepositoryContract;
 use App\Services\ExcelService;
 use Carbon\Carbon;
+use App\Models\Company;
+use App\Models\Customer;
 use Illuminate\Http\Request;
 
 class CustomerController extends Controller
@@ -134,7 +136,8 @@ class CustomerController extends Controller
                 Business::USER_BANED => __('label.baned'),
                 Business::USER_UN_BANED => __('label.un_baned'),
             );
-            return view('admin.customer.detail', compact('title', 'item', 'orderMethodColor', 'orderStatus', 'orderStatusColor','orderMethod', 'orderType', 'orderTypeColor', 'genderType', 'customerType', 'userStatus', 'userBaned'));
+            $company=Company::getList();
+            return view('admin.customer.detail', compact('company','title', 'item', 'orderMethodColor', 'orderStatus', 'orderStatusColor','orderMethod', 'orderType', 'orderTypeColor', 'genderType', 'customerType', 'userStatus', 'userBaned'));
         }
         return abort(404);
     }
@@ -188,5 +191,10 @@ class CustomerController extends Controller
     public function ajaxSelect2(Request $request)
     {
         return response()->json($this->repository->ajaxSelect2($request));
+    }
+    public function changeInfor(Request $request)
+    {
+        $req=Customer::changeInfor($request);
+        return redirect()->back()->with($this->messageResponse());
     }
 }

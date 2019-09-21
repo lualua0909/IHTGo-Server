@@ -146,6 +146,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
         Route::post('debt/{id?}', 'Admin\CustomerController@exportDebt')->name('customer.exportDebt')->middleware(['can:view-customer']);
         Route::get('activated/{id?}', 'Admin\CustomerController@activated')->name('customer.activated')->middleware(['can:view-customer']);
         Route::get('ajaxSelect2', 'Admin\CustomerController@ajaxSelect2')->name('customer.ajaxSelect2')->middleware(['can:view-customer']);
+        Route::post('changeInfor', 'Admin\CustomerController@changeInfor')->name('customer.changeinfor');
     });
 
     Route::group(['prefix' => 'dept'], function () {
