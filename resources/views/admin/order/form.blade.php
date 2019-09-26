@@ -27,7 +27,7 @@
                         <div class="form-group">
                             <label>{{ __('label.payment_type') }} (*)</label>
                             <select class="form-control select2" id="manager" name="payment_type" title="{{ __('label.payment_type') }}" style="width: 100%">
-                                <option value="0" selected>{{ __('label.please_choose_field') }}</option>
+                                <option value="1" selected>{{ __('label.please_choose_field') }}</option>
                                 @foreach($orderMethod as $p => $payment)
                                 <option {{ ((old('payment_type') && (old('payment_type') == $p) || ($item && $item->payment_type == $p)) ? 'selected' : '') }} value="{{ $p }}">{{ $payment }}</option>
                                 @endforeach
@@ -37,7 +37,7 @@
                         <div class="form-group">
                             <label>{{ __('label.payer') }} (*)</label>
                             <select class="form-control select2" id="payer" name="payer" title="{{ __('label.payer') }}" style="width: 100%">
-                                <option value="0" selected>{{ __('label.please_choose_field') }}</option>
+                                <option value="1" selected>{{ __('label.please_choose_field') }}</option>
                                 @foreach($listPayer as $pa => $payer)
                                 <option {{ ((old('payer') && (old('payer') == $pa) || ($item && $item->payer == $pa)) ? 'selected' : '') }} value="{{ $pa }}">{{ $payer }}</option>
                                 @endforeach
@@ -47,7 +47,7 @@
                         <div class="form-group">
                             <label>{{ __('label.th') }} (*)</label>
                             <select class="form-control select2" id="car_type" name="car_option" title="{{ __('label.th') }}" style="width: 100%">
-                                <option value="0" selected>{{ __('label.please_choose_field') }}</option>
+                                <option value="1" selected>{{ __('label.please_choose_field') }}</option>
                                 @foreach($listType as $t => $type)
                                 <option {{ ((old('car_option') && (old('car_option') == $t) || ($item && $item->car_option == $t)) ? 'selected' : '') }} value="{{ $t }}">{{ $type }}</option>
                                 @endforeach
