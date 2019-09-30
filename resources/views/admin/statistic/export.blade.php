@@ -43,13 +43,15 @@
             <td>{{ $k + 1 }}</td> 
             <td>{{ $value->coupon_code }}</td>
             <td>{{ $value->order_name }}</td>
-            @if($value->car_option==1 || $value->car_option==3)
-            <td>Hàng hóa</td>
-            @elseif($value->car_option==2)
-            <td>Chứng từ</td>
-            @elseif($value->car_option==4)
-            <td>Gửi hàng vào kho</td>
-            @endif
+            <td>
+                @if($value->car_option==1 || $value->car_option==3)
+                Hàng hóa
+                @elseif($value->car_option==2)
+                Chứng từ
+                @elseif($value->car_option==4)
+                Gửi hàng vào kho
+                @endif
+            </td>
             <td>{{ ($value->company_id) ? $value->coName : 'Ca Nhan' }}</td>
             <td>{{ $value->customer_name }}</td>
             <td>{{ $value->address }}</td>
