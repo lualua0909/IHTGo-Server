@@ -80,10 +80,10 @@
                                 <td><span style="display: block; padding: 5px;" class="label {{$orderMethodColor[$i->payment_type]}}">{{ $orderMethod[$i->payment_type] }}</span></td>
                                 <td><span style="display: block; padding: 5px;" class="label {{$orderStatusColor[$i->status]}}">{{ $orderStatus[$i->status] }}</span></td>
                                 <td class="price">{{ $i->total_price }}</td>
-                                <td>{{date_format($i->created_at,"d/m/Y H:i:s")}}</td>
+                                <td>{{$i->created_at,"d/m/Y H:i:s"}}</td>
                                 @if(Auth::user()->level==1)
                                 <td>
-                                    @if($i->status==1)
+                                    @if($i->status==1 && $i->updated_at==null)
                                     <a type="button" class="btn btn-danger" href="../../order/order-delete/{{$i->id}}">Xóa</a>
                                     @endif
                                 </td>
