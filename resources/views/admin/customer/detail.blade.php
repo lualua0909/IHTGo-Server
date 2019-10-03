@@ -67,7 +67,9 @@
                                 <th>{{ __('label.status') }}</th>
                                 <th>{{ __('label.total_price') }}</th>
                                 <th>{{ __('label.created') }}</th>
+                                @if(Auth::user()->level==1)
                                 <th></th>
+                                @endif
                             </tr>
                         </thead>
 
