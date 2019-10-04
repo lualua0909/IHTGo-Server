@@ -212,11 +212,10 @@ class Order extends BaseModel
             ->join('customers as c', 'c.user_id', '=', 'u.id')
             ->where(function ($query) use ($search) {
                 $query->where('o.coupon_code', 'LIKE', '%' .  $search . '%')
+                    ->orWhere('o.code', 'LIKE', '%' .  $search . '%')
                     ->orWhere('o.name', 'LIKE', '%' .  $search . '%')
                     ->orWhere('od.sender_name', 'LIKE', '%' .  $search . '%')
-                    ->orWhere('od.sender_phone', 'LIKE', '%' .  $search . '%')
-                    ->orWhere('od.receive_name', 'LIKE', '%' .  $search . '%')
-                    ->orWhere('od.receive_phone', 'LIKE', '%' .  $search . '%');
+                    ->orWhere('od.sender_phone', 'LIKE', '%' .  $search . '%');
             })
             ->orderBy('o.id', 'desc')->paginate(20);
         return $orders;
@@ -511,5 +510,19 @@ class Order extends BaseModel
         } else {
             return 201;
         }
+    }
+    public static function cancel($request)
+    {
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $user_id = Auth::user()->id;
+        if ($user_id == 1 || $user_id==27) {
+            DB::table('orders')->where('id',$request->id)->update([
+                'status'=>6,
+                'reason_cancel'=>$request->reason,
+                'canceled_at' => date('Y-m-d H:i:s'),
+                'user_cancel_id'=>$user_id
+            ]);
+        }
+        return 200;
     }
 }

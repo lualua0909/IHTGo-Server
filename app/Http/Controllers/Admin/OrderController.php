@@ -539,4 +539,13 @@ class OrderController extends Controller
             return $ex;
         }
     }
+    public function cancel(Request $request)
+    {
+        try {
+            $res = Order::cancel($request);
+            return back();
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
 }
