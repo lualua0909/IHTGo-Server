@@ -347,14 +347,14 @@
                         <br>
                         @if($item->status == \App\Helpers\Business::ORDER_STATUS_WAITING)
                         <div class="pull-right">
-                            <button class="btn pull-right btn-success" id="create_delivery">{{ __('label.create_delivery') }}</button>
+                            <button class="btn pull-right btn-success" id="create_delivery" data-toggle="modal" data-target="#myModal">{{ __('label.create_delivery') }}</button>
                             -- OR --
-                            <button class="btn pull-left btn-primary" id="create_driver">{{ __('label.create_delivery_driver') }}</button>
+                            <button class="btn pull-left btn-primary" id="create_driver" data-toggle="modal" data-target="#myModalDriver">{{ __('label.create_delivery_driver') }}</button>
                         </div>
                         @can('delete-order')
                         @if(Auth::user()->id ==1 || Auth::user()->id ==27)
                         
-                        <button class="btn btn-danger pull-left" id="create_driver" data-toggle="modal" data-target="#IHTGoCancel">{{ __('label.cancel_order') }}</button>
+                        <button class="btn btn-danger pull-left" data-toggle="modal" data-target="#IHTGoCancel">{{ __('label.cancel_order') }}</button>
                         <!-- <a onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('order.updateStatus', ['id' => $item->id, 'status' => \App\Helpers\Business::ORDER_STATUS_IHT_CANCEL])}}" class="btn btn-danger pull-left">{{ __('label.cancel_order') }}</a> -->
                         @endif
                         @endcan
