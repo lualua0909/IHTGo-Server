@@ -111,11 +111,9 @@ class DeliveryController extends Controller
     public function store(Request $request, Order $order)
     {
         $item = $order->find($request->order_id);
-        if ($item && $item->status == Business::ORDER_STATUS_WAITING) {
-            $data = $request->only('car_id', 'order_id', 'driver_id', 'user_id');
-            if ($this->repository->store($data)) {
-                return redirect()->back()->with($this->messageResponse());
-            }
+        $data = $request->only('car_id', 'order_id', 'driver_id', 'user_id');
+        if ($this->repository->store($data)) {
+            return redirect()->back()->with($this->messageResponse());
         }
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
     }
@@ -129,15 +127,13 @@ class DeliveryController extends Controller
     public function storeDriver(Request $request, DriverRepositoryContract $driverRepositoryContract, Order $order)
     {
         $item = $order->find($request->order_id);
-        if ($item && $item->status == Business::ORDER_STATUS_WAITING) {
-            $data = $request->only('order_id', 'user_id');
-            $driver = $driverRepositoryContract->find($request->id_driver_only);
-            if ($driver && $driver->car) {
-                $data['driver_id'] = $driver->id;
-                $data['car_id'] = $driver->car->id;
-                if ($this->repository->store($data)) {
-                    return redirect()->back()->with($this->messageResponse());
-                }
+        $data = $request->only('order_id', 'user_id');
+        $driver = $driverRepositoryContract->find($request->id_driver_only);
+        if ($driver && $driver->car) {
+            $data['driver_id'] = $driver->id;
+            $data['car_id'] = $driver->car->id;
+            if ($this->repository->store($data)) {
+                return redirect()->back()->with($this->messageResponse());
             }
         }
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
@@ -177,7 +173,7 @@ class DeliveryController extends Controller
                         'driver_id' => (int) $request->id_driver_only,
                         'updated_at' => date('Y-m-d H:i:s'),
                     ]);
-            } elseif ($order == null || $order->canceled_at != null){
+            } elseif ($order == null || $order->canceled_at != null) {
                 DB::table('order_prepare')
                     ->insert([
                         'order_id' => $request->order_id,
