@@ -141,7 +141,7 @@ class Order extends BaseModel
                 "u.name as user_name",
                 "c.id as customer_id",
                 'od.sender_address',
-                'od.receive_address',
+                'od.receive_address'
             )
             ->orderBy('o.id', 'DESC')
             ->paginate(20);
@@ -168,7 +168,7 @@ class Order extends BaseModel
                 "u.name as user_name",
                 "c.id as customer_id",
                 'od.sender_address',
-                'od.receive_address',
+                'od.receive_address'
             )
             ->join('order_details as od', 'od.order_id', '=', 'o.id')
             ->join('users as u', 'u.id', '=', 'o.user_id')
@@ -201,7 +201,7 @@ class Order extends BaseModel
                 "u.name as user_name",
                 "c.id as customer_id",
                 'od.sender_address',
-                'od.receive_address',
+                'od.receive_address'
             )
             ->join('order_details as od', 'od.order_id', '=', 'o.id')
             ->join('users as u', 'u.id', '=', 'o.user_id')
