@@ -31,6 +31,7 @@
         .listen('OrderNotification', (e) => {
             document.getElementById('notiAudio').play();
             storeNotification(e.data.route, {{\App\Helpers\Business::NOTIFICATION_TYPE_ORDER}}, e.data.content);
+            console.log(e.data.route);
             setTimeout(getNotification('{{route('api.notification.order')}}', 'count-order', 'show-order'), 3000);
             new Noty({
                 type: e.data.type,

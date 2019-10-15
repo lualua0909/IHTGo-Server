@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: thai
@@ -18,6 +19,9 @@ use App\Repositories\Delivery\DeliveryRepositoryContract;
 use App\Repositories\Driver\DriverRepositoryContract;
 use App\Services\DownstreamMessageToDevice;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Mockery\Expectation;
 
 class DeliveryController extends Controller
 {
@@ -153,5 +157,72 @@ class DeliveryController extends Controller
             return redirect()->back()->with($this->messageResponse());
         }
         return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
+    }
+
+    //raymond
+    public function receiverDriver(Request $request, Order $order)
+    {
+        date_default_timezone_set('Asia/Ho_Chi_Minh');
+        $item = $order->find($request->order_id);
+
+        if ($item && $item->status == Business::ORDER_STATUS_WAITING) {
+
+            $order = DB::table('order_prepare')->where('order_id', $request->order_id)->first();
+            if ($order != null && $order->canceled_at == null) {
+                DB::table('order_prepare')
+                    ->where('order_id', $request->order_id)
+                    ->update([
+                        'order_id' => $request->order_id,
+                        'user_id' => $request->user_id,
+                        'driver_id' => (int) $request->id_driver_only,
+                        'updated_at' => date('Y-m-d H:i:s'),
+                    ]);
+            } elseif ($order == null || $order->canceled_at != null){
+                DB::table('order_prepare')
+                    ->insert([
+                        'order_id' => $request->order_id,
+                        'user_id' => $request->user_id,
+                        'driver_id' => (int) $request->id_driver_only,
+                        'created_at' => date('Y-m-d H:i:s'),
+                    ]);
+            }
+            DB::table('orders')->where('id', $request->order_id)->update([
+                'status' => 2
+            ]);
+
+            //gửi thông báo đến cho shipper
+            $fcm = Order::findFCMByUserID($request->id_driver_only);
+            $this->streamMessageToDevice->sendMsgToDevice($fcm->fcm, 'Thông báo đơn hàng', 'Có 1 đơn hàng vừa được phân công cho bạn', $request->order_id, 1);
+            return redirect()->back()->with($this->messageResponse());
+        }
+        return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
+    }
+    public function cancelReceiverDriver(Request $request)
+    {
+        try {
+            $user_id = Auth::user()->id;
+            $order_prepare = DB::table('order_prepare')
+                ->where('id', $request->order_prepare_id)
+                ->where('order_id', $request->id)->first();
+
+            date_default_timezone_set('Asia/Ho_Chi_Minh');
+            DB::table('order_prepare')
+                ->where('id', $request->order_prepare_id)
+                ->where('order_id', $request->id)
+                ->update([
+                    'user_cancel_id' => $user_id,
+                    'reason_cancel' => $request->reason,
+                    'canceled_at' => date('Y-m-d H:i:s'),
+                ]);
+            DB::table('orders')->where('id', $request->id)->update([
+                'status' => 1
+            ]);
+            //gửi thông báo đến cho shipper
+            $fcm = Order::findFCMByUserID($order_prepare->driver_id);
+            $this->streamMessageToDevice->sendMsgToDevice($fcm->fcm, 'Thông báo đơn hàng', 'Có 1 đơn hàng vừa hủy phân công cho bạn', $request->id, 1);
+            return redirect()->back()->with($this->messageResponse());
+        } catch (Expectation $e) {
+            return redirect()->back()->with($this->messageResponse('danger', __('label.failed')));
+        }
     }
 }

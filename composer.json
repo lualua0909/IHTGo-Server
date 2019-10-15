@@ -19,6 +19,7 @@
         "orchid/socket": "^1.6",
         "pusher/pusher-php-server": "^3.1",
         "shalvah/pusher-chatkit-laravel": "dev-master",
+        "simplesoftwareio/simple-qrcode": "^2.0",
         "textalk/websocket": "1.0.*",
         "tymon/jwt-auth": "1.0.0-rc.2"
     },

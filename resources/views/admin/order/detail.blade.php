@@ -83,6 +83,10 @@
                         <div class="box-body">
                             <table class="table table-detail">
                                 <tr>
+                                    <th>QRCode</th>
+                                    <td>{!! QrCode::size(100)->generate($item->code); !!} <br> {{$item->code}}</td>
+                                </tr>
+                                <tr>
                                     <th>{{ __('label.name') }}</th>
                                     <td>{{ $item->name }}</td>
                                 </tr>
@@ -256,16 +260,22 @@
                                     <td><button data-status="{{$item->status}}" class="{{$orderStatusColor[$item->status]}} {{ ($item->status == \App\Helpers\Business::ORDER_STATUS_DONE_DELIVERY || $item->status == \App\Helpers\Business::ORDER_STATUS_CUSTOMER_CANCEL || $item->status == \App\Helpers\Business::ORDER_STATUS_IHT_CANCEL) ? '' : 'select-status' }}">{{ $orderStatus[$item->status] }}</button></td>
                                 </tr>
                                 <tr>
+                                
                                     <th>{{ __('label.user_delivery') }}</th>
-                                    <td><a href="{{route('user.detail', $item->delivery->user->id)}}">{{ $item->delivery->user->name }}</a></td>
+                                    <td>
+                                        @if($item->delivery->user_id != null )
+                                        <a href="{{route('user.detail', $item->delivery->user->id)}}">{{$item->delivery->user->name}}</a>
+                                        @endif
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('label.driver') }}</th>
+
                                     <td><a href="{{route('driver.detail', $item->delivery->driver->id)}}">{{ $item->delivery->driver->user->name }}</a></td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('label.car') }}</th>
-                                    <td><a href="{{route('car.detail', $item->delivery->car->id)}}">{{ $item->delivery->car->name . ' (' . $item->delivery->car->number . ')' }}</a></td>
+                                    <td>@if($item->delivery->car_id != null )<a href="{{route('car.detail', $item->delivery->car->id)}}">{{$item->delivery->car_id == null ? "abc" : ($item->delivery->car->name . ' (' . $item->delivery->car->number . ')') }}</a>@endif</td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('label.driver_note') }}</th>
@@ -325,20 +335,38 @@
                         </div>
                         <div class="box-body">
                             <button class="{{$orderStatusColor[$item->status]}}">{{ $orderStatus[$item->status] }}</button>
+                            @if($item->reason_cancel)
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>ID nhân viên</th>
+                                        <th>Lý do</th>
+                                        <th>Ngày</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>{{$item->user_cancel_id}}</td>
+                                        <td>{{$item->reason_cancel}}</td>
+                                        <td>{{date('d/m/Y H:i:s', strtotime($item->canceled_at))}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        @endif
                             <br>
-                            
-                            @if($item->status == \App\Helpers\Business::ORDER_STATUS_WAITING)
+                            @if($item->status == \App\Helpers\Business::ORDER_STATUS_NO_DELIVERY)
                                 <div class="pull-right">
                                     <button class="btn pull-right btn-success" id="create_delivery">{{ __('label.create_delivery') }}</button>
                                     --  OR --
                                     <button class="btn pull-left btn-primary" id="create_driver">{{ __('label.create_delivery_driver') }}</button>
                                 </div>
-                                @can('delete-order')
-                                    @if(Auth::user()->id ==1 || Auth::user()->id ==27)
-                                        <a  onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('order.updateStatus', ['id' => $item->id, 'status' => \App\Helpers\Business::ORDER_STATUS_IHT_CANCEL])}}" class="btn btn-danger pull-left">{{ __('label.cancel_order') }}</a>
-                                    @endif
-                                @endcan
+                                
+                            @endif
+                            @if($item->status == \App\Helpers\Business::ORDER_STATUS_WAITING)
+                                @if(Auth::user()->id ==1 || Auth::user()->id ==27)
+                                    <button class="btn btn-danger pull-left" data-toggle="modal" data-target="#cancelOrder">{{ __('label.cancel_order') }}</button>
                                 @endif
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -426,6 +454,53 @@
                     </div>
                 </div>
                 @endif
+            </div>
+            <!-- thông tin vận chuyển, phân công tài xế lấy hàng -->
+            <div class="col-md-12">
+                <div class="col-md-6">
+                    <div class="box box-primary">
+                        <div class="box-header with-border">
+                            <h3 class="box-title"><i class="fa fa-clock-o"></i> Thông tin lấy hàng</h3>
+                            @if($checkReceiverDriver==null)
+                            <button type="button" class="btn btn-primary" style="margin-left:2em" data-toggle="modal" data-target="#receiverDriver">Phân công lấy hàng</button>
+                            @endif
+                        </div>
+                        <div class="box-body">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Nhân viên</th>
+                                        <th>Tên tài xế</th>
+                                        <th>Thời gian</th>
+                                        <th>Cập nhật</th>
+                                        <th>Nhân viên hủy</th>
+                                        <th>Lý do hủy</th>
+                                        <th>Thời gian hủy</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($receiverDriver as $k)
+                                    <tr>
+                                        <td>{{$k->user_name ??''}}</td>
+                                        <td>{{$k->driver_name ??''}}</td>
+                                        <td>{{$k->created_at == null? '': date('d/m/Y H:i:s', strtotime($k->created_at))}}</td>
+                                        <td>{{$k->updated_at == null? '': date('d/m/Y H:i:s', strtotime($k->updated_at))}}</td>
+                                        <td>{{$k->user_cancel_name == null ? '': $k->user_cancel_name}}</td>
+                                        <td>{{$k->reason_cancel == null? '': $k->reason_cancel}}</td>
+                                        <td>{{$k->canceled_at == null? '': date('d/m/Y H:i:s', strtotime($k->canceled_at))}}</td>
+                                        <td>
+                                            @if($k->canceled_at == null)
+                                            <button class="btn btn-danger" data-toggle="modal" data-target="#cancelReceiverDriver" onclick="cancelReceiverDriver({{$k->id}})">x</button>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!-- form hiển thị hình ảnh đơn hàng-->
@@ -518,7 +593,7 @@
         </div>
     </div>
     <!-- Modal huy-->
-    <div class="modal fade" id="changePayment" role="dialog">
+    <div class="modal fade" id="cancelOrder" role="dialog">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <form method="POST" action="{{ route('order-change-payment') }}">
@@ -526,13 +601,9 @@
                     <input type="hidden" name="id" value="{{$item->id}}">
                     <div class="modal-header">
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Thay đổi phí giao hàng</h4>
+                        <h4 class="modal-title">Hủy đơn hàng</h4>
                     </div>
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="pwd">Nhập số tiền (VND) (*):</label>
-                            <input type="number" class="form-control" name='total_price' required>
-                        </div>
                         <div class="form-group">
                             <label for="pwd">Lý do (*):</label>
                             <textarea  rows="5" class="form-control" name='reason' required></textarea>    
@@ -542,6 +613,67 @@
                         <button type="submit" class="btn btn-success" >Lưu</button>
                     </div>
                 </form>    
+            </div>
+        </div>
+    </div>
+    <!-- Modal hủy phân công lấy đơn-->
+    <div class="modal fade" id="cancelReceiverDriver" role="dialog">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content">
+                <form method="POST" action="{{route('delivery.cancelReceiverDriver')}}">
+                {{csrf_field()}}
+                    <input type="hidden" name="id" value="{{$item->id}}">
+                    <input type="hidden" name="order_prepare_id" id="order_prepare_id" value="">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Hủy phân công lấy đơn</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="pwd">Lý do (*):</label>
+                            <textarea  rows="5" class="form-control" name='reason' required></textarea>    
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success" >Lưu</button>
+                    </div>
+                </form>    
+            </div>
+        </div>
+    </div>
+    <!--modal Phân công tài xế -->
+    <div class="modal fade modal-primary" id="receiverDriver" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span></button>
+                    <h4 class="modal-title">Phân công lấy hàng</h4>
+                </div>
+                <form role="form" action="{{route('delivery.receiverDriver')}}" method="post" id="fr_delivery_driver">
+                    {{csrf_field()}}
+                    <div class="modal-body">
+                        <div class="row">
+                                <input type="hidden" name="order_id" value="{{$item->id}}" />
+                                <input type="hidden" name="user_id" value="{{\Illuminate\Support\Facades\Auth::user()->id}}" />
+                                <div class="col-md-12">
+                                    <div class="form-group">
+                                        <label>{{ __('label.driver') }} (*)</label>
+                                        <select class="form-control select2 class_driver"  required name="id_driver_only"
+                                                title="{{ __('label.driver') }}" style="width: 100%">
+                                            <option value="0"
+                                                    selected>{{ __('label.please_choose_field') }}</option>
+                                        </select>
+                                        <span class="has-error">{{$errors->first('id_driver_only')}}</span>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">{{ __('label.cancel') }}</button>
+                        <button type="submit" class="btn btn-outline">{{ __('label.submit') }}</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -568,7 +700,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.3.5/jquery.fancybox.min.js"></script>
     <script src="{{asset('public/admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
 
-  <script>
+<script>
+        function cancelReceiverDriver(id){
+        $('#order_prepare_id').val(id);
+        }
         $( document ).ready(function() {
             
             $('.select2').select2();

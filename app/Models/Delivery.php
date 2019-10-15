@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Delivery extends Model
 {
@@ -49,5 +50,22 @@ class Delivery extends Model
     public function detail()
     {
         return $this->hasOne(OrderDelivery::class);
+    }
+    public static function getByID($id)
+    {
+        $data=DB::table('order_prepare as op')->where('op.order_id',$id)
+        ->leftJoin('users as u','u.id','=','op.user_id')
+        ->join('drivers as d','d.id','=','op.driver_id')
+        ->join('users as u2','u2.id','=','d.user_id')
+        ->leftJoin('users as u3','u3.id','=','op.user_cancel_id')
+        ->select('op.*','u.name as user_name','u2.name as driver_name','u3.name as user_cancel_name')
+        ->orderBy('op.id','desc')
+        ->get();
+        return $data;
+    }
+    public static function checkReceiverDriver($id)
+    {
+        $data=DB::table('order_prepare')->where('order_id',$id)->where('canceled_at',null)->first();
+        return $data;
     }
 }

@@ -16,6 +16,7 @@ use App\Http\Requests\OrderRequest;
 use App\Models\Data\District;
 use App\Models\Data\Other;
 use App\Models\Data\Province;
+use App\Models\Delivery;
 use App\Models\Order;
 use App\Models\OrderDetail;
 use App\Models\Warehouse;
@@ -256,7 +257,9 @@ class OrderController extends Controller
             $title = $item->name;
             $payment = Order::getOrderPaymentDetail($id);
             $history_change_payment = Order::getListHistoryChangePayment($id);
-            return view('admin.order.detail', compact('payment', 'history_change_payment', 'map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
+            $receiverDriver=Delivery::getByID($id);
+            $checkReceiverDriver=Delivery::checkReceiverDriver($id);
+            return view('admin.order.detail', compact('checkReceiverDriver','receiverDriver','payment', 'history_change_payment', 'map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
         } catch (\Exception $e) {
             dd($e);
         }

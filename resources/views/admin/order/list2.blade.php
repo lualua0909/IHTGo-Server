@@ -66,6 +66,7 @@
                     <table id="tableItem" class="table table-bordered table-striped">
                         <thead>
                             <tr class="info">
+                                <th>Mã QR</th>
                                 <th>Mã bill</th>
                                 <th>Tên đơn hàng</th>
                                 <th>Trạng thái</th>
@@ -80,6 +81,7 @@
                         <tbody>
                             @foreach ($orders as $order)
                             <tr onclick="orderDetail({{$order->id}})">
+                                <td class="text-center">{!! QrCode::size(50)->generate($order->code); !!} <br> {{$order->code}}</td>
                                 <td>{{ $order->coupon_code }}</td>
                                 <td>{{ $order->name }}</td>
                                 <td>
@@ -129,18 +131,10 @@
                                 <td>{{ number_format($order->total_price) }} </td>
                                 <td><a href="{{url('admin/customer/detail/'.$order->customer_id.'')}}"> {{ $order->user_name }}</a></td>
                                 <td>
-                                    @if($order->sender_district_name ==null && $order->sender_province_name ==null)
                                     {{ $order->sender_address }}
-                                    @else
-                                    {{ $order->sender_district_name }} {{ $order->sender_province_name }}
-                                    @endif
                                 </td>
                                 <td>
-                                    @if($order->receive_district_name ==null && $order->receive_province_name ==null)
                                     {{ $order->receive_address }}
-                                    @else
-                                    {{ $order->receive_district_name }} {{ $order->receive_province_name }}
-                                    @endif
                                 </td>
                                 <td>{{date('d/m/Y H:i:s', strtotime($order->created_at))}}</td>
                             </tr>

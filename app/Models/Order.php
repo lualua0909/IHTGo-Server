@@ -37,7 +37,7 @@ class Order extends BaseModel
         $countRecordToday = Order::whereDate('created_at', Carbon::now()->toDateString())->count();
         $countRecordToday = (int) $countRecordToday + 1;
         do {
-            $orderCode = sprintf("IHT%s%'.03d", date('Ymd'), $countRecordToday);
+            $orderCode = sprintf("IHTGO%s%'.03d", date('Ymd'), $countRecordToday);
             $countRecordToday++;
         } while (Order::where('code', $orderCode)->first());
         return $orderCode;
@@ -98,6 +98,14 @@ class Order extends BaseModel
             ->first();
         return $token;
     }
+    public static function findFCMByUserID($id_driver_only)
+    {
+        $token = DB::table('drivers as dr')
+            ->join('devices as de', 'de.user_id', '=', 'dr.user_id')
+            ->where(['dr.id' => $id_driver_only])
+            ->first();
+        return $token;
+    }
     public static function findFCMByDelivery_Customer($deliveryID)
     {
         $token = DB::table('deliveries as d')
@@ -125,20 +133,16 @@ class Order extends BaseModel
     public static function getListNew()
     {
         $orders = DB::table('orders as o')
+            ->join('order_details as od', 'od.order_id', '=', 'o.id')
+            ->join('users as u', 'u.id', '=', 'o.user_id')
+            ->join('customers as c', 'c.user_id', '=', 'u.id')
             ->select(
                 "o.*",
                 "u.name as user_name",
                 "c.id as customer_id",
                 'od.sender_address',
                 'od.receive_address',
-                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
-                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
             )
-            ->join('order_details as od', 'od.order_id', '=', 'o.id')
-            ->join('users as u', 'u.id', '=', 'o.user_id')
-            ->join('customers as c', 'c.user_id', '=', 'u.id')
             ->orderBy('o.id', 'DESC')
             ->paginate(20);
         return $orders;
@@ -165,10 +169,6 @@ class Order extends BaseModel
                 "c.id as customer_id",
                 'od.sender_address',
                 'od.receive_address',
-                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
-                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
             )
             ->join('order_details as od', 'od.order_id', '=', 'o.id')
             ->join('users as u', 'u.id', '=', 'o.user_id')
@@ -202,10 +202,6 @@ class Order extends BaseModel
                 "c.id as customer_id",
                 'od.sender_address',
                 'od.receive_address',
-                DB::raw("(select p.name FROM provinces p WHERE p.province_id=od.sender_province_id) as sender_province_name"),
-                DB::raw("(SELECT p.name FROM provinces p WHERE p.province_id=od.receive_province_id) as receive_province_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.sender_district_id) as sender_district_name"),
-                DB::raw("(SELECT d.name FROM districts d WHERE d.id=od.receive_district_id) as receive_district_name")
             )
             ->join('order_details as od', 'od.order_id', '=', 'o.id')
             ->join('users as u', 'u.id', '=', 'o.user_id')
@@ -316,7 +312,7 @@ class Order extends BaseModel
     {
         $payment = 0;
         //kiểm tra loại đơn hàng
-        if ($request->car_option == 1 || $request->car_option == 3) { //hàng hóa
+        if ($request->car_option == 1 || $request->car_option == 3) { //hàng hóa'
             $payment = self::type_car($request);
             //phí dịch vụ gia tăng
             if ($request->is_speed == 1) {
@@ -439,7 +435,7 @@ class Order extends BaseModel
                 $payment = 250000;
             } else {
                 //bình thường
-                if ($distance > 35 && $value < 30) {
+                if ($distance <= 35) {
                     if ($value > 30 && $distance < 35) {
                         if ($value <= 50) {
                             $payment = 3000 * $value + 250000;
@@ -453,7 +449,7 @@ class Order extends BaseModel
                     }
                 }
                 //quá tải
-                else if ($distance > 35 && $value > 30) {
+                else if ($distance > 35) {
                     if ($value <= 50) {
                         $payment = 3000 * $value + (7000 * ($distance - 35)) + 250000;
                     } elseif ($value > 50 && $value < 100) {

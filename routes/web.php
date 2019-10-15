@@ -135,6 +135,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
         Route::post('create', 'Admin\DeliveryController@createDelivery')->name('delivery.createDelivery')->middleware(['can:create-delivery']);
         Route::post('store/{id?}', 'Admin\DeliveryController@store')->name('delivery.store')->middleware(['can:create-delivery']);
         Route::post('storeDriver/{id?}', 'Admin\DeliveryController@storeDriver')->name('delivery.storeDriver')->middleware(['can:create-delivery']);
+        Route::post('receiverDriver/{id?}', 'Admin\DeliveryController@receiverDriver')->name('delivery.receiverDriver')->middleware(['can:create-delivery']);
+        Route::post('cancelReceiverDriver/{id?}', 'Admin\DeliveryController@cancelReceiverDriver')->name('delivery.cancelReceiverDriver')->middleware(['can:create-delivery']);
         Route::get('delete/{id?}', 'Admin\DeliveryController@delete')->name('delivery.delete')->middleware(['can:delete-delivery']);
     });
 
