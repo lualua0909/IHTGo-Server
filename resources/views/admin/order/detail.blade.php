@@ -596,7 +596,7 @@
     <div class="modal fade" id="cancelOrder" role="dialog">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
-                <form method="POST" action="{{ route('order-change-payment') }}">
+                <form method="POST" action="{{ route('cancel') }}">
                     <input type="hidden" name="_token" value="{{csrf_token()}}">
                     <input type="hidden" name="id" value="{{$item->id}}">
                     <div class="modal-header">
