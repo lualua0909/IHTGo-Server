@@ -128,10 +128,10 @@ class DeliveryController extends Controller
     {
         $item = $order->find($request->order_id);
         $data = $request->only('order_id', 'user_id');
+
         $driver = $driverRepositoryContract->find($request->id_driver_only);
-        if ($driver && $driver->car) {
+        if ($driver) {
             $data['driver_id'] = $driver->id;
-            $data['car_id'] = $driver->car->id;
             if ($this->repository->store($data)) {
                 return redirect()->back()->with($this->messageResponse());
             }
@@ -147,7 +147,13 @@ class DeliveryController extends Controller
     {
         $fcm = Order::findFCMByDelivery($id);
         $customer_fcm = Order::findFCMByDelivery_Customer($id);
-        if ($this->repository->delete($id)) {
+        if ($fcm) {
+            $deliveries = DB::table('deliveries')->where('id', $id)->first();
+            DB::table('orders')->where('id', $deliveries->order_id)->update([
+                'status' => 2
+            ]);
+            DB::table('deliveries')->where('id', $id)->delete();
+
             $this->streamMessageToDevice->sendMsgToDevice($fcm->fcm, 'Thông báo hủy đơn hàng', 'Có 1 đơn hàng vừa bị hủy', $fcm->order_id, 1);
             $this->streamMessageToDevice->sendMsgToDevice($customer_fcm, 'Thông báo hủy đơn hàng', 'Có 1 đơn hàng vừa bị hủy', $fcm->order_id, 1);
             return redirect()->back()->with($this->messageResponse());

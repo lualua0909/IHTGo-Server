@@ -270,12 +270,7 @@
                                 </tr>
                                 <tr>
                                     <th>{{ __('label.driver') }}</th>
-
                                     <td><a href="{{route('driver.detail', $item->delivery->driver->id)}}">{{ $item->delivery->driver->user->name }}</a></td>
-                                </tr>
-                                <tr>
-                                    <th>{{ __('label.car') }}</th>
-                                    <td>@if($item->delivery->car_id != null )<a href="{{route('car.detail', $item->delivery->car->id)}}">{{$item->delivery->car_id == null ? "abc" : ($item->delivery->car->name . ' (' . $item->delivery->car->number . ')') }}</a>@endif</td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('label.driver_note') }}</th>
@@ -356,9 +351,9 @@
                             <br>
                             @if($item->status == \App\Helpers\Business::ORDER_STATUS_NO_DELIVERY)
                                 <div class="pull-right">
-                                    <button class="btn pull-right btn-success" id="create_delivery">{{ __('label.create_delivery') }}</button>
-                                    --  OR --
-                                    <button class="btn pull-left btn-primary" id="create_driver">{{ __('label.create_delivery_driver') }}</button>
+                                    <!-- <button class="btn pull-right btn-success" id="create_delivery">{{ __('label.create_delivery') }}</button>
+                                    --  OR -- -->
+                                    <button class="btn pull-left btn-primary" id="create_driver">Phân công lấy hàng</button>
                                 </div>
                                 
                             @endif
@@ -371,7 +366,7 @@
                     </div>
                 </div>
                 <!-- Tạo giao hàng (chọn tài xế & xe) -->
-                <div class="modal fade modal-success" id="myModal" role="dialog">
+                <!-- <div class="modal fade modal-success" id="myModal" role="dialog">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -416,7 +411,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div> -->
                 <!--modal Phân công tài xế -->
                 <div class="modal fade modal-primary" id="myModalDriver" role="dialog">
                     <div class="modal-dialog">
@@ -709,11 +704,11 @@
             $('.select2').select2();
             $('.price').number( true, 0 );
 
-            if($('#create_delivery').length > 0){
-                $('#create_delivery').on('click', function(){
-                    $('#myModal').modal('show');
-                });
-            }
+            // if($('#create_delivery').length > 0){
+            //     $('#create_delivery').on('click', function(){
+            //         $('#myModal').modal('show');
+            //     });
+            // }
 
             if($('#create_driver').length > 0){
                 $('#create_driver').on('click', function(){
