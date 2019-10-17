@@ -353,7 +353,7 @@
                                 <div class="pull-right">
                                     <!-- <button class="btn pull-right btn-success" id="create_delivery">{{ __('label.create_delivery') }}</button>
                                     --  OR -- -->
-                                    <button class="btn pull-left btn-primary" id="create_driver">Phân công lấy hàng</button>
+                                    <button class="btn pull-left btn-primary" id="create_driver">Phân công giao hàng</button>
                                 </div>
                                 
                             @endif
@@ -419,7 +419,7 @@
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span></button>
-                                <h4 class="modal-title">{{ __('label.create_delivery') }}</h4>
+                                <h4 class="modal-title">Phân công giao hàng</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="row">
