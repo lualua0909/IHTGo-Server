@@ -505,9 +505,12 @@
                     @foreach($item->images as $k => $image)
                         <div class="col-sm-3">
                             <a href="{{route('api.image.show', ['id' => $image->id])}}" data-fancybox data-caption="Caption for single image">
-                                <img class="img-responsive" src="{{route('api.image.show', ['id' => $image->id, 'type' => $image->type])}}" alt="Photo">                            </a>
+                                <img class="img-responsive" src="{{route('api.image.show', ['id' => $image->id, 'type' => $image->type])}}" alt="Photo"></a>
                         </div>
                     @endforeach
+                    <div class="col-sm-3">
+                        <img class="img-responsive" src="{{'http://ihtgo.com.vn/' .$item->image_link}}" alt="Photo"  onerror="this.onerror=null;this.src='http://ihtgo.com.vn/public/storage/not-found.jpeg' ;"></a>
+                    </div>
                 </div>
             </div>
         </div>
