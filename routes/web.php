@@ -192,6 +192,8 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
         Route::post('cancel', 'Admin\OrderController@cancel')->name('cancel');
         Route::get('order-delete/{id}', 'Admin\OrderController@deleteOrder');
 
+        Route::get('print/{id}', 'Admin\OrderController@print')->name('print');
+
     });
 
     // Map

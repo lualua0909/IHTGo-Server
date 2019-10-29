@@ -257,7 +257,10 @@
                             <table class="table table-detail">
                                 <tr>
                                     <th>{{ __('label.status') }}</th>
-                                    <td><button data-status="{{$item->status}}" class="{{$orderStatusColor[$item->status]}} {{ ($item->status == \App\Helpers\Business::ORDER_STATUS_DONE_DELIVERY || $item->status == \App\Helpers\Business::ORDER_STATUS_CUSTOMER_CANCEL || $item->status == \App\Helpers\Business::ORDER_STATUS_IHT_CANCEL) ? '' : 'select-status' }}">{{ $orderStatus[$item->status] }}</button></td>
+                                    <td><button data-status="{{$item->status}}" class="{{$orderStatusColor[$item->status]}} {{ ($item->status == \App\Helpers\Business::ORDER_STATUS_DONE_DELIVERY || $item->status == \App\Helpers\Business::ORDER_STATUS_CUSTOMER_CANCEL || $item->status == \App\Helpers\Business::ORDER_STATUS_IHT_CANCEL) ? '' : 'select-status' }}">{{ $orderStatus[$item->status] }}</button>
+                                    <a type="button" class="btn btn-info" href="{{route('print',$item->id)}}">In đơn hàng</a>
+                                </td>
+
                                 </tr>
                                 <tr>
                                 
@@ -330,6 +333,7 @@
                         </div>
                         <div class="box-body">
                             <button class="{{$orderStatusColor[$item->status]}}">{{ $orderStatus[$item->status] }}</button>
+                            <a type="button" class="btn btn-info" href="{{route('print',$item->id)}}">In đơn hàng</a>
                             @if($item->reason_cancel)
                             <table class="table table-striped">
                                 <thead>

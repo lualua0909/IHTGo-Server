@@ -521,4 +521,23 @@ class Order extends BaseModel
         }
         return 200;
     }
+    public static function print($id)
+    {
+        $order = DB::table('orders as o')
+        ->join('order_details as od', 'od.order_id', '=', 'o.id')
+        ->leftJoin('order_detail_ext as ode', 'ode.order_id', '=', 'o.id')
+        ->where('o.id',$id)
+        ->select(
+            "o.*",
+            "ode.*",
+            'od.sender_name',
+            'od.sender_phone',
+            'od.sender_address',
+            'od.receive_name',
+            'od.receive_phone',
+            'od.receive_address',
+            'od.take_money'
+        )->first();
+        return $order;
+    }
 }

@@ -45,7 +45,7 @@ class OrderController extends Controller
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
     public function getList()
-    { 
+    {
         return redirect('admin/order/list-new');
         $title = __('label.order');
         $orderStatus = array(
@@ -93,54 +93,54 @@ class OrderController extends Controller
 
     public function getListNew()
     {
-        $date='';
-        $search='';
-        $status='';
-        $car_option='';
+        $date = '';
+        $search = '';
+        $status = '';
+        $car_option = '';
         $orders = Order::getListNew();
-        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
+        return view('admin.order.list2', compact('orders', 'date', 'search', 'status', 'car_option'));
     }
     //search theo trang thai & phuong thuc thanh toan, ngay
     public function getOptionListNew(Request $req)
     {
-        $date=$req->session()->get('search-date', '');
-        $search='';
-        $status=$req->session()->get('search-status', '');
-        $car_option=$req->session()->get('search-car_option', '');
-        $orders = Order::postOptionListNew($status,$car_option,$date);
-        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
+        $date = $req->session()->get('search-date', '');
+        $search = '';
+        $status = $req->session()->get('search-status', '');
+        $car_option = $req->session()->get('search-car_option', '');
+        $orders = Order::postOptionListNew($status, $car_option, $date);
+        return view('admin.order.list2', compact('orders', 'date', 'search', 'status', 'car_option'));
     }
     public function postOptionListNew(Request $req)
     {
-        $date=$req->date;
-        $search='';
-        $status=$req->status;
-        $car_option=$req->car_option;
-        $orders = Order::postOptionListNew($req->status, $req->car_option,$req->date);
+        $date = $req->date;
+        $search = '';
+        $status = $req->status;
+        $car_option = $req->car_option;
+        $orders = Order::postOptionListNew($req->status, $req->car_option, $req->date);
         $req->session()->put('search-status', $req->status);
         $req->session()->put('search-car_option', $req->car_option);
         $req->session()->put('search-date', $req->date);
-        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
+        return view('admin.order.list2', compact('orders', 'date', 'search', 'status', 'car_option'));
     }
     //search theo ten kh, ten don hang, coupon_code, sdt
     public function getSearchListNew(Request $req)
     {
-        $date='';
-        $search=$req->session()->get('search-text', '');
-        $status='';
-        $car_option='';
+        $date = '';
+        $search = $req->session()->get('search-text', '');
+        $status = '';
+        $car_option = '';
         $orders = Order::postSearchListNew($req->session()->get('search-text', ''));
-        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
+        return view('admin.order.list2', compact('orders', 'date', 'search', 'status', 'car_option'));
     }
     public function postSearchListNew(Request $req)
     {
-        $date='';
-        $search=$req->search;
-        $status='';
-        $car_option='';
+        $date = '';
+        $search = $req->search;
+        $status = '';
+        $car_option = '';
         $orders = Order::postSearchListNew($req->search);
         $req->session()->put('search-text', $req->search);
-        return view('admin.order.list2', compact('orders','date','search','status','car_option'));
+        return view('admin.order.list2', compact('orders', 'date', 'search', 'status', 'car_option'));
     }
     /**
      * @param $objectCar
@@ -248,7 +248,7 @@ class OrderController extends Controller
 
             $listWarehouse = Warehouse::all();
             $config = $this->setConfigMaps();
-            $config['directionsStart'] = optional($item->detail)->sender_address ;
+            $config['directionsStart'] = optional($item->detail)->sender_address;
             $config['directionsEnd'] = optional($item->detail)->receive_address;
             app('map')->initialize($config);
 
@@ -257,9 +257,9 @@ class OrderController extends Controller
             $title = $item->name;
             $payment = Order::getOrderPaymentDetail($id);
             $history_change_payment = Order::getListHistoryChangePayment($id);
-            $receiverDriver=Delivery::getByID($id);
-            $checkReceiverDriver=Delivery::checkReceiverDriver($id);
-            return view('admin.order.detail', compact('checkReceiverDriver','receiverDriver','payment', 'history_change_payment', 'map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
+            $receiverDriver = Delivery::getByID($id);
+            $checkReceiverDriver = Delivery::checkReceiverDriver($id);
+            return view('admin.order.detail', compact('checkReceiverDriver', 'receiverDriver', 'payment', 'history_change_payment', 'map', 'orderMethod', 'orderMethodColor', 'item', 'title', 'orderStatusColor', 'orderStatus', 'orderType', 'genderType', 'orderPayment', 'orderPaymentColor', 'listType', 'listTypeColor', 'listWarehouse', 'listPayer', 'listSpeed'));
         } catch (\Exception $e) {
             dd($e);
         }
@@ -415,8 +415,8 @@ class OrderController extends Controller
         );
         $dataOrder['total_price'] = str_replace(',', '', $request->total_price);
         $dataOrder['is_admin'] = 1;
-        $dataOrder['car_type']=0;
-        $dataOrder['is_speed']=0;
+        $dataOrder['car_type'] = 0;
+        $dataOrder['is_speed'] = 0;
         $orderId = $this->repository->store($dataOrder);
         if ($orderId) {
             $dataOrderDetail = $request->only(
@@ -547,6 +547,15 @@ class OrderController extends Controller
         try {
             $res = Order::cancel($request);
             return back();
+        } catch (\Exception $ex) {
+            return $ex;
+        }
+    }
+    public function print($id)
+    {
+        try {
+            $order = Order::print($id);
+            return view('admin.order.print', compact('order'));
         } catch (\Exception $ex) {
             return $ex;
         }
