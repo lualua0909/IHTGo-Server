@@ -19,7 +19,7 @@
             </div>
             <div class='col-md-6'>
                 <img src=" data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(100)->generate($order->code)) }} " style="text-align:center">
-                <p>Mã đơn hàng: {{$order->code}}</p>
+                <p>{{$order->code}}</p>
             </div>
         </div>
         <div class='row'>
@@ -47,7 +47,7 @@
                 @if($order->car_option == 1 || $order->car_option == 3) 
                     <p>Loại đơn hàng: Hàng hóa</p>
                     @if($order->hand_on==1 ||$order->is_speed==1)
-                    <p>Dịch vụ: @if($order->is_speed==1) Hỏa tốc @endif @if($order->hand_on==1) Giao tận tay @endif</p>
+                    <p>Dịch vụ:<span style="font-size:15px;font-weight:bold"> @if($order->is_speed==1) Hỏa tốc @endif @if($order->hand_on==1) Giao tận tay @endif </span> </p>
                     @endif
                     <p>Trọng lượng:{{$order->weight??""}} (kg)</p>
                     <p>DàixRộngxCao: {{$order->length??""}}x{{$order->width??""}}x{{$order->height??""}}(cm)</p>
@@ -56,7 +56,7 @@
                     <p>Loại đơn hàng: Chứng từ</p>
                 @else
                     @if($order->hand_on==1 ||$order->is_speed==1)
-                    <p>Dịch vụ: @if($order->is_speed==1) Hỏa tốc @endif @if($order->hand_on==1) Giao tận tay @endif</p>
+                    <p>Dịch vụ:<span style="font-size:15px;font-weight:bold"> @if($order->is_speed==1) Hỏa tốc @endif @if($order->hand_on==1) Giao tận tay @endif </span> </p>
                     @endif
                     <p>Trọng lượng:{{$order->weight??""}} (kg)</p>
                     <p>DàixRộngxCao: {{$order->length??""}}x{{$order->width??""}}x{{$order->height??""}}(cm)</p>
