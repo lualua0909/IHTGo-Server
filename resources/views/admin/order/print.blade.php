@@ -18,12 +18,12 @@
                 <img src="https://ihtgo.com.vn/public/Images/Index/logo.png" width="200">
             </div>
             <div class='col-md-6'>
-                <img src=" data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(100)->generate($order->code)) }} ">
+                <img src=" data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(100)->generate($order->code)) }} " style="text-align:center">
                 <p>Mã đơn hàng: {{$order->code}}</p>
             </div>
         </div>
         <div class='row'>
-            <div class='col-md-6'>
+            <div class='col-md-6' style="border-right: 1px dotted">
                 <h4>Thông tin người gửi</h4>
                 <p>Tên: {{$order->sender_name}}</p>
                 <p>Địa chỉ: {{$order->sender_address}}</p>
@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class='row'>
-            <div class='col-md-6'>
+            <div class='col-md-6' style="border-right: 1px dotted">
                 <p>Tên đơn hàng:{{$order->name}}</p>
                 <p>Phí giao hàng: {{number_format($order->total_price)}} (vnd)</p>
                 <p>Thu hộ: {{number_format($order->take_money) }} (vnd)</p>
@@ -45,15 +45,22 @@
             </div>
             <div class='col-md-6'>
                 @if($order->car_option == 1 || $order->car_option == 3) 
-                <p>Loại đơn hàng: Hàng hóa</p>
-                <p>Quảng đường: {{$order->distance??""}},Trọng lượng:{{$order->weight??""}}</p>
-                <p>Dài: {{$order->length??""}},Rộng: {{$order->width??""}},Cao: {{$order->height??""}}</p>      
+                    <p>Loại đơn hàng: Hàng hóa</p>
+                    @if($order->hand_on==1 ||$order->is_speed==1)
+                    <p>Dịch vụ: @if($order->is_speed==1) Hỏa tốc @endif @if($order->hand_on==1) Giao tận tay @endif</p>
+                    @endif
+                    <p>Trọng lượng:{{$order->weight??""}} (kg)</p>
+                    <p>DàixRộngxCao: {{$order->length??""}}x{{$order->width??""}}x{{$order->height??""}}(cm)</p>
+                    <p>Ghi chú:{{$order->note??""}}</p>      
                 @elseif($order->car_option == 2)
-                <p>Loại đơn hàng: Chứng từ</p>
+                    <p>Loại đơn hàng: Chứng từ</p>
                 @else
-                <p>Loại đơn hàng: Gửi hàng vào kho</p>
-                <p>Quảng đường: {{$order->distance??""}},Trọng lượng:{{$order->weight??""}} </p>
-                <p>Dài: {{$order->length??""}},Rộng: {{$order->width??""}},Cao: {{$order->height??""}}</p>    
+                    @if($order->hand_on==1 ||$order->is_speed==1)
+                    <p>Dịch vụ: @if($order->is_speed==1) Hỏa tốc @endif @if($order->hand_on==1) Giao tận tay @endif</p>
+                    @endif
+                    <p>Trọng lượng:{{$order->weight??""}} (kg)</p>
+                    <p>DàixRộngxCao: {{$order->length??""}}x{{$order->width??""}}x{{$order->height??""}}(cm)</p>
+                    <p>Ghi chú:{{$order->note??""}}</p>    
                 @endif
             </div>
         </div>

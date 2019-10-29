@@ -530,13 +530,7 @@ class Order extends BaseModel
         ->select(
             "o.*",
             "ode.*",
-            'od.sender_name',
-            'od.sender_phone',
-            'od.sender_address',
-            'od.receive_name',
-            'od.receive_phone',
-            'od.receive_address',
-            'od.take_money'
+            'od.*'
         )->first();
         return $order;
     }
