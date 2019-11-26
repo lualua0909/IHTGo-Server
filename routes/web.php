@@ -274,4 +274,4 @@ Route::get('cache', function () {
 Route::get('price', 'Admin\ManagerPriceController@show')->name('price.show');
 Route::get('security', 'Admin\ManagerPriceController@security')->name('security.show');
 
-Route::get('print/{id}', 'Admin\OrderController@print');
+Route::get('print-booking/{id}', 'Admin\OrderController@print');
