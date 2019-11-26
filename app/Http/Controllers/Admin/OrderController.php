@@ -22,7 +22,6 @@ use App\Models\OrderDetail;
 use App\Models\Warehouse;
 use App\Repositories\OrderDetail\OrderDetailRepositoryContract;
 use App\Repositories\Order\OrderRepositoryContract;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -551,8 +550,7 @@ class OrderController extends Controller
             return $ex;
         }
     }
-    public function print($id)
-    {
+    function print($id) {
         try {
             $order = Order::print($id);
             return view('admin.order.print', compact('order'));
