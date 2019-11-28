@@ -6,12 +6,12 @@
     <!-- general form elements -->
     <div class="box box-primary">
         <div class="box-body">
-            <form role="form" action="{{ route('order.store') }}" method="post">
+            <form id="formCreateOrder" role="form" action="{{ route('order.store') }}" method="post">
                 {{csrf_field()}}
                 <div class="box-header">
                     <h3 class="box-title">{{$title}}</h3>
                     <div class="box-tools pull-right">
-                        <button type="submit" class="btn btn-primary">{{__('label.submit')}}</button>
+                        <button type="submit" class="btn btn-primary" id="btnSubmit" >{{__('label.submit')}}</button>
                     </div>
                 </div>
                 <br>
@@ -141,6 +141,12 @@
 <script src="{{asset('public/admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
 <script src="{!! asset('public/admin/dist/js/jquery.number.min.js') !!}"></script>
 <script>
+$(document).ready(function () {
+    $("#formCreateOrder").submit(function () {
+        $("#btnSubmit").attr("disabled", true);
+        return true;
+    });
+});
     $(function() {
         $('#sender_date, #receive_date').datepicker({
             autoclose: true,
