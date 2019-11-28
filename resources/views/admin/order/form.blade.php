@@ -62,8 +62,8 @@
                             <span class="has-error">{{$errors->first('name')}}</span>
                         </div>
                         <div class="form-group">
-                            <label>{{ __('label.coupon_code') }} (*)</label>
-                            <input required {{ ($item) ? 'readonly' : '' }} type="text" id="coupon_code" value="{{(old('coupon_code')) ? old('coupon_code') : (($item) ? $item->coupon_code : '') }}" name="coupon_code" class="form-control" placeholder="{{ __('label.coupon_code') }}">
+                            <label>{{ __('label.coupon_code') }} </label>
+                            <input {{ ($item) ? 'readonly' : '' }} type="text" id="coupon_code" value="{{(old('coupon_code')) ? old('coupon_code') : (($item) ? $item->coupon_code : '') }}" name="coupon_code" class="form-control" placeholder="{{ __('label.coupon_code') }}">
                             <span class="has-error">{{$errors->first('coupon_code')}}</span>
                         </div>
                         <div class="form-group">
