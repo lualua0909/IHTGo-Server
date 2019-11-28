@@ -27,7 +27,6 @@ Route::post('/image/upload', 'ImageController@storeWeb')->name('image.web.store'
 // Route::get('/home', 'HomeController@index')->name('home');
 Route::post('language', 'LanguageController@changeLanguage')->name('language');
 
-
 // Manager
 Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function () {
     // Manager dashboard
@@ -274,3 +273,5 @@ Route::get('cache', function () {
 
 Route::get('price', 'Admin\ManagerPriceController@show')->name('price.show');
 Route::get('security', 'Admin\ManagerPriceController@security')->name('security.show');
+
+Route::get('print-booking/{id}', 'Admin\OrderController@print');
