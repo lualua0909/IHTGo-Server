@@ -513,7 +513,20 @@
                         </div>
                     @endforeach
                     <div class="col-sm-3">
-                        <img class="img-responsive" src="{{'http://ihtgo.com.vn/' .$item->image_link}}" alt="Photo"  onerror="this.onerror=null;this.src='http://ihtgo.com.vn/public/storage/not-found.jpeg' ;"></a>
+                        <form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed"
+                            action="https://ihtgo.com.vn/api/upload-image" method="POST" enctype="multipart/form-data">
+                            <input type="hidden" name="_token" value="{{csrf_token()}}">
+                            <input type="hidden" name="id" value="{{$item->id}}">
+                            <div class="custom-file">
+                                <input type="file" class="custom-file-input" id="customFile"
+                                    name="image" onchange="readURL(event, 1)">
+                            </div>
+                            <button class="btn btn-primary " type="submit">Xác nhận thay đổi</button>
+
+                            <img id="img1" width="300" height="200"
+                                onclick="openImgModal({{$item->image_link}})" data-toggle="modal" data-target="#imgModal"
+                                src="{{'http://ihtgo.com.vn/' .$item->image_link}}" alt="Photo"  onerror="this.onerror=null;this.src='http://ihtgo.com.vn/public/storage/not-found.jpeg' ;">
+                        </form>
                     </div>
                 </div>
             </div>
@@ -679,6 +692,14 @@
             </div>
         </div>
     </div>
+    <!-- modal image order -->
+    <div id="imgModal" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <img id="modalContent"src="{{'http://ihtgo.com.vn/' .$item->image_link }}" alt="Photo"  onerror="this.onerror=null;this.src='http://ihtgo.com.vn/public/storage/not-found.jpeg' ;">
+            </div>
+        </div>
+    </div>
 @endsection
 
 @section('style')
@@ -703,6 +724,38 @@
     <script src="{{asset('public/admin')}}/plugins/datepicker/bootstrap-datepicker.js"></script>
 
 <script>
+    //change image order
+        var imgModal = document.getElementById('imgModal');
+        window.onclick = function(event) {
+            if (event.target == imgModal) {
+                imgModal.style.display = "none";
+            }
+        }
+
+        function readURL(event, id) {
+            var output = document.getElementById('img' + id);
+            output.src = URL.createObjectURL(event.target.files[0]);
+        };
+
+        function openImgModal(image_link) {
+            var image='';
+            if(image_link){
+                image= "http://ihtgo.com.vn/" +image_link;
+            }else{
+                image="http://ihtgo.com.vn/public/storage/not-found.jpeg";
+            }
+
+            var img = document.getElementById('modalContent');
+            img.src = image;
+            imgModal.style.display = "block";
+        }
+        document.addEventListener('touchstart', function(e) {
+            if (event.target == imgModal) {
+                imgModal.style.display = "none";
+            }
+        });
+         //end change image order
+        
         function cancelReceiverDriver(id){
         $('#order_prepare_id').val(id);
         }
