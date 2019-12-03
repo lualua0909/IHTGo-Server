@@ -186,7 +186,6 @@
                                         </td>
                                     </tr>
                                     <tr id="time_inventory">
-
                                         <th>Thời gian làm hàng</th>
                                         <td style="display: flex;">  
                                             <input type="text"  class="selector" name="start_time_inventory" value="{{$payment==null ? '' : date('m/d/Y H:i:s',$payment->start_time_inventory)}}">
@@ -513,7 +512,7 @@
                         </div>
                     @endforeach
                     <div class="col-sm-3">
-                        <form id="form-reserve-list" action="" enctype="multipart/form-data">
+                        <form id="form-reserve-list" action="https://ihtgo.com.vn/api/upload-image" enctype="multipart/form-data">
                             <input type="hidden" name="_token" value="{{csrf_token()}}">
                             <input type="hidden" name="id" value="{{$item->id}}">
                             <div class="custom-file">
@@ -654,7 +653,7 @@
             </div>
         </div>
     </div>
-    <!--modal Phân công tài xế -->
+    <!--modal Phân công tài xế lấy đơn -->
     <div class="modal fade modal-primary" id="receiverDriver" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -752,23 +751,23 @@
                 imgModal.style.display = "none";
             }
         });
-        $('#form-reserve-list').on('submit', function(e) {
-            console.log(1);
-            e.preventDefault();
-            var formData = $(this).serialize();
+        // $('#form-reserve-list').on('submit', function(e) {
+        //     console.log(1);
+        //     e.preventDefault();
+        //     var formData = $(this).serialize();
 
-            var url = 'https://ihtgo.com.vn/api/upload-image';
+        //     var url = 'https://ihtgo.com.vn/api/upload-image';
 
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: formData,
-                cache: false,
-                dataType: "json",
-                success: function(data){
-                    alert(data);
-                }
-        });
+        //     $.ajax({
+        //         type: 'POST',
+        //         url: url,
+        //         data: formData,
+        //         cache: false,
+        //         dataType: "json",
+        //         success: function(data){
+        //             alert(data);
+        //         }
+        // });
          //end change image order
         
         function cancelReceiverDriver(id){
