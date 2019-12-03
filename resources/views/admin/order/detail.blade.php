@@ -512,7 +512,7 @@
                         </div>
                     @endforeach
                     <div class="col-sm-3">
-                        <form id="form-reserve-list" action="https://ihtgo.com.vn/api/upload-image" enctype="multipart/form-data">
+                        <form action="https://ihtgo.com.vn/api/upload-image" enctype="multipart/form-data" method="post">
                             <input type="hidden" name="_token" value="{{csrf_token()}}">
                             <input type="hidden" name="id" value="{{$item->id}}">
                             <div class="custom-file">
@@ -522,7 +522,7 @@
                             <button class="btn btn-primary "   type="submit">Xác nhận thay đổi</button>
                             <img id="img1" width="300" height="200"
                                 onclick="openImgModal({{$item->image_link}})" data-toggle="modal" data-target="#imgModal"
-                                src="{{'https://ihtgo.com.vn/' .$item->image_link}}" alt="Photo"  onerror="this.onerror=null;this.src='https://ihtgo.com.vn/public/storage/not-found.jpeg' ;">
+                                src="{{'https://ihtgo.com.vn/'.$item->image_link}}" alt="Photo"  onerror="this.onerror=null;this.src='https://ihtgo.com.vn/public/storage/not-found.jpeg' ;">
                         </form>
                     </div>
                 </div>
@@ -751,23 +751,7 @@
                 imgModal.style.display = "none";
             }
         });
-        // $('#form-reserve-list').on('submit', function(e) {
-        //     console.log(1);
-        //     e.preventDefault();
-        //     var formData = $(this).serialize();
 
-        //     var url = 'https://ihtgo.com.vn/api/upload-image';
-
-        //     $.ajax({
-        //         type: 'POST',
-        //         url: url,
-        //         data: formData,
-        //         cache: false,
-        //         dataType: "json",
-        //         success: function(data){
-        //             alert(data);
-        //         }
-        // });
          //end change image order
         
         function cancelReceiverDriver(id){
