@@ -513,19 +513,17 @@
                         </div>
                     @endforeach
                     <div class="col-sm-3">
-                        <form class="m-form m-form--fit m-form--label-align-right m-form--group-seperator-dashed"
-                            action="https://ihtgo.com.vn/api/upload-image" method="POST" enctype="multipart/form-data">
+                        <form id="form-reserve-list" action="" enctype="multipart/form-data">
                             <input type="hidden" name="_token" value="{{csrf_token()}}">
                             <input type="hidden" name="id" value="{{$item->id}}">
                             <div class="custom-file">
                                 <input type="file" class="custom-file-input" id="customFile"
                                     name="image" onchange="readURL(event, 1)">
                             </div>
-                            <button class="btn btn-primary " type="submit">Xác nhận thay đổi</button>
-
+                            <button class="btn btn-primary "   type="submit">Xác nhận thay đổi</button>
                             <img id="img1" width="300" height="200"
                                 onclick="openImgModal({{$item->image_link}})" data-toggle="modal" data-target="#imgModal"
-                                src="{{'http://ihtgo.com.vn/' .$item->image_link}}" alt="Photo"  onerror="this.onerror=null;this.src='http://ihtgo.com.vn/public/storage/not-found.jpeg' ;">
+                                src="{{'https://ihtgo.com.vn/' .$item->image_link}}" alt="Photo"  onerror="this.onerror=null;this.src='https://ihtgo.com.vn/public/storage/not-found.jpeg' ;">
                         </form>
                     </div>
                 </div>
@@ -696,7 +694,7 @@
     <div id="imgModal" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
-                <img id="modalContent"src="{{'http://ihtgo.com.vn/' .$item->image_link }}" alt="Photo"  onerror="this.onerror=null;this.src='http://ihtgo.com.vn/public/storage/not-found.jpeg' ;">
+                <img id="modalContent" src="{{'https://ihtgo.com.vn/' .$item->image_link }}" alt="Photo"  onerror="this.onerror=null;this.src='https://ihtgo.com.vn/public/storage/not-found.jpeg' ;">
             </div>
         </div>
     </div>
@@ -753,6 +751,23 @@
             if (event.target == imgModal) {
                 imgModal.style.display = "none";
             }
+        });
+        $('#form-reserve-list').on('submit', function(e) {
+            console.log(1);
+            e.preventDefault();
+            var formData = $(this).serialize();
+
+            var url = 'https://ihtgo.com.vn/api/upload-image';
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: formData,
+                cache: false,
+                dataType: "json",
+                success: function(data){
+                    alert(data);
+                }
         });
          //end change image order
         

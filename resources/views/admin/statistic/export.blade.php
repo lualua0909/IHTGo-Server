@@ -15,6 +15,7 @@
     <thead>
     <tr style="background-color: #0B90C4">
         <th>STT</th>
+        <th>Mã đơn hàng</th>
         <th>Mã bill</th>
         <th>Tên Đơn Hàng</th>
         <th>Loại Đơn Hàng</th>
@@ -41,6 +42,7 @@
     @foreach($listResult as $k => $value)
         <tr>
             <td>{{ $k + 1 }}</td> 
+            <td>{{ $value->code }}</td>
             <td>{{ $value->coupon_code }}</td>
             <td>{{ $value->order_name }}</td>
             <td>

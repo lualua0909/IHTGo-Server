@@ -39,9 +39,11 @@
         <div class='row'>
             <div class='col-md-6' style="border-right: 1px dotted">
                 <p>Tên đơn hàng:{{$order->name}}</p>
-                <p>Phí giao hàng: {{number_format($order->total_price)}} (vnd)</p>
+                <p>Người thanh toán:@if($order->payer==1) người nhận @else người gửi @endif</p>
+                <p>Phương thức thanh toán:@if($order->payment_type==1) tiền mặt @else theo tháng @endif</p>
+                <p>Phí giao hàng:@if($order->payment_type==1) {{number_format($order->total_price)}}  (vnd)  @else 0  (vnd) @endif</p>
                 <p>Thu hộ: {{number_format($order->take_money) }} (vnd)</p>
-                <span>Tổng tiền:</span><span style="font-size:25px;font-weight:bold"> {{number_format($order->take_money + $order->total_price)}}</span> (vnd)
+                <span>Tổng tiền:</span><span style="font-size:25px;font-weight:bold">@if($order->payment_type==1) {{number_format($order->take_money + $order->total_price)}} @else  {{number_format($order->take_money) }} @endif </span> (vnd) 
             </div>
             <div class='col-md-6'>
                 @if($order->car_option == 1 || $order->car_option == 3) 
