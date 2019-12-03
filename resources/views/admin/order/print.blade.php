@@ -15,7 +15,7 @@
     <section class="sheet padding-10mm">
         <div class='row'>
             <div class='col-md-6'>
-                <img src="https://ihtgo.com.vn/public/Images/Index/logo.png" width="200">
+                <img src="https://ihtgo.com.vn/public/Images/Index/logo.png" width="150">
             </div>
             <div class='col-md-6'>
                 <img src=" data:image/png;base64, {{ base64_encode(QrCode::format('png')->size(100)->generate($order->code)) }} " style="text-align:center">
@@ -26,13 +26,13 @@
             <div class='col-md-6' style="border-right: 1px dotted">
                 <h4>Thông tin người gửi</h4>
                 <p>Tên: {{$order->sender_name}}</p>
-                <p>Địa chỉ: {{$order->sender_address}}</p>
+                <p>Địa chỉ: {{substr($order->sender_address, 0, 110)}}</p>
                 <p>Số điện thoại: {{$order->sender_phone}}</p>
             </div>
             <div class='col-md-6'>
                 <h4>Thông tin người nhận</h4>
                 <p>Tên: {{$order->receive_name}}</p>
-                <p>Địa chỉ: {{$order->receive_address}}</p>
+                <p>Địa chỉ:{{substr($order->receive_address, 0, 110)}} </p>
                 <p>Số điện thoại: {{$order->receive_phone}}</p>
             </div>
         </div>
@@ -40,7 +40,7 @@
             <div class='col-md-6' style="border-right: 1px dotted">
                 <p>Tên đơn hàng:{{$order->name}}</p>
                 <p>Người thanh toán:@if($order->payer==1) người nhận @else người gửi @endif</p>
-                <p>Phương thức thanh toán:@if($order->payment_type==1) tiền mặt @else theo tháng @endif</p>
+                <p>Thanh toán:@if($order->payment_type==1) tiền mặt @else theo tháng @endif</p>
                 <p>Phí giao hàng:@if($order->payment_type==1) {{number_format($order->total_price)}}  (vnd)  @else 0  (vnd) @endif</p>
                 <p>Thu hộ: {{number_format($order->take_money) }} (vnd)</p>
                 <span>Tổng tiền:</span><span style="font-size:25px;font-weight:bold">@if($order->payment_type==1) {{number_format($order->take_money + $order->total_price)}} @else  {{number_format($order->take_money) }} @endif </span> (vnd) 
@@ -97,7 +97,7 @@
         width: 33.33%;
         float: left;
         border: 1px solid;
-        height: 13em;
+        height: 12em;
         text-align: center;
     }
 
