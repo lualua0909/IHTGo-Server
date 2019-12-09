@@ -512,14 +512,13 @@
                         </div>
                     @endforeach
                     <div class="col-sm-3">
-                        <form action="https://ihtgo.com.vn/api/upload-image" enctype="multipart/form-data" method="post">
-                            <input type="hidden" name="_token" value="{{csrf_token()}}">
-                            <input type="hidden" name="id" value="{{$item->id}}">
+                        <form id="upload-image" role="form" action="https://ihtgo.com.vn/api/upload-image" enctype="multipart/form-data" method="post">
+                            {!! csrf_field() !!}
+                            <input type="hidden" name="id" id="order_id" value="{{$item->id}}">
                             <div class="custom-file">
                                 <input type="file" class="custom-file-input" id="customFile"
                                     name="image" onchange="readURL(event, 1)">
                             </div>
-                            <button class="btn btn-primary "   type="submit">Xác nhận thay đổi</button>
                             <img id="img1" width="300" height="200"
                                 onclick="openImgModal({{$item->image_link}})" data-toggle="modal" data-target="#imgModal"
                                 src="{{'https://ihtgo.com.vn/'.$item->image_link}}" alt="Photo"  onerror="this.onerror=null;this.src='https://ihtgo.com.vn/public/storage/not-found.jpeg' ;">
@@ -751,7 +750,42 @@
                 imgModal.style.display = "none";
             }
         });
+        $(document).ready(function(){
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
 
+            $('#upload-image').submit(function(event){
+                event.preventDefault();
+                var id = $('#order_id').val();
+                var image = $('#customFile')[0].files[0];
+                var formData = new FormData();
+                formData.append("image",image);
+                formData.append("id",id);
+                $.ajax({
+                    type:'POST',
+                    url: "https://iht-cors-server.herokuapp.com/https://ihtgo.com.vn/api/upload-image",
+                    data:formData,
+                    cache:false,
+                    contentType: false,
+                    processData: false,
+                    success:function(response){
+                        console.log(response);
+                        alert('Cập nhật hình ảnh đơn hàng thành công');
+                    },
+                    error:function(response){
+                        console.log(response);
+                        alert("Cập nhật hình ảnh đơn hàng thất bại");
+                    }   
+                });
+
+            });
+            $("#customFile").change(function() {
+                $('#upload-image').submit();
+            });
+        });
          //end change image order
         
         function cancelReceiverDriver(id){
