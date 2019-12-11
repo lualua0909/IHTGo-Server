@@ -52,14 +52,14 @@
                 </a>
             </li>
         @endcan
-        @can('view-car')
+        <!-- @can('view-car')
             <li class="{{ ($str == 'car') ? 'active' : '' }}">
                 <a href="{{ route('car.list') }}">
                     <i class="fa fa-fw fa-bus"></i>
                     <span>{{ __('label.car') }}</span>
                 </a>
             </li>
-        @endcan
+        @endcan -->
         @can('view-warehouse')
             <li class="{{ ($str == 'warehouse') ? 'active' : '' }}">
                 <a href="{{ route('warehouse.list') }}">

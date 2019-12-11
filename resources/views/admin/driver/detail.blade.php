@@ -68,7 +68,6 @@
                                 <th>Mã đơn hàng</th>
                                 <th>Mã bill</th>
                                 <th>Tên đơn hàng</th>
-                                <th>{{ __('label.car') }}</th>
                                 <th>{{ __('label.status') }}</th>
                                 <th>{{ __('label.total_price') }}</th>
                                 <th>{{ __('label.created') }}</th>
@@ -80,10 +79,9 @@
                                     <td><a target="_blank" href="{{route('order.detail', $i->id)}}">{{ $i->code }}</a></td>
                                     <td><a target="_blank" href="{{route('order.detail', $i->id)}}">{{ $i->coupon_code }}</a></td>
                                     <td><a target="_blank" href="{{route('order.detail', $i->id)}}">{{ $i->order_name }}</a></td>
-                                    <td><a target="_blank" href="{{route('car.detail', $i->cId)}}">{{ $i->cName . ' (' . $i->number . ')' }}</a></td>
                                     <td><span style="display: block; padding: 5px;" class="label {{$orderStatusColor[$i->status]}}">{{ $orderStatus[$i->status] }}</span></td>
                                     <td class="price">{{ $i->total_price }}</td>
-                                    <td>{!! $i->created_at !!}</td>
+                                    <td>{!! $i->created_at!!}</td>
                                 </tr>
                             @endforeach
                             </tbody>
