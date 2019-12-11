@@ -37,7 +37,7 @@
                             <td>{{ ($item->date) ? \Carbon\Carbon::createFromFormat('Y-m-d', $item->date)->format('d/m/Y') : null }}</td>
                             <td>{{ $item->address }}</td>
                             <td>
-                               {{$item->deleted_at ? $driverBaned[\App\Helpers\Business::USER_BANED] : $driverBaned[\App\Helpers\Business::USER_UN_BANED]}}
+                                {{$item->deleted_at ? $driverBaned[\App\Helpers\Business::USER_BANED] : $driverBaned[\App\Helpers\Business::USER_UN_BANED]}}
                             </td>
                             <td class="text-center">
                                 @can('edit-driver')
@@ -46,9 +46,9 @@
                                     </a>
                                 @endcan
                                 @can('delete-driver')
-                                     <a onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('driver.delete', $item->id)}}" class="btn btn-danger btn-sm">
-                                          <i class="fa fa-close"></i>
-                                     </a>
+                                    <a onclick="return confirm_delete('{{ __('label.are_you_sure') }}')" href="{{route('driver.delete', $item->id)}}" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-close"></i>
+                                    </a>
                                 @endcan
                             </td>
                         </tr>

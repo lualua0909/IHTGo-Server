@@ -360,11 +360,9 @@
                                 </div>
                                 
                             @endif
-                            @if($item->status == \App\Helpers\Business::ORDER_STATUS_WAITING)
                                 @if(Auth::user()->id ==1 || Auth::user()->id ==27)
                                     <button class="btn btn-danger pull-left" data-toggle="modal" data-target="#cancelOrder">{{ __('label.cancel_order') }}</button>
                                 @endif
-                            @endif
                         </div>
                     </div>
                 </div>

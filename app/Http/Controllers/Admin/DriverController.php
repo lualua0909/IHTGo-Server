@@ -153,6 +153,7 @@ class DriverController extends Controller
         if ($item){
             $title = __('label.driver_detail');
             $listHistory = $this->repository->getHistoryDelivery($request, $id);
+            
             $userStatus = array(
                 Business::USER_ACTIVE => __('label.active'),
                 Business::USER_UN_ACTIVE => __('label.un_active'),
