@@ -113,7 +113,12 @@
                                 </tr>
                                 <tr>
                                     <th>{{ __('label.payer') }}</th>
-                                    <td>{{ $listPayer[$item->payer] }}</td>
+                                    <td>
+                                        <select class="form-control" id="payer">
+                                            <option @if($item->payer==1) selected @endif value="1"> Người nhận</option>
+                                            <option @if($item->payer==2) selected @endif value="2">Người gửi</option>                                         
+                                        </select>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <th>{{ __('label.payment_type') }}</th>
@@ -1058,6 +1063,24 @@
                 $('#weight').val(1);
                 $('#distance').val(1);
             }
+        });
+        $('#payer').change(function () {
+            var order_id={{$item->id}};
+            var payer= $("#payer").val(); 
+            //alert(order_id);
+            $.ajax({
+                type: 'POST',
+                url: "{{ route('change-payer') }}",
+                data: {
+                    'order_id':order_id,
+                    'payer': payer
+                },
+                success: function (data) {
+                    alert('Bạn đã thay đổi thông tin người thanh toán thành công!');
+                },error:function(data){
+                    alert('Bạn đã thay đổi thông tin người thanh toán thất bại!');
+                }
+            });
         });
     </script>
 @endsection

@@ -154,13 +154,13 @@
                 </a>
             </li>
         @endcan
-        @can('view-chat')
+        <!-- @can('view-chat')
             <li class="{{ ($str == 'chat') ? 'active' : '' }}">
                 <a href="{{ route('chat.list') }}">
                     <i class="fa fa-wechat "></i> <span>{{ __('label.chat') }}</span>
                 </a>
             </li>
-        @endcan
+        @endcan -->
         @can('view-log')
             <li class="{{ ($str == 'log') ? 'active' : '' }}">
                 <a href="{{ route('log.list') }}">
@@ -173,7 +173,7 @@
                 <a href="#">
                     <i class="fa fa-fw fa-map-marker"></i> <span>{{ __('label.map') }}</span>
                     <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
+            <i class="fa fa-angle-left pull-right"></i>
             </span>
                 </a>
                 <ul class="treeview-menu {{ ($str == 'map') ? 'menu-open' : '' }}">

@@ -38,7 +38,9 @@ class NotificationController extends ApiController
 
     public function store(Request $request)
     {
+       // dd(1);
         $notification = $this->repository->findByCondition(['url' => $request->url, 'read' => null], true, ['id']);
+        // dd($this->repository);
         if (!$notification){
             if ($this->repository->store($request->only('url', 'type', 'content', 'to_id'))){
                 return response()->json(MessageApi::success('success'), 200);

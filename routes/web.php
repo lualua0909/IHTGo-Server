@@ -192,6 +192,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'log']], function ()
         Route::get('order-delete/{id}', 'Admin\OrderController@deleteOrder');
 
         Route::get('print/{id}', 'Admin\OrderController@print')->name('print');
+        Route::post('change-payer', 'Admin\OrderController@changePayer')->name('change-payer');
 
     });
 

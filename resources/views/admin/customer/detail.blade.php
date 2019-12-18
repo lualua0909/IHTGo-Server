@@ -61,6 +61,7 @@
                     <table id="example1" class="table table-bordered table-striped">
                         <thead>
                             <tr>
+                                <th>Mã đơn hàng</th>
                                 <th>Mã bill</th>
                                 <th>Tên đơn hàng</th>
                                 <th>{{ __('label.payment_type') }}</th>
@@ -77,6 +78,7 @@
                         <tbody>
                             @foreach($item->user->multiOrder as $i)
                             <tr>
+                            <td><a target="_blank" href="{{route('order.detail', $i->id)}}">{{ $i->code }}</a></td>
                                 <td><a target="_blank" href="{{route('order.detail', $i->id)}}">{{ $i->coupon_code }}</a></td>
                                 <td><a target="_blank" href="{{route('order.detail', $i->id)}}">{{ $i->name }}</a></td>
                                 <td><span style="display: block; padding: 5px;" class="label {{$orderMethodColor[$i->payment_type]}}">{{ $orderMethod[$i->payment_type] }}</span></td>

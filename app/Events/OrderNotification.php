@@ -27,6 +27,7 @@ class OrderNotification implements ShouldBroadcastNow
      */
     public function __construct($msg, Order $order, $type)
     {
+        
         $this->data = [
             'content' => sprintf($msg, optional($order->customer)->name, route('order.detail', $order->id), $order->name),
             'type' => $type,

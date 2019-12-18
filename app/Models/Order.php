@@ -157,7 +157,7 @@ class Order extends BaseModel
         return $res;
     }
     //search theo trang thai & phuong thuc thanh toan,ngay
-    public static function postOptionListNew($status, $car_option,$date)
+    public static function postOptionListNew($status, $car_option, $date)
     {
         $arrDate = explode(' - ', $date);
         $start = Carbon::createFromFormat('d/m/Y', $arrDate[0])->startOfDay()->format('Y-m-d');
@@ -187,8 +187,8 @@ class Order extends BaseModel
                 $orders = $orders->where('o.car_option', $car_option);
             }
         }
-        if($date!=null){
-            $orders=$orders->whereBetween('o.created_at', [$start . ' 00:00:00', $end . ' 23:59:59']);
+        if ($date != null) {
+            $orders = $orders->whereBetween('o.created_at', [$start . ' 00:00:00', $end . ' 23:59:59']);
         }
         return $orders->orderBy('o.id', 'desc')->paginate(20);
     }
@@ -511,12 +511,12 @@ class Order extends BaseModel
     {
         date_default_timezone_set('Asia/Ho_Chi_Minh');
         $user_id = Auth::user()->id;
-        if ($user_id == 1 || $user_id==27) {
-            DB::table('orders')->where('id',$request->id)->update([
-                'status'=>6,
-                'reason_cancel'=>$request->reason,
+        if ($user_id == 1 || $user_id == 27) {
+            DB::table('orders')->where('id', $request->id)->update([
+                'status' => 6,
+                'reason_cancel' => $request->reason,
                 'canceled_at' => date('Y-m-d H:i:s'),
-                'user_cancel_id'=>$user_id
+                'user_cancel_id' => $user_id
             ]);
         }
         return 200;
@@ -524,14 +524,21 @@ class Order extends BaseModel
     public static function print($id)
     {
         $order = DB::table('orders as o')
-        ->join('order_details as od', 'od.order_id', '=', 'o.id')
-        ->leftJoin('order_detail_ext as ode', 'ode.order_id', '=', 'o.id')
-        ->where('o.id',$id)
-        ->select(
-            "o.*",
-            "ode.*",
-            'od.*'
-        )->first();
+            ->join('order_details as od', 'od.order_id', '=', 'o.id')
+            ->leftJoin('order_detail_ext as ode', 'ode.order_id', '=', 'o.id')
+            ->where('o.id', $id)
+            ->select(
+                "o.*",
+                "ode.*",
+                'od.*'
+            )->first();
         return $order;
+    }
+    public static function changePayer($request)
+    {
+        DB::table('orders')->where('id', $request->order_id)->update([
+            'payer' => $request->payer,
+        ]);
+        return 200;
     }
 }

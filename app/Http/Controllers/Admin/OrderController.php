@@ -558,4 +558,13 @@ class OrderController extends Controller
             return $ex;
         }
     }
+    public function changePayer(Request $request)
+    {
+        try {
+            $res = Order::changePayer($request);
+            return $request;
+        } catch (\Exception $ex) {
+            return 201;
+        }
+    }
 }
