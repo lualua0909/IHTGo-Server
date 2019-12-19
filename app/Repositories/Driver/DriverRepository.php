@@ -43,7 +43,7 @@ class DriverRepository extends EloquentRepository implements DriverRepositoryCon
     public function getHistoryDelivery(Request $request, $driverId = false)
     {
         $status = $request->status ? $request->status : false;
-        $pagination = $request->pageSize ? $request->pageSize : 100;
+        $pagination = $request->pageSize ? $request->pageSize : 500;
         $driverId = ($driverId) ? $driverId : $request->user()->driver->id;
 
         $result = DB::table('drivers as dr')
